@@ -1,22 +1,29 @@
-# html5
-Web Service for Neuron
+# website
 
-Vue.js
+## Project setup
+```
+yarn install
+```
 
-# install dependencies
-npm i -f
+### Compiles and hot-reloads for development
+```
+yarn run serve
+```
 
-# serve with hot reload at localhost:8080
-npm run dev
+### Compiles and minifies for production
+```
+yarn run build
+```
 
-# build for production with minification
-npm run build
+### Run your tests
+```
+yarn run test
+```
 
-# run unit tests
-npm run unit
+### Lints and fixes files
+```
+yarn run lint
+```
 
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

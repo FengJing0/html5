@@ -1,27 +1,38 @@
 <template>
-  <v-layout row wrap class="use view-page ma-3">
-    <v-flex xs12 class="mb-1 flex-align-center">
-      <v-btn class="ml-0" @click="newItem">New</v-btn>
+  <v-layout row
+            wrap
+            class="use view-page ma-3">
+    <v-flex xs12
+            class="mb-1 flex-align-center">
+      <v-btn class="ml-0"
+             @click="newItem">New</v-btn>
     </v-flex>
     <v-flex xs12>
-      <Datatable
-        :headers="headers"
-        :items="rows"
-        class="elevation-1"
-      >
+      <Datatable :headers="headers"
+                 :items="rows"
+                 class="elevation-1">
         <tbody slot="tbody">
           <tr v-for="(row, i) in rows">
-            <td v-for="col in headers" class="text-xs-left">
+            <td v-for="col in headers"
+                class="text-xs-left">
               <template v-if="col.value !== 'actions'">
                 {{row[col.value]}}
               </template>
               <template v-else>
-                <v-btn error small class="" @click="remove(row, i)">
+                <v-btn error
+                       small
+                       class=""
+                       @click="remove(row, i)">
                   Remove
                 </v-btn>
-                <v-progress-circular v-if="row.removing" indeterminate class="primary--text" :size="20"></v-progress-circular>
+                <v-progress-circular v-if="row.removing"
+                                     indeterminate
+                                     class="primary--text"
+                                     :size="20"></v-progress-circular>
 
-                <v-btn small class="ml-0" @click="edit(row, i)">
+                <v-btn small
+                       class="ml-0"
+                       @click="edit(row, i)">
                   Edit
                 </v-btn>
               </template>
@@ -32,7 +43,9 @@
     </v-flex>
 
     <!-- user add and edit dialog -->
-    <v-dialog v-model="userForm.visible" persistent content-class="userFormDialog">
+    <v-dialog v-model="userForm.visible"
+              persistent
+              content-class="userFormDialog">
       <v-card>
         <v-card-title>
           <span class="headline">{{userForm.mode==='add'?'Add':'Edit'}} User</span>
@@ -41,27 +54,41 @@
           <v-container grid-list-md>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field label="User Name" required v-model="userForm.data.name" :rules="[rules.required]" :disabled="userForm.mode==='edit'"></v-text-field>
+                <v-text-field label="User Name"
+                              required
+                              v-model="userForm.data.name"
+                              :rules="[rules.required]"
+                              :disabled="userForm.mode==='edit'"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Password" type="password" required v-model="userForm.data.password" :rules="[rules.required]"></v-text-field>
+                <v-text-field label="Password"
+                              type="password"
+                              required
+                              v-model="userForm.data.password"
+                              :rules="[rules.required]"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Confirm Password" type="password" required v-model="userForm.data.confirmPassword" :rules="[rules.required]"></v-text-field>
+                <v-text-field label="Confirm Password"
+                              type="password"
+                              required
+                              v-model="userForm.data.confirmPassword"
+                              :rules="[rules.required]"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-text-field label="Timeout" type="number" required v-model="userForm.data.timeout" :rules="[rules.required]"></v-text-field>
+                <v-text-field label="Timeout"
+                              type="number"
+                              required
+                              v-model="userForm.data.timeout"
+                              :rules="[rules.required]"></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-select
-                  v-bind:items="userLevelsArr"
-                  v-model="userForm.data.allowedLevel"
-                  item-text="text"
-                  item-value="value"
-                  multiple
-                  label="Allowed level"
-                  bottom
-                ></v-select>
+                <v-select v-bind:items="userLevelsArr"
+                          v-model="userForm.data.allowedLevel"
+                          item-text="text"
+                          item-value="value"
+                          multiple
+                          label="Allowed level"
+                          bottom></v-select>
               </v-flex>
               <!-- <v-flex xs12>
                 <v-select
@@ -75,24 +102,29 @@
                 ></v-select>
               </v-flex> -->
               <v-flex xs12>
-                <v-select
-                  v-bind:items="userLevelsArrDefault"
-                  v-model="userForm.data.defaultLevel"
-                  :rules="[rules.required]"
-                  item-text="text"
-                  item-value="value"
-                  label="Default level"
-                  bottom
-                ></v-select>
+                <v-select v-bind:items="userLevelsArrDefault"
+                          v-model="userForm.data.defaultLevel"
+                          :rules="[rules.required]"
+                          item-text="text"
+                          item-value="value"
+                          label="Default level"
+                          bottom></v-select>
               </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-progress-circular v-if="saving" indeterminate class="primary--text" :size="20"></v-progress-circular>
-          <v-btn class="blue--text darken-1" flat @click.native="userForm.visible = false">Close</v-btn>
-          <v-btn class="blue--text darken-1" flat @click.native="save">Save</v-btn>
+          <v-progress-circular v-if="saving"
+                               indeterminate
+                               class="primary--text"
+                               :size="20"></v-progress-circular>
+          <v-btn class="blue--text darken-1"
+                 flat
+                 @click.native="userForm.visible = false">Close</v-btn>
+          <v-btn class="blue--text darken-1"
+                 flat
+                 @click.native="save">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -103,16 +135,15 @@
 import DataSource from '@/DataSource'
 import Datatable from '../components/Datatable.vue'
 
-
 export default {
   components: { Datatable },
-  data() {
+  data () {
     const userLevels = this.$store.state.userLevels
     const userLevelsArr = []
     for (var key in userLevels) {
       userLevelsArr.push({
         value: parseInt(key),
-        text: userLevels[key],
+        text: userLevels[key]
       })
     }
     return {
@@ -120,8 +151,8 @@ export default {
       loading: true,
       rows: [],
       headers: [
-        {text: 'Name', value: 'name', align: 'left', sortAble: false},
-        {text: 'Actions', value: 'actions', align: 'left', sortAble: false},
+        { text: 'Name', value: 'name', align: 'left', sortAble: false },
+        { text: 'Actions', value: 'actions', align: 'left', sortAble: false }
       ],
       saving: false,
       succeeded: false,
@@ -130,39 +161,39 @@ export default {
       userForm: {
         mode: null,
         visible: false,
-        data: {},
+        data: {}
       },
       rules: {
-        required: (value) => !!value || 'Required',
-      },
+        required: (value) => !!value || 'Required'
+      }
     }
   },
   computed: {
-    userLevelsArrDefault() {
+    userLevelsArrDefault () {
       try {
         return this.userLevelsArr.filter(v => this.userForm.data.allowedLevel.includes(v.value))
       } catch (e) {
         return []
       }
-    },
+    }
   },
-  created() {
+  created () {
     this.getData()
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       document.title = this.title
     })
   },
   methods: {
-    getData() {
-      this.$newService({func: 4}).then(data => {
+    getData () {
+      this.$newService({ func: 4 }).then(data => {
         this.rows = data.user.map(name => {
-          return {name, removing: false}
+          return { name, removing: false }
         })
       })
     },
-    newItem() {
+    newItem () {
       this.userForm.mode = 'add'
       this.userForm.visible = true
       this.userForm.data = {
@@ -171,11 +202,11 @@ export default {
         password: '',
         confirmPassword: '',
         defaultLevel: null,
-        allowedLevel: [],
+        allowedLevel: []
       }
     },
-    edit(row, i) {
-      this.$newService({func: 5, name: row.name}).then(data => {
+    edit (row, i) {
+      this.$newService({ func: 5, name: row.name }).then(data => {
         this.userForm.mode = 'edit'
         this.userForm.visible = true
         this.userForm.data = {
@@ -185,16 +216,16 @@ export default {
           confirmPassword: '',
           defaultLevel: data.defl.toString(),
           // noOfAllowedLevel: data.nalw.toString(),
-          allowedLevel: data.alwl.map(v => v.toString()),
+          allowedLevel: data.alwl.map(v => v.toString())
         }
       })
     },
-    save() {
+    save () {
       if (this.saving) {
         return
       }
       const input = this.userForm.data
-      const {mode} = this.userForm
+      const { mode } = this.userForm
       let valid = true
       for (var key in input) {
         if (input[key] == null || input[key] === '') {
@@ -211,8 +242,14 @@ export default {
         return
       }
       this.saving = true
-      const data = {func: 6, cusr: mode === 'add' ? 1 : 0, name:input.name, pass: input.password, tout: parseInt(input.timeout),
-        defl: parseInt(input.defaultLevel), nalw: input.allowedLevel.length, alwl: input.allowedLevel.map(v => parseInt(v))
+      const data = { func: 6,
+cusr: mode === 'add' ? 1 : 0,
+name: input.name,
+pass: input.password,
+tout: parseInt(input.timeout),
+        defl: parseInt(input.defaultLevel),
+nalw: input.allowedLevel.length,
+alwl: input.allowedLevel.map(v => parseInt(v))
       }
       this.$newService(data).then(result => {
         if (!result || result.errc > 0) {
@@ -225,24 +262,23 @@ export default {
         this.saving = false
       })
     },
-    remove(row, i) {
+    remove (row, i) {
       this.$confirm('Are you sure to remove the user?').then(() => {
         row.removing = true
-        this.$newService({func: 7, name: row.name}).then(() => {
+        this.$newService({ func: 7, name: row.name }).then(() => {
           row.removing = false
           this.rows.splice(i, 1)
         })
       })
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="scss">
-.user.view-page{
-
+.user.view-page {
 }
-.userFormDialog{
-  width: 90%!important;
-  max-width: 600px!important;
+.userFormDialog {
+  width: 90% !important;
+  max-width: 600px !important;
 }
 </style>

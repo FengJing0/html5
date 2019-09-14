@@ -1,5 +1,7 @@
 <template>
-  <v-dialog v-model="visible" persistent width="50%">
+  <v-dialog v-model="visible"
+            persistent
+            width="50%">
     <v-card>
       <v-card-text>
         <v-container grid-list-md>
@@ -17,8 +19,12 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn class="blue--text darken-1" flat @click.native="cancel">Cancel</v-btn>
-        <v-btn class="blue--text darken-1" flat @click.native="ok">OK</v-btn>
+        <v-btn class="blue--text darken-1"
+               flat
+               @click.native="cancel">Cancel</v-btn>
+        <v-btn class="blue--text darken-1"
+               flat
+               @click.native="ok">OK</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -26,24 +32,24 @@
 <script>
 export default {
   // components:
-  data() {
+  data () {
     return {
       visible: false,
       note: null,
-      value: '',
+      value: ''
     }
   },
   methods: {
-    ok() {
+    ok () {
       this.visible = false
       this.resolve(this.value)
     },
-    cancel() {
+    cancel () {
       this.visible = false
       this.reject()
-    },
+    }
   },
-  created() {
+  created () {
     const Vue = this.$root.constructor
     // register prompt
     Vue.prompt = Vue.prototype.$prompt = (note, value) => {
@@ -57,7 +63,7 @@ export default {
         this.reject = reject
       })
     }
-  },
+  }
 }
 </script>
 <style lang="scss">

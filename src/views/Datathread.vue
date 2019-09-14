@@ -1,114 +1,130 @@
 <template>
-  <v-layout row wrap class="ma-3">
-    <v-flex v-if="data2" xs12>
+  <v-layout row
+            wrap
+            class="ma-3">
+    <v-flex v-if="data2"
+            xs12>
       <p class="data2-table-footer w-100">
-          <span>Communication: {{data2.Status.PLCComm}}</span>
-          <span>Mode: {{data2.Status.LineMode}}</span>
-          <span>Status: {{data2.Status.AlarmStatus}}</span>
-          <span>No of Alarm: {{data2.Status.NoAlarms}}</span>
+        <!-- <span>Communication: {{data2.Status.PLCComm}}</span>
+        <span>Mode: {{data2.Status.LineMode}}</span>
+        <span>Status: {{data2.Status.AlarmStatus}}</span>
+        <span>No of Alarm: {{data2.Status.NoAlarms}}</span> -->
       </p>
     </v-flex>
     <v-flex xs12>
-      <div style="width:250px;" class="mr-3">
-        <v-select
-        :single-line="true"
-         v-bind:items="data1.objects"
-         item-text="text"
-         v-model="object1"
-         @change="item1=null"
-         label="Object"
-         ></v-select>
+      <div style="width:250px;"
+           class="mr-3">
+        <v-select :single-line="true"
+                  v-bind:items="data1.objects"
+                  item-text="text"
+                  v-model="object1"
+                  @change="item1=null"
+                  label="Object"></v-select>
       </div>
-      <div style="width:200px;" class="mr-3">
-       <v-select
-        v-bind:items="object1 ? object1.items : []"
-        item-text="text"
-        v-model="item1"
-        label="Item"
-        ></v-select>
+      <div style="width:200px;"
+           class="mr-3">
+        <v-select v-bind:items="object1 ? object1.items : []"
+                  item-text="text"
+                  v-model="item1"
+                  label="Item"></v-select>
       </div>
-      <div style="width:200px;" class="mr-3" v-if="object1&&object1.objaddr==='temp'">
-       <v-select
-        v-bind:items="['C', '%']"
-        v-model="temperatureUnit"
-        label="Unit"
-        ></v-select>
+      <div style="width:200px;"
+           class="mr-3"
+           v-if="object1&&object1.objaddr==='temp'">
+        <v-select v-bind:items="['C', '%']"
+                  v-model="temperatureUnit"
+                  label="Unit"></v-select>
       </div>
-      <div style="align-items:center; padding:18px 0;" class="mr-3">
-        <div class="" style="height: 30px; display: flex; align-items: flex-end;">
+      <div style="align-items:center; padding:18px 0;"
+           class="mr-3">
+        <div class=""
+             style="height: 30px; display: flex; align-items: flex-end;">
           {{data1.datetime}}
         </div>
       </div>
 
-      <div v-if="object1&&object1.objaddr==='temp'&&item1" class="flex-1 flex" style="position: relative; top: -8px;align-items: center;">
+      <div v-if="object1&&object1.objaddr==='temp'&&item1"
+           class="flex-1 flex"
+           style="position: relative; top: -8px;align-items: center;">
         <div class="mr-3">Y - axle</div>
-        <TwoEndSlider v-model="userCustomTemperatureChartRange" :min="temperatureChartRange[0]" :max="temperatureChartRange[1]"
-          class="pa-0 flex-1 chart-range-slider"></TwoEndSlider>
+        <TwoEndSlider v-model="userCustomTemperatureChartRange"
+                      :min="temperatureChartRange[0]"
+                      :max="temperatureChartRange[1]"
+                      class="pa-0 flex-1 chart-range-slider"></TwoEndSlider>
       </div>
     </v-flex>
 
     <v-flex xs12>
-      <div class="data1" style="width:400px;">
-        <v-data-table
-            :items="itemRows1"
-            hide-actions
-            class="data1-list"
-          >
-          <template slot="items" slot-scope="props">
+      <div class="data1"
+           style="width:400px;">
+        <v-data-table :items="itemRows1"
+                      hide-default-footer
+                      class="data1-list">
+          <template slot="items"
+                    slot-scope="props">
             <td class="">{{props.item.text}}</td>
             <td class="text-xs-right relative">
               {{ props.item.value }}
               <span @click="editData1ListItemValue(props.item)">
-                <v-icon v-if="props.item.field.original.flddbaddr==='-'" class="edit-btn">mode_edit</v-icon>
+                <v-icon v-if="props.item.field.original.flddbaddr==='-'"
+                        class="edit-btn">mode_edit</v-icon>
               </span>
             </td>
           </template>
         </v-data-table>
       </div>
-      <div class="ml-4" v-if="object1&&object1.objaddr==='temp'">
+      <div class="ml-4"
+           v-if="object1&&object1.objaddr==='temp'">
         <div class="temperature-chart-labels">
-          <div class="temperature-chart-label" v-for="item in temperatureChartLabels">
-            <div class="block" :style="{backgroundColor: item.color}"></div>
+          <div class="temperature-chart-label"
+               v-for="item in temperatureChartLabels">
+            <div class="block"
+                 :style="{backgroundColor: item.color}"></div>
             <span class="text">{{item.text}}</span>
           </div>
         </div>
-        <canvas class="temperature-chart" style="width:1400px; height:400px;"></canvas>
+        <canvas class="temperature-chart"
+                style="width:1400px; height:400px;"></canvas>
       </div>
     </v-flex>
 
-    <v-flex xs12 class="" v-if="data2">
+    <v-flex xs12
+            class=""
+            v-if="data2">
       <div class="w-100">
-        <v-data-table
-          :headers="headers2"
-          :items="data2.Status.AlarmDetails"
-          hide-actions
-          class="elevation-1"
-        >
-          <template slot="items" slot-scope="props">
-            <td v-for="(header, i) in headers2" :class="{'text-xs-right': i > 0}" @click="clickData2Row(props.item)">
+        <!-- <v-data-table :headers="headers2"
+                      :items="data2.Status.AlarmDetails"
+                      hide-actions
+                      class="elevation-1">
+          <template slot="items"
+                    slot-scope="props">
+            <td v-for="(header, i) in headers2"
+                :class="{'text-xs-right': i > 0}"
+                @click="clickData2Row(props.item)">
               {{ props.item[header.value] }}
             </td>
           </template>
-        </v-data-table>
+        </v-data-table> -->
       </div>
     </v-flex>
 
-    <div class="absolute-backdrop center-wrapper" v-if="loading">
-      <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
+    <div class="absolute-backdrop center-wrapper"
+         v-if="loading">
+      <v-progress-circular indeterminate
+                           class="primary--text"></v-progress-circular>
     </div>
   </v-layout>
 </template>
 <script>
 import { isNumeric } from 'helper-js'
-import {format} from 'date-functions'
+import { format } from 'date-functions'
 import DataSource from '@/DataSource'
 import Chart from 'chart.js'
 import TwoEndSlider from '@/components/TwoEndSlider.vue'
 
-
 export default {
-  components: {TwoEndSlider},
-  data() {
+  components: { TwoEndSlider },
+  data () {
     return {
       title: 'Datathread',
       loading: true,
@@ -151,11 +167,11 @@ export default {
           'text': 'Comments',
           'value': 'Comments'
         }
-      ],
+      ]
     }
   },
   computed: {
-    data1() {
+    data1 () {
       const data1 = {}
       const { configuration: config } = this
       if (!config) {
@@ -163,26 +179,27 @@ export default {
       }
       data1.objects = config.objects
       const { objects } = data1
-      objects.forEach((obj, objIndex) => {
-        // set text
-        obj.text = obj.objdesc
-        // set fileds
-        obj.fileds = obj.objfield.map(fld => {
-          return { name: fld.fldsname, text: fld.fldfname, original: fld }
-        })
-        // set items
-        obj.items = []
-        for (let i = 0; i < obj.objitem; i++) {
-          obj.items.push({
-            text: i + 1,
-            data: config.config[objIndex].data[i].datafields,
-          })
-        }
-      })
+      // debugger
+      // objects.forEach((obj, objIndex) => {
+      //   // set text
+      //   obj.text = obj.objdesc
+      //   // set fileds
+      //   obj.fileds = obj.objfield.map(fld => {
+      //     return { name: fld.fldsname, text: fld.fldfname, original: fld }
+      //   })
+      //   // set items
+      //   obj.items = []
+      //   for (let i = 0; i < obj.objitem; i++) {
+      //     obj.items.push({
+      //       text: i + 1,
+      //       data: config.config[objIndex].data[i].datafields,
+      //     })
+      //   }
+      // })
       this.cache.data1 = data1
       return data1
     },
-    itemRows1All() {
+    itemRows1All () {
       try {
         const flds = this.object1.fileds.slice(0) // copy
         const rows = []
@@ -190,7 +207,7 @@ export default {
           const top3 = flds.splice(0, 3)
           const dataInConfig = this.configuration.config[this.data1.objects.indexOf(this.object1)].data[this.object1.items.indexOf(this.item1)].datafields
           top3.forEach(fld => {
-            rows.push({text: fld.text, value: dataInConfig[fld.name], field: fld})
+            rows.push({ text: fld.text, value: dataInConfig[fld.name], field: fld })
           })
         }
         return rows.concat(flds.map(fld => {
@@ -215,7 +232,7 @@ export default {
       }
     },
     // for temperature, temperature will filter by unit
-    itemRows1() {
+    itemRows1 () {
       if (this.object1 && this.object1.objaddr === 'temp') {
         const r = []
         for (let i = 0; i < this.itemRows1All.length; i++) {
@@ -231,11 +248,11 @@ export default {
         return this.itemRows1All
       }
     },
-    temperatureChartRange() {
+    temperatureChartRange () {
       if (this.object1 && this.object1.objaddr === 'temp') {
         let max, min
         this.itemRows1.forEach(row => {
-        const fld = row.field.original
+          const fld = row.field.original
           if (max == null || max < fld.fldmaxval) {
             max = fld.fldmaxval
           }
@@ -245,22 +262,22 @@ export default {
         })
         return [min && min * 0.8, max && max * 1.2]
       }
-    },
+    }
   },
   watch: {
-    originData1() {
+    originData1 () {
       this.mergeOriginData1ToData1()
-      this.$emit('data1Merged')
+      // this.$emit('data1Merged')
     },
-    data1() {
+    data1 () {
       this.mergeOriginData1ToData1()
     },
-    object1() {
+    object1 () {
       if (!this.object1 || this.object1.objaddr !== 'temp') {
         this.destroyTemperatureChart()
       }
     },
-    item1() {
+    item1 () {
       if (this.object1 && this.object1.objaddr === 'temp') {
         if (!this.item1) {
           this.destroyTemperatureChart()
@@ -269,10 +286,10 @@ export default {
         }
       }
     },
-    temperatureUnit() {
+    temperatureUnit () {
       this.updateTemperatureChartDatasetVisibility()
     },
-    temperatureChartRange(v) {
+    temperatureChartRange (v) {
       if (!this.object1 || this.object1.objaddr !== 'temp') {
         return
       }
@@ -293,12 +310,12 @@ export default {
       //     this.userCustomTemperatureChartRange = cp
       //   }
       // }
-    },
+    }
   },
-  created() {
+  created () {
     const configReady = new Promise((resolve, reject) => {
       this.configDataSource = new DataSource()
-      this.configDataSource.type = 'configuration'
+      // this.configDataSource.type = 'configuration'
       this.configDataSource.connect()
       this.configDataSource.ongetdata = data => {
         this.configuration = data
@@ -324,12 +341,14 @@ export default {
       }
       this.dataSource.ongetdata1 = data => {
         this.originData1 = data
+        console.log(data)
         data1GetCount++
         checkForResolve()
         // console.log('data1 got')
       }
       this.dataSource.ongetdata2 = data => {
         this.data2 = data
+        console.log(data)
         data2GetCount++
         checkForResolve()
         // console.log('data2 got')
@@ -340,18 +359,19 @@ export default {
       this.loading = false
     })
     this.$on('data1Merged', this.checkAndUpdateTemperatureChart)
+    this.loading = false
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       document.title = this.title
     })
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.configDataSource && this.configDataSource.close()
     this.dataSource && this.dataSource.close()
   },
   methods: {
-    mergeOriginData1ToData1() {
+    mergeOriginData1ToData1 () {
       if (!this.data1 || !this.data1.objects) {
         return
       }
@@ -387,7 +407,7 @@ export default {
         }
       })
     },
-    renderTemperatureChart() {
+    renderTemperatureChart () {
       const chartColors = {
         red: 'rgb(255, 99, 132)',
         orange: 'rgb(255, 159, 64)',
@@ -415,10 +435,10 @@ export default {
               temperatureUnit: row.unit,
               borderColor: color,
               backgroundColor: color,
-              data: [row.originalValue],
+              data: [row.originalValue]
               // yAxesID: 'y-axis-1',
             }
-          }),
+          })
         },
         options: {
           scales: {
@@ -426,18 +446,18 @@ export default {
               id: 'y-axis-0',
               ticks: {
                 min: this.temperatureChartRange[0],
-                max: this.temperatureChartRange[1],
+                max: this.temperatureChartRange[1]
               }
             }]
           },
           legend: {
             display: false
-          },
-        },
+          }
+        }
       })
       this.updateTemperatureChartDatasetVisibility()
     },
-    checkAndUpdateTemperatureChart() {
+    checkAndUpdateTemperatureChart () {
       if (this.temperatureChart) {
         const chart = this.temperatureChart
         // update data
@@ -458,17 +478,17 @@ export default {
         const ticks = chart.options.scales.yAxes[0]
         const custom = this.userCustomTemperatureChartRange
         if (ticks.min !== custom[0] || ticks.max !== custom[1]) {
-          chart.options.scales.yAxes = Chart.helpers.scaleMerge(Chart.defaults.scale, {yAxes:
-            [{
-             id: 'y-axis-0',
-             ticks: {
-               min: custom[0],
-               max: custom[1],
-             },
-            }]
+          chart.options.scales.yAxes = Chart.helpers.scaleMerge(Chart.defaults.scale, { yAxes:
+              [{
+                id: 'y-axis-0',
+                ticks: {
+                  min: custom[0],
+                  max: custom[1]
+                }
+              }]
           }).yAxes
         }
-          // ticks.min = custom[0]
+        // ticks.min = custom[0]
         // }
         // if (ticks.max !== custom[1]) {
         //   ticks.max = custom[1]
@@ -476,7 +496,7 @@ export default {
         chart.update()
       }
     },
-    updateTemperatureChartDatasetVisibility() {
+    updateTemperatureChartDatasetVisibility () {
       if (this.temperatureChart) {
         const chart = this.temperatureChart
         const labels = []
@@ -485,7 +505,7 @@ export default {
           if (!dataset.hidden) {
             labels.push({
               color: dataset.backgroundColor,
-              text: dataset.label,
+              text: dataset.label
             })
           }
         })
@@ -493,13 +513,13 @@ export default {
         chart.update()
       }
     },
-    destroyTemperatureChart() {
+    destroyTemperatureChart () {
       if (this.temperatureChart) {
         this.temperatureChart.destroy()
         this.temperatureChart = null
       }
     },
-    editData1ListItemValue(item) {
+    editData1ListItemValue (item) {
       this.$prompt('Edit', item.originalValue).then(value => {
         if (!isFinite(value)) {
           this.$alert('Input invalid')
@@ -507,46 +527,46 @@ export default {
         }
         const decimal = item.field.original.flddecim
         value = Math.floor(value * Math.pow(10, decimal))
-        this.$newService({func: 25, objn: this.object1.objaddr, item: parseInt(this.item1.text), fldn: item.field.name, valn: value}).then(result => {
+        this.$newService({ func: 25, objn: this.object1.objaddr, item: parseInt(this.item1.text), fldn: item.field.name, valn: value }).then(result => {
           if (!result || result.errc > 0) {
             this.$alert((result && result.errt) || `Save failed: ${JSON.stringify(result)}`)
           }
         })
       })
     },
-    clickData2Row(row) {
-      console.log('data2 row clicked, start send message to backend');
-      this.$newService({func: 8, wdix: row.WordIX, btix: row.BitIX, actn: "acknowledge"}).then(data => {
-        console.log('send message to backend successfully');
+    clickData2Row (row) {
+      console.log('data2 row clicked, start send message to backend')
+      this.$newService({ func: 8, wdix: row.WordIX, btix: row.BitIX, actn: 'acknowledge' }).then(data => {
+        console.log('send message to backend successfully')
       }, () => {
-        console.warn('send message to backend failed');
+        console.warn('send message to backend failed')
       })
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="scss">
 .data1 {
   > .table__overflow {
     border: 1px solid #ccc;
-    thead{
+    thead {
       display: none;
     }
   }
-  .data1-list{
-    .edit-btn{
+  .data1-list {
+    .edit-btn {
       font-size: 18px;
       position: absolute;
       top: 6px;
       right: 2px;
       cursor: pointer;
-      &:hover{
+      &:hover {
         color: #00bcd4;
       }
     }
   }
 }
-.data2-table-footer{
+.data2-table-footer {
   background-color: #8a8a8a;
   color: #fff;
   height: 30px;
@@ -554,29 +574,29 @@ export default {
   padding: 0 5px;
   display: flex;
   justify-content: space-between;
-  span{
+  span {
     display: inline;
     margin-right: 0;
   }
 }
 .temperature-chart-label {
+  display: inline-block;
+  margin-right: 1em;
+
+  .block {
+    width: 30px;
+    height: 1em;
     display: inline-block;
-    margin-right: 1em;
+  }
 
-    .block {
-        width: 30px;
-        height: 1em;
-        display: inline-block;
-    }
-
-    .text {
-        font-size: .9em;
-    }
+  .text {
+    font-size: 0.9em;
+  }
 }
-.chart-range-slider{
+.chart-range-slider {
   position: relative;
   top: 2px;
-  .values{
+  .values {
     position: absolute;
     width: 100%;
     top: -15px;

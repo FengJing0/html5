@@ -1,110 +1,135 @@
 <template>
-<v-app id="app" standalone toolbar class="flex flex-col">
-  <!-- initialization -->
-  <div class="absolute-backdrop center-wrapper" v-if="!$store.state.initialized">
-    <v-progress-circular indeterminate v-bind:size="50" class="primary--text"></v-progress-circular>
-  </div>
-  <!-- initialized -->
-  <template v-else>
-    <router-view v-if="$route.name==='login'"></router-view>
-    <template v-else-if="$store.state.authenticated">
-      <!-- left sidebar -->
-      <Sidebar v-model="drawer" :menu="state.menu"></Sidebar>
+  <v-app id="app"
+         standalone
+         toolbar
+         class="flex flex-col">
+    <!-- initialization -->
+    <div class="absolute-backdrop center-wrapper"
+         v-if="!$store.state.initialized">
+      <v-progress-circular indeterminate
+                           v-bind:size="50"
+                           class="primary--text"></v-progress-circular>
+    </div>
+    <!-- initialized -->
+    <template v-else>
+      <router-view v-if="$route.name==='login'"></router-view>
+      <template v-else-if="$store.state.authenticated">
+        <!-- left sidebar -->
+        <Sidebar v-model="drawer"
+                 :menu="state.menu">123</Sidebar>
 
-      <!-- right sidebar -->
-      <v-navigation-drawer
-        temporary
-        v-model="rightDrawer"
-        light
-        overflow
-        absolute
-        right
-        class="right-sidebar"
-      >
-        <v-toolbar class="cyan">
-          <v-icon>person</v-icon>
-          <v-toolbar-title class="white--text">Profile</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon @click.native="rightDrawer=false">
-            <v-icon>chevron_right</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <div class="pa-3">
-          <div class="user-info">
-            <b>Name</b> <span>{{state.user.username}}</span>
-            <br>
-            <b>Default level</b> <span>{{userLevels[state.user.info.defl]}}</span>
-            <br>
-            <b>Allowed level</b> <span>{{state.user.info.alwl.map(v => v.atxt).join(', ')}}</span>
+        <!-- right sidebar -->
+        <v-navigation-drawer temporary
+                             v-model="rightDrawer"
+                             light
+                             overflow
+                             absolute
+                             right
+                             class="right-sidebar">
+          <v-toolbar class="cyan">
+            <v-icon>person</v-icon>
+            <v-toolbar-title class="white--text">Profile</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon
+                   @click.native="rightDrawer=false">
+              <v-icon>chevron_right</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <div class="pa-3">
+            <div class="user-info">
+              <b>Name</b> <span>{{state.user.username}}</span>
+              <br>
+              <b>Default level</b> <span>{{userLevels[state.user.info.defl]}}</span>
+              <br>
+              <b>Allowed level</b> <span>{{state.user.info.alwl.map(v => v.atxt).join(', ')}}</span>
+            </div>
+            <div class="">
+              <v-btn light
+                     class="ml-0"
+                     @click.native.stop="changePasswordVisible=!changePasswordVisible">Change Password</v-btn>
+            </div>
+            <form @submit.prevent="changePassword"
+                  class="change-password"
+                  v-show="changePasswordVisible">
+              <v-text-field type="password"
+                            label="Old Password"
+                            v-model.trim="oldPassword"
+                            :rules="[rules.required]"></v-text-field>
+              <v-text-field type="password"
+                            label="New Password"
+                            v-model.trim="newPassword"
+                            :rules="[rules.required]"></v-text-field>
+              <v-text-field type="password"
+                            label="Confirm New Password"
+                            v-model.trim="newPassword2"
+                            :rules="[rules.required]"></v-text-field>
+              <v-btn primary
+                     dark
+                     class="ml-0"
+                     type="submit">Save</v-btn>
+            </form>
+            <div class="">
+              <v-btn warning
+                     dark
+                     class="ml-0"
+                     @click.native="logout">Logout</v-btn>
+            </div>
           </div>
-          <div class="">
-            <v-btn light class="ml-0" @click.native.stop="changePasswordVisible=!changePasswordVisible">Change Password</v-btn>
-          </div>
-          <form @submit.prevent="changePassword" class="change-password" v-show="changePasswordVisible">
-            <v-text-field
-              type="password"
-              label="Old Password"
-              v-model.trim="oldPassword"
-              :rules="[rules.required]"
-             ></v-text-field>
-             <v-text-field
-               type="password"
-               label="New Password"
-               v-model.trim="newPassword"
-               :rules="[rules.required]"
-              ></v-text-field>
-              <v-text-field
-                type="password"
-                label="Confirm New Password"
-                v-model.trim="newPassword2"
-                :rules="[rules.required]"
-               ></v-text-field>
-               <v-btn primary dark class="ml-0" type="submit">Save</v-btn>
-          </form>
-           <div class="">
-             <v-btn warning dark class="ml-0" @click.native="logout">Logout</v-btn>
-           </div>
-        </div>
-      </v-navigation-drawer>
+        </v-navigation-drawer>
 
-      <v-toolbar fixed class="cyan" dark>
-        <v-toolbar-side-icon @click.native.stop="drawer=!drawer"></v-toolbar-side-icon>
-        <v-toolbar-title>{{$store.state.brand}}</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn flat @click.native.stop="rightDrawer=!rightDrawer">{{state.user.username}}</v-btn>
-      </v-toolbar>
-      <main class="flex-1">
-        <router-view></router-view>
-      </main>
+        <v-app-bar fixed
+                   class="cyan"
+                   dark>
+          <v-app-bar-nav-icon @click.native.stop="drawer=!drawer"></v-app-bar-nav-icon>
+          <v-toolbar-title>{{$store.state.brand}}</v-toolbar-title>
+          <div class="flex-grow-1"></div>
+          <v-btn text
+                 @click.native.stop="rightDrawer=!rightDrawer">{{state.user.username}}</v-btn>
+        </v-app-bar>
+        <v-content :top='56'>
+          <main class="flex-1">
+            <router-view></router-view>
+          </main>
+        </v-content>
+      </template>
     </template>
-  </template>
-  <!-- alert -->
-  <v-dialog v-model="alert.visible" lazy absolute>
-    <v-card>
-      <v-card-text>{{alert.content}}</v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn flat class="green--text darken-1" @click.native="alert.visible = false">OK</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-  <!-- confirm -->
-  <v-dialog v-model="confirm.visible" lazy absolute>
-     <v-card>
-       <v-card-title>
-         <div class="headline">{{confirm.title}}</div>
-       </v-card-title>
-       <v-card-text>{{confirm.content}}</v-card-text>
-       <v-card-actions>
-         <v-spacer></v-spacer>
-         <v-btn class="orange--text darken-1" flat="flat" @click.native="confirm.cancel">Cancel</v-btn>
-         <v-btn class="teal--text darken-1" flat="flat" @click.native="confirm.ok">OK</v-btn>
-       </v-card-actions>
-     </v-card>
-   </v-dialog>
-   <!-- prompt -->
-   <Prompt></Prompt>
-</v-app>
+    <!-- alert -->
+    <v-dialog v-model="alert.visible"
+              lazy
+              absolute>
+      <v-card>
+        <v-card-text>{{alert.content}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat
+                 class="green--text darken-1"
+                 @click.native="alert.visible = false">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- confirm -->
+    <v-dialog v-model="confirm.visible"
+              lazy
+              absolute>
+      <v-card>
+        <v-card-title>
+          <div class="headline">{{confirm.title}}</div>
+        </v-card-title>
+        <v-card-text>{{confirm.content}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="orange--text darken-1"
+                 flat="flat"
+                 @click.native="confirm.cancel">Cancel</v-btn>
+          <v-btn class="teal--text darken-1"
+                 flat="flat"
+                 @click.native="confirm.ok">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- prompt -->
+    <Prompt></Prompt>
+  </v-app>
 </template>
 
 <script>
@@ -113,7 +138,7 @@ import Sidebar from '@/components/Sidebar.vue'
 
 export default {
   name: 'app',
-  components: {Prompt, Sidebar},
+  components: { Prompt, Sidebar },
   data () {
     return {
       drawer: false,
@@ -126,40 +151,40 @@ export default {
       newPassword: null,
       newPassword2: null,
       rules: {
-        required: (value) => !!value || 'Required',
+        required: (value) => !!value || 'Required'
       },
       // globale
       alert: {
         visible: false,
-        content: null,
+        content: null
       },
       confirm: {
         visible: false,
         title: null,
         content: null,
-        cancel() {
+        cancel () {
           this.visible = false
           this.reject()
         },
-        ok() {
+        ok () {
           this.visible = false
           this.resolve()
-        },
+        }
       }
     }
   },
   computed: {
-    state() { return this.$store.state },
+    state () { return this.$store.state }
   },
   methods: {
-    logout() {
+    logout () {
       window.localStorage.removeItem('user')
       this.state.authenticated = null
-      this.$router.push({name: 'login'})
+      this.$router.push({ name: 'login' })
       this.state.user = null
     },
-    changePassword() {
-      const {oldPassword, newPassword, newPassword2} = this
+    changePassword () {
+      const { oldPassword, newPassword, newPassword2 } = this
       if (!oldPassword || !newPassword || !newPassword2) {
         this.$alert('Required field can\'t be empty')
         return
@@ -168,7 +193,7 @@ export default {
         this.$alert('The password confirmation does not match')
         return
       }
-      this.$newService({func: 12, name: this.$store.state.user.username, pass: oldPassword, npwd: newPassword}).then(r => {
+      this.$newService({ func: 12, name: this.$store.state.user.username, pass: oldPassword, npwd: newPassword }).then(r => {
         console.log(r)
         if (r.err > 0) {
           this.$alert('The change password operation failed')
@@ -180,15 +205,19 @@ export default {
           this.newPassword2 = null
           const userStore = {
             username: this.state.user.username,
-            password: newPassword,
+            password: newPassword
           }
           window.localStorage.setItem('user', JSON.stringify(userStore))
         }
       })
-    },
+    }
   },
-  created() {
+  mounted () {
+    // console.log(this.$vuetify.application.top = 56)
+  },
+  created () {
     // init
+    this.$vuetify.application.top = 56
     const t = window.localStorage.getItem('user')
     let user = t && JSON.parse(t)
     if (!user || !user.expired_at || user.expired_at <= new Date().getTime()) {
@@ -196,11 +225,11 @@ export default {
     } else {
       setInterval(() => {
         this.$store.dispatch('autoExtendUserRememberTime')
-      }, 1 * 3600 * 1000);
+      }, 1 * 3600 * 1000)
     }
     const goLoginPage = () => {
       if (this.$route.name !== 'login') {
-        this.$router.push({name: 'login'})
+        this.$router.push({ name: 'login' })
       }
     }
     let prm
@@ -234,7 +263,7 @@ export default {
         this.confirm.reject = reject
       })
     }
-  },
+  }
 }
 </script>
 
@@ -247,46 +276,49 @@ export default {
 @import "./assets/css/helper.scss";
 @import "./assets/css/style.scss";
 // font
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-body{
-  font-family: 'Open Sans', sans-serif;
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+body {
+  font-family: "Open Sans", sans-serif;
 }
-.application--light .navigation-drawer.sidebar{
+.application--light .navigation-drawer.sidebar {
   background-color: #00bcd4;
 }
 
-
-html{
+html {
   overflow: hidden;
 }
-html, body, #app{
+html,
+body,
+#app {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
+  font-family: 'Open Sans', sans-serif;
 }
-#app{
-  > .toolbar{
+#app {
+  > .toolbar {
     position: relative;
   }
-  > main{
+  > main {
     padding: 0;
     overflow: auto;
   }
 }
-.right-sidebar{
-  .toolbar{
-    .icon, .btn__content .icon{
+.right-sidebar {
+  .toolbar {
+    .icon,
+    .btn__content .icon {
       color: #fff;
     }
   }
-  .user-info{
+  .user-info {
     line-height: 28px;
-    b{
+    b {
       margin-right: 16px;
     }
-    span{
+    span {
     }
   }
-  form.change-password{
+  form.change-password {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
     margin: 16px 0;

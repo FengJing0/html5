@@ -1,31 +1,50 @@
 <template>
-  <v-layout row wrap class="global-variable ma-3">
-    <v-flex xs12 class="mb-1 flex-align-center">
-      <v-btn primary dark class="ml-0" @click="save">Save</v-btn>
+  <v-layout row
+            wrap
+            class="global-variable ma-3">
+    <v-flex xs12
+            class="mb-1 flex-align-center">
+      <v-btn primary
+             dark
+             class="ml-0"
+             @click="save">Save</v-btn>
       <v-btn @click="newItem">New</v-btn>
-      <v-progress-circular v-if="saving" indeterminate class="primary--text" :size="20"></v-progress-circular>
+      <v-progress-circular v-if="saving"
+                           indeterminate
+                           class="primary--text"
+                           :size="20"></v-progress-circular>
       <transition name="fade-transition">
-        <v-icon right class="green--text" v-if="succeeded">check</v-icon>
+        <v-icon right
+                class="green--text"
+                v-if="succeeded">check</v-icon>
       </transition>
     </v-flex>
     <v-flex xs12>
-      <Datatable
-        :headers="headers"
-        :items="rows"
-        class="elevation-1"
-      >
+      <Datatable :headers="headers"
+                 :items="rows"
+                 class="elevation-1">
         <tbody slot="tbody">
           <tr v-for="(row, i) in rows">
-            <td v-for="col in headers" class="text-xs-left">
+            <td v-for="col in headers"
+                class="text-xs-left">
               <template v-if="col.value !== 'actions'">
-                <input v-if="col.type === 'number'" type="number" v-model="row[col.value]" />
-                <input v-else type="text" v-model="row[col.value]" />
+                <input v-if="col.type === 'number'"
+                       type="number"
+                       v-model="row[col.value]" />
+                <input v-else
+                       type="text"
+                       v-model="row[col.value]" />
               </template>
               <template v-else>
-                <v-btn error small class="" @click="remove(row, i)">
+                <v-btn error
+                       small
+                       class=""
+                       @click="remove(row, i)">
                   Remove
                 </v-btn>
-                <v-btn small class="ml-0" @click="insert(i)">
+                <v-btn small
+                       class="ml-0"
+                       @click="insert(i)">
                   Insert
                 </v-btn>
               </template>
@@ -43,16 +62,16 @@ import Datatable from '../components/Datatable.vue'
 
 export default {
   components: { Datatable },
-  data() {
+  data () {
     return {
       title: 'Global Variable',
       loading: true,
       rows: [],
       headers: [
-        {text: 'Global Variable', value: 'glov', align: 'left', width: '50px', sortAble: false},
-        {text: 'Nos', value: 'leng', align: 'left', width: '50px', type: 'number', sortAble: false},
-        {text: 'Description', value: 'comt', align: 'left', sortAble: false},
-        {text: 'Actions', value: 'actions', align: 'left', sortAble: false},
+        { text: 'Global Variable', value: 'glov', align: 'left', width: '50px', sortAble: false },
+        { text: 'Nos', value: 'leng', align: 'left', width: '50px', type: 'number', sortAble: false },
+        { text: 'Description', value: 'comt', align: 'left', sortAble: false },
+        { text: 'Actions', value: 'actions', align: 'left', sortAble: false },
       ],
       saving: false,
       succeeded: false,
@@ -60,37 +79,37 @@ export default {
   },
   computed: {
   },
-  created() {
+  created () {
     this.dataSource = new DataSource()
     this.dataSource.type = 'services'
-    this.dataSource.func = {func: 16}
+    this.dataSource.func = { func: 16 }
     this.dataSource.ongetdata = data => {
       this.rows = data.rows
       this.dataSource.close()
     }
     this.dataSource.connect()
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       document.title = this.title
     })
   },
   methods: {
-    newItem() {
+    newItem () {
       const item = {}
       this.headers.forEach(col => {
         item[col.value] = null
       })
       this.rows.push(item)
     },
-    insert(i) {
+    insert (i) {
       const item = {}
       this.headers.forEach(col => {
         item[col.value] = null
       })
       this.rows.splice(i + 1, 0, item)
     },
-    save() {
+    save () {
       let valid = true
       const notEmptyRows = []
       for (const row of this.rows) {
@@ -119,7 +138,7 @@ export default {
         this.$alert('Empty cell is not allowed, please check your input')
         return
       }
-      const data = {func: 17, nrow: this.rows.length, rows: []}
+      const data = { func: 17, nrow: this.rows.length, rows: [] }
       this.rows.forEach(row => {
         const row2 = {}
         this.headers.forEach(col => {
@@ -141,14 +160,13 @@ export default {
         this.saving = false
       })
     },
-    remove(row, i) {
+    remove (row, i) {
       this.rows.splice(i, 1)
     },
   },
 }
 </script>
 <style lang="scss">
-.global-variable{
-
+.global-variable {
 }
 </style>

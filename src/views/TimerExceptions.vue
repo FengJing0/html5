@@ -1,141 +1,141 @@
 <template>
-<v-layout row wrap class="ma-3 timer-exceptions">
-  <v-flex xs12 class="mb-1">
-    <v-btn class="ml-0" @click="add">Add</v-btn>
-    <v-btn v-if="changed" primary class="ml-0" :loading="saving" @click="save">Save</v-btn>
-  </v-flex>
-  <v-flex xs12 class="">
-    <div class="w-100">
-      <Datatable
-        :headers="headers"
-        :items="rows"
-        class="elevation-1"
-        :editBtnVisible="true"
-        @edit="edit($event.row, $event.index)"
-        @remove="remove($event.row, $event.index)"
-      >
-      </Datatable>
-    </div>
-  </v-flex>
+  <v-layout row
+            wrap
+            class="ma-3 timer-exceptions">
+    <v-flex xs12
+            class="mb-1">
+      <v-btn class="ml-0"
+             @click="add">Add</v-btn>
+      <v-btn v-if="changed"
+             primary
+             class="ml-0"
+             :loading="saving"
+             @click="save">Save</v-btn>
+    </v-flex>
+    <v-flex xs12
+            class="">
+      <div class="w-100">
+        <Datatable :headers="headers"
+                   :items="rows"
+                   class="elevation-1"
+                   :editBtnVisible="true"
+                   @edit="edit($event.row, $event.index)"
+                   @remove="remove($event.row, $event.index)">
+        </Datatable>
+      </div>
+    </v-flex>
 
-  <!-- form dialog -->
-  <v-dialog v-model="formDialog.visible" persistent content-class="formDialog" width="600">
-    <v-card>
-      <v-card-title>
-        <span class="headline">{{formDialog.mode==='add'?'Add':'Edit'}}</span>
-      </v-card-title>
-      <v-card-text>
-        <v-container grid-list-md>
-          <v-layout wrap>
-            <v-flex xs12>
-              <v-select
-                v-bind:items="channels"
-                v-model="formDialog.data.chnl"
-                item-text="name"
-                item-value="cnum"
-                label="Channel"
-                bottom
-              ></v-select>
-            </v-flex>
-            <v-flex xs12>
-              <label>Channel Status</label>
-            </v-flex>
-            <v-flex xs4>
-              <v-radio label="On" v-model="formDialog.data.stat" value="on"></v-radio>
-            </v-flex>
-            <v-flex xs4>
-              <v-radio label="Off" v-model="formDialog.data.stat" value="off"></v-radio>
-            </v-flex>
-            <v-flex xs6>
-              <label>From Date</label>
-            </v-flex>
-            <v-flex xs3>
-              <label>Hour</label>
-            </v-flex>
-            <v-flex xs3>
-              <label>Minute</label>
-            </v-flex>
-            <!-- from date -->
-            <v-flex xs4>
-              <v-select
-                v-bind:items="monthDetails"
-                v-model="formDialog.data.frmo"
-                item-text="name"
-                item-value="number"
-                single-line
-                bottom
-              ></v-select>
-            </v-flex>
-            <v-flex xs2>
-              <v-text-field
-                single-line
-                v-model="formDialog.data.frda"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs3>
-              <v-text-field
-                single-line
-                v-model="formDialog.data.frhr"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs3>
-              <v-text-field
-                single-line
-                v-model="formDialog.data.frmi"
-              ></v-text-field>
-            </v-flex>
-            <!-- to date -->
-            <v-flex xs4>
-              <v-select
-                v-bind:items="monthDetails"
-                v-model="formDialog.data.tomo"
-                item-text="name"
-                item-value="number"
-                single-line
-                bottom
-              ></v-select>
-            </v-flex>
-            <v-flex xs2>
-              <v-text-field
-                single-line
-                v-model="formDialog.data.toda"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs3>
-              <v-text-field
-                single-line
-                v-model="formDialog.data.tohr"
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs3>
-              <v-text-field
-                single-line
-                v-model="formDialog.data.tomi"
-              ></v-text-field>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn class="blue--text darken-1" flat @click.native="formDialog.visible = false">Close</v-btn>
-        <v-btn class="blue--text darken-1" flat @click.native="saveFormDialog">Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <!-- form dialog -->
+    <v-dialog v-model="formDialog.visible"
+              persistent
+              content-class="formDialog"
+              width="600">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{formDialog.mode==='add'?'Add':'Edit'}}</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-select v-bind:items="channels"
+                          v-model="formDialog.data.chnl"
+                          item-text="name"
+                          item-value="cnum"
+                          label="Channel"
+                          bottom></v-select>
+              </v-flex>
+              <v-flex xs12>
+                <label>Channel Status</label>
+              </v-flex>
+              <v-flex xs4>
+                <v-radio label="On"
+                         v-model="formDialog.data.stat"
+                         value="on"></v-radio>
+              </v-flex>
+              <v-flex xs4>
+                <v-radio label="Off"
+                         v-model="formDialog.data.stat"
+                         value="off"></v-radio>
+              </v-flex>
+              <v-flex xs6>
+                <label>From Date</label>
+              </v-flex>
+              <v-flex xs3>
+                <label>Hour</label>
+              </v-flex>
+              <v-flex xs3>
+                <label>Minute</label>
+              </v-flex>
+              <!-- from date -->
+              <v-flex xs4>
+                <v-select v-bind:items="monthDetails"
+                          v-model="formDialog.data.frmo"
+                          item-text="name"
+                          item-value="number"
+                          single-line
+                          bottom></v-select>
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field single-line
+                              v-model="formDialog.data.frda"></v-text-field>
+              </v-flex>
+              <v-flex xs3>
+                <v-text-field single-line
+                              v-model="formDialog.data.frhr"></v-text-field>
+              </v-flex>
+              <v-flex xs3>
+                <v-text-field single-line
+                              v-model="formDialog.data.frmi"></v-text-field>
+              </v-flex>
+              <!-- to date -->
+              <v-flex xs4>
+                <v-select v-bind:items="monthDetails"
+                          v-model="formDialog.data.tomo"
+                          item-text="name"
+                          item-value="number"
+                          single-line
+                          bottom></v-select>
+              </v-flex>
+              <v-flex xs2>
+                <v-text-field single-line
+                              v-model="formDialog.data.toda"></v-text-field>
+              </v-flex>
+              <v-flex xs3>
+                <v-text-field single-line
+                              v-model="formDialog.data.tohr"></v-text-field>
+              </v-flex>
+              <v-flex xs3>
+                <v-text-field single-line
+                              v-model="formDialog.data.tomi"></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn class="blue--text darken-1"
+                 flat
+                 @click.native="formDialog.visible = false">Close</v-btn>
+          <v-btn class="blue--text darken-1"
+                 flat
+                 @click.native="saveFormDialog">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-  <LoadingBlock v-if="loading"></LoadingBlock>
-</v-layout>
+    <LoadingBlock v-if="loading"></LoadingBlock>
+  </v-layout>
 </template>
 
 <script>
 import Datatable from '../components/Datatable.vue'
-import {minutesFormat, timeToMinutes, cloneObjByKeys, monthDetails, numToMon, monToNum, compareNumberArray} from '@/utils'
-import {isNumeric} from 'helper-js'
+import { minutesFormat, timeToMinutes, cloneObjByKeys, monthDetails, numToMon, compareNumberArray } from '@/utils'
+import { isNumeric } from 'helper-js'
 
 export default {
-  components: {Datatable},
-  data() {
+  components: { Datatable },
+  data () {
     return {
       monthDetails: Object.values(monthDetails),
       title: 'Timer Exceptions',
@@ -145,44 +145,44 @@ export default {
       channels: [],
       headers: [
         //  "rnum":	0, "chnl":	3, "stat":	"on", "frmo":	8, "frda":	6, "frti":	0, "tomo":	8, "toda":	7, "toti":	0
-        {text: 'Row', value: 'rnum', align: 'left', sortAble: false},
-        {text: 'Channel', value: 'chnlText', align: 'left', sortAble: false},
-        {text: 'Status', value: 'stat', align: 'left', sortAble: false},
-        {text: 'From Month', value: 'frmoText', align: 'left', sortAble: false},
-        {text: 'From Day', value: 'frda', align: 'left', sortAble: false},
-        {text: 'From Time', value: 'frtiText', align: 'left', sortAble: false},
-        {text: 'To Month', value: 'tomoText', align: 'left', sortAble: false},
-        {text: 'To Day', value: 'toda', align: 'left', sortAble: false},
-        {text: 'To Time', value: 'totiText', align: 'left', sortAble: false},
+        { text: 'Row', value: 'rnum', align: 'left', sortAble: false },
+        { text: 'Channel', value: 'chnlText', align: 'left', sortAble: false },
+        { text: 'Status', value: 'stat', align: 'left', sortAble: false },
+        { text: 'From Month', value: 'frmoText', align: 'left', sortAble: false },
+        { text: 'From Day', value: 'frda', align: 'left', sortAble: false },
+        { text: 'From Time', value: 'frtiText', align: 'left', sortAble: false },
+        { text: 'To Month', value: 'tomoText', align: 'left', sortAble: false },
+        { text: 'To Day', value: 'toda', align: 'left', sortAble: false },
+        { text: 'To Time', value: 'totiText', align: 'left', sortAble: false }
       ],
       saving: false,
       formDialog: {
         mode: 'add',
         visible: false,
-        data: {},
-      },
+        data: {}
+      }
     }
   },
   methods: {
-    getChannelMappping(){
+    getChannelMappping () {
       const mp = {}
       this.channels.forEach(v => {
         mp[v.cnum] = v
       })
       return mp
     },
-    correctRow(row) {
+    correctRow (row) {
       if (!this.channelMappping) {
         this.channelMappping = this.getChannelMappping()
       }
-      const {channelMappping} = this
+      const { channelMappping } = this
       this.$set(row, 'chnlText', channelMappping[row.chnl].name)
       this.$set(row, 'frmoText', numToMon(row.frmo))
       this.$set(row, 'frtiText', minutesFormat(row.frti))
       this.$set(row, 'tomoText', numToMon(row.tomo))
       this.$set(row, 'totiText', minutesFormat(row.toti))
     },
-    getRowData(row) {
+    getRowData (row) {
       const data = cloneObjByKeys(row, ['rnum', 'chnl', 'stat', 'frmo', 'frda', 'frti', 'tomo', 'toda', 'toti'])
       for (var key in data) {
         if (isNumeric(data[key])) {
@@ -191,11 +191,11 @@ export default {
       }
       return data
     },
-    getData() {
+    getData () {
       this.loading = true
       Promise.all([
-        this.$newService({func: 11}),
-        this.$newService({func: 14, istp: 0}),
+        this.$newService({ func: 11 }),
+        this.$newService({ func: 14, istp: 0 })
       ]).then(datas => {
         this.channels = datas[0].chnl
         datas[1].rows.forEach(row => {
@@ -208,11 +208,11 @@ export default {
         throw e
       })
     },
-    onChanged() {
+    onChanged () {
       this.changed = true
       this.$preventURLChange()
     },
-    remove(row, index) {
+    remove (row, index) {
       for (let i = index + 1; i < this.rows.length; i++) {
         const row = this.rows[i]
         row.rnum--
@@ -220,7 +220,7 @@ export default {
       this.rows.splice(index, 1)
       this.onChanged()
     },
-    add() {
+    add () {
       const data = this.getRowData({})
       data.frhr = 0
       data.frmi = 0
@@ -239,7 +239,7 @@ export default {
       this.formDialog.mode = 'add'
       this.formDialog.visible = true
     },
-    edit(row, index) {
+    edit (row, index) {
       const data = this.getRowData(row)
       let t
       t = row.frtiText.split(':')
@@ -253,8 +253,8 @@ export default {
       this.formDialog.mode = 'edit'
       this.formDialog.visible = true
     },
-    saveFormDialog() {
-      const {formDialog} = this
+    saveFormDialog () {
+      const { formDialog } = this
       const d1 = formDialog.data
       d1.frti = timeToMinutes(`${d1.frhr}:${d1.frmi}`)
       d1.toti = timeToMinutes(`${d1.tohr}:${d1.tomi}`)
@@ -275,17 +275,22 @@ export default {
       formDialog.visible = false
       this.onChanged()
     },
-    save() {
+    save () {
       if (this.saving) {
         return
       }
       this.saving = true
 
-      const data = {func: 15, istp: 0, nrow: this.rows.length, rows: this.rows.map(row => {
-        const rowData = this.getRowData(row)
-        rowData.stat = row.stat === 'on' ? 1 : 0
-        return rowData
-      })}
+      const data = {
+        func: 15,
+        istp: 0,
+        nrow: this.rows.length,
+        rows: this.rows.map(row => {
+          const rowData = this.getRowData(row)
+          rowData.stat = row.stat === 'on' ? 1 : 0
+          return rowData
+        })
+      }
 
       this.$newService(data).then(() => {
         this.saving = false
@@ -295,25 +300,25 @@ export default {
         this.saving = false
         throw e
       })
-    },
+    }
   },
-  created() {
+  created () {
     this.getData()
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       document.title = this.title
     })
-  },
+  }
 }
 </script>
 
 <style lang="scss">
-.timer-exceptions{
+.timer-exceptions {
 }
-.formDialog{
-  label{
-    color: rgba(0,0,0,.54);
+.formDialog {
+  label {
+    color: rgba(0, 0, 0, 0.54);
   }
 }
 </style>

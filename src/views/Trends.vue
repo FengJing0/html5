@@ -1,55 +1,68 @@
 <template>
-<v-layout row wrap class="ma-3 Trends">
-  <v-flex xs12 class="second-bar mb-3">
-    <div class="">
-      <label>Search From</label>
-      <datepicker class="date-picker-1" :date="startDate" :option="$store.state.datepickerOption"></datepicker>
-    </div>
-    <div class="">
-      <label>Search To</label>
-      <datepicker class="date-picker-1" :date="endDate" :option="$store.state.datepickerOption"></datepicker>
-    </div>
-    <div class="">
-      <v-btn primary dark @click="search">Search</v-btn>
-    </div>
-  </v-flex>
+  <v-layout row
+            wrap
+            class="ma-3 Trends">
+    <v-flex xs12
+            class="second-bar mb-3">
+      <div class="">
+        <label>Search From</label>
+        <datepicker class="date-picker-1"
+                    :date="startDate"
+                    :option="$store.state.datepickerOption"></datepicker>
+      </div>
+      <div class="">
+        <label>Search To</label>
+        <datepicker class="date-picker-1"
+                    :date="endDate"
+                    :option="$store.state.datepickerOption"></datepicker>
+      </div>
+      <div class="">
+        <v-btn primary
+               dark
+               @click="search">Search</v-btn>
+      </div>
+    </v-flex>
 
-  <v-flex xs12 class="" v-if="rows">
-    <div class="">
-      <canvas :id="chart1Id" class="chart1" style="width:1400px; height:400px;"></canvas>
-    </div>
-  </v-flex>
-</v-layout>
+    <v-flex xs12
+            class=""
+            v-if="rows">
+      <div class="">
+        <canvas :id="chart1Id"
+                class="chart1"
+                style="width:1400px; height:400px;"></canvas>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
-import {format} from 'date-functions'
-import {arrayLast} from 'helper-js'
+import { format } from 'date-functions'
+import { arrayLast } from 'helper-js'
 import datepicker from 'vue-datepicker/vue-datepicker-es6'
 import Chart from 'chart.js'
-import {resolveDate} from '@/utils'
+import { resolveDate } from '@/utils'
 
 export default {
-  components: {datepicker},
-  data() {
+  components: { datepicker },
+  data () {
     return {
       title: 'Trends',
       chart1Id: `chart1_${this._uid}`,
       rows: null,
       // search
       startDate: {
-        time: '',
+        time: ''
       },
       endDate: {
-        time: '',
+        time: ''
       },
       category: null,
       pattern: null,
-      searching: false,
+      searching: false
     }
   },
   methods: {
-    search() {
+    search () {
       if (this.searchDt) {
         this.searchDt.close()
         this.searchDt = null
@@ -62,9 +75,21 @@ export default {
       let i = 0
       const sdate = resolveDate(this.startDate.time)
       const edate = resolveDate(this.endDate.time)
-      this.searchDt = this.$newHistoricalData({func: 24, objn: 'temp', item: 0, fend: 0,
-        fryr: sdate.year, frmo: sdate.month, frda: sdate.date, frhr: sdate.hour, frmi: sdate.minute,
-        toyr: edate.year, tomo: edate.month, toda: edate.date, tohr: edate.hour, tomi: edate.minute,
+      this.searchDt = this.$newHistoricalData({
+        func: 24,
+        objn: 'temp',
+        item: 0,
+        fend: 0,
+        fryr: sdate.year,
+        frmo: sdate.month,
+        frda: sdate.date,
+        frhr: sdate.hour,
+        frmi: sdate.minute,
+        toyr: edate.year,
+        tomo: edate.month,
+        toda: edate.date,
+        tohr: edate.hour,
+        tomi: edate.minute
       }, (data) => {
         if (i > 0) {
           if (this.rows == null) {
@@ -72,7 +97,7 @@ export default {
           }
           data.trds.forEach(item => {
             const row = {
-              originalData: item,
+              originalData: item
             }
             row.stmp = item.stmp
             item.data.forEach(v => {
@@ -87,7 +112,7 @@ export default {
         i++
       })
     },
-    oneRowsPushed(start, length) {
+    oneRowsPushed (start, length) {
       this.$nextTick(() => {
         if (!this.chart1) {
           this.renderChart1()
@@ -95,7 +120,7 @@ export default {
         this.updateChart1WhenOneRowPushed(start, length)
       })
     },
-    renderChart1() {
+    renderChart1 () {
       const chartColors = {
         red: 'rgb(255, 99, 132)',
         orange: 'rgb(255, 159, 64)',
@@ -107,8 +132,8 @@ export default {
       }
       const colors = Object.values(chartColors)
       const ctx = document.getElementById(this.chart1Id).getContext('2d')
-      const fldNames = ["plal", "pllm", "tact", "tout", "phlm", "phal", "hlal", "hlll", "hact", "hout", "hllh", "hlah"].map(v => {
-        return {name: v, text: v}
+      const fldNames = ['plal', 'pllm', 'tact', 'tout', 'phlm', 'phal', 'hlal', 'hlll', 'hact', 'hout', 'hllh', 'hlah'].map(v => {
+        return { name: v, text: v }
       })
       let i = -1
       this.chart1 = new Chart(ctx, {
@@ -125,14 +150,14 @@ export default {
               // temperatureUnit: row.unit,
               borderColor: color,
               backgroundColor: color,
-              data: [],
+              data: []
               // yAxesID: 'y-axis-1',
             }
-          }),
-        },
+          })
+        }
       })
     },
-    updateChart1WhenOneRowPushed(start, newRowLength) {
+    updateChart1WhenOneRowPushed (start, newRowLength) {
       const chart = this.chart1
       // update data
       const end = start + newRowLength
@@ -144,31 +169,31 @@ export default {
         })
       }
       chart.update()
-    },
+    }
   },
-  created(){
+  created () {
   },
-  mounted() {
+  mounted () {
     this.$nextTick(() => {
       document.title = this.title
     })
-  },
+  }
 }
 
 </script>
 
 <style lang="scss">
-.Trends{
-  .second-bar{
+.Trends {
+  .second-bar {
     // justify-content:space-between;
     align-items: baseline;
-    > div{
+    > div {
       margin-right: 2em;
     }
     // .date-picker{
     //   width: 150px;
     // }
-    .input-group.input-group--text-field{
+    .input-group.input-group--text-field {
       width: 150px;
     }
   }

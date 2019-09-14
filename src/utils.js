@@ -2,17 +2,17 @@ import { titleCase, studlyCase } from 'helper-js'
 import Vue from 'vue'
 import DataSource from './DataSource.js'
 
-export function initAxios(axios, Vue, store, config) {
+export function initAxios (axios, Vue, store, config) {
   const axiosInstance = axios.create({
     baseURL: store.state.urls.server.base,
-    timeout: 20000, // 20 seconds
+    timeout: 20000 // 20 seconds
     // withCredentials: config.isCROS
   })
   Vue.Axios = axios
   Vue.http = Vue.prototype.$http = axiosInstance
 }
 
-export function initVDV(VueDataValidator, store, Vue) {
+export function initVDV (VueDataValidator, store, Vue) {
   Vue.use(VueDataValidator.validator)
   Object.assign(Vue.validator.rules, VueDataValidator.rules)
   Object.assign(Vue.validator.messages, VueDataValidator.enMessages)
@@ -20,7 +20,7 @@ export function initVDV(VueDataValidator, store, Vue) {
   Vue.validator.invalidClass = 'md-input-invalid'
 }
 
-export function initRouter(Router, Vue, store, config, routes) {
+export function initRouter (Router, Vue, store, config, routes) {
   Vue.use(Router)
   const router = new Router({
     mode: 'history',
@@ -30,7 +30,7 @@ export function initRouter(Router, Vue, store, config, routes) {
   return router
 }
 
-export function axiosNamedPost(name, url, query) {
+export function axiosNamedPost (name, url, query) {
   if (!this._axiosNamedPostStore) {
     this._axiosNamedPostStore = {}
   }
@@ -49,7 +49,7 @@ export function axiosNamedPost(name, url, query) {
   })
 }
 
-export function initColumns(vm, columns) {
+export function initColumns (vm, columns) {
   // auto generate column display name
   for (const col of columns) {
     if (!col.text) {
@@ -71,10 +71,10 @@ export function initColumns(vm, columns) {
   }
 }
 
-export function initRows(vm, rows, columns, table) {
+export function initRows (vm, rows, columns, table) {
   if (table) {
     if (table.sortBy) {
-      sortRows({name: table.sortBy, type: table.sortType}, rows, columns)
+      sortRows({ name: table.sortBy, type: table.sortType }, rows, columns)
     }
   }
   for (const row of rows) {
@@ -86,13 +86,13 @@ export function initRows(vm, rows, columns, table) {
     }
     for (const col of columns) {
       if (col.valueProcessor) {
-        row[col.name] = col.valueProcessor({value: row[col.name], column: col, row, rows})
+        row[col.name] = col.valueProcessor({ value: row[col.name], column: col, row, rows })
       }
     }
   }
 }
 
-export function getRowData(row, cols) {
+export function getRowData (row, cols) {
   const item = {}
   cols.forEach(col => {
     item[col.name] = row[col.name]
@@ -100,7 +100,7 @@ export function getRowData(row, cols) {
   return item
 }
 
-export function sortRows(event, rows, columns) {
+export function sortRows (event, rows, columns) {
   const col = columns.find(col => col.name === event.name)
   const sortBy = col.sortBy || event.name
   if (col.locale) {
@@ -123,7 +123,7 @@ export function sortRows(event, rows, columns) {
   }
 }
 
-export function generateExcel(JSONData, FileName, ShowLabel) {
+export function generateExcel (JSONData, FileName, ShowLabel) {
   // 先转化json
   var arrData = typeof JSONData !== 'object' ? JSON.parse(JSONData) : JSONData
   var excel = '<table>'
@@ -145,7 +145,7 @@ export function generateExcel(JSONData, FileName, ShowLabel) {
   }
   excel += '</table>'
   var excelFile = "<html xmlns:o='urn:schemas-microsoft-com:office:office' " +
-        "xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>"
+    "xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>"
   excelFile += '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">'
   excelFile += '<meta http-equiv="content-type" content="application/vnd.ms-excel'
   excelFile += '; charset=UTF-8">'
@@ -186,7 +186,7 @@ export function generateExcel(JSONData, FileName, ShowLabel) {
  * @param  {[type]} str [format: yyyy-MM-dd HH:mm:ss]
  * @return [type]       [description]
  */
-export function newDate(str) {
+export function newDate (str) {
   const t = str.split(' ')
   const args = t[0].split('-').map(v => parseInt(v))
   args[1]-- // convert month to 0 -11
@@ -194,7 +194,7 @@ export function newDate(str) {
   return new Date(...args)
 }
 
-export function sortRowsByProp(rows, prop) {
+export function sortRowsByProp (rows, prop) {
   rows.sort((a, b) => {
     const aProp = a[prop]
     const bProp = b[prop]
@@ -209,7 +209,7 @@ export function sortRowsByProp(rows, prop) {
   })
 }
 
-export function exportExcel(rows, columns, title) {
+export function exportExcel (rows, columns, title) {
   const cols = columns.filter(col => col.exportAble !== false && col.visible !== false)
   const data = rows.map(row => {
     const r = []
@@ -225,14 +225,14 @@ export function exportExcel(rows, columns, title) {
 
 // http
 const storeOfCancelOldRequest = {}
-export function cancelOldRequest(name) {
+export function cancelOldRequest (name) {
   const cancel = storeOfCancelOldRequest[name]
   if (cancel) {
     cancel()
     delete storeOfCancelOldRequest[name]
   }
 }
-export function namedHttpGet(name, url, options0) {
+export function namedHttpGet (name, url, options0) {
   cancelOldRequest(name)
   const CancelToken = Vue.Axios.CancelToken
   const http = Vue.http
@@ -241,7 +241,7 @@ export function namedHttpGet(name, url, options0) {
   return http.get(url, options)
 }
 
-export function registerPreventURLChange(Vue, router) {
+export function registerPreventURLChange (Vue, router) {
   let preventRouter = false
   const msg0 = `It looks like you have been editing something.
 If you leave before saving, your changes will be lost.`
@@ -260,8 +260,8 @@ If you leave before saving, your changes will be lost.`
   })
   const beforeunload = (e) => {
     var confirmationMessage = msg || msg0
-    e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
-    return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    e.returnValue = confirmationMessage // Gecko, Trident, Chrome 34+
+    return confirmationMessage // Gecko, WebKit, Chrome <34
   }
   Vue.preventURLChange = Vue.prototype.$preventURLChange = (msg2) => {
     if (msg2 != null) {
@@ -269,12 +269,12 @@ If you leave before saving, your changes will be lost.`
     }
     if (!preventRouter) {
       preventRouter = true
-      window.addEventListener("beforeunload", beforeunload)
+      window.addEventListener('beforeunload', beforeunload)
     }
   }
   Vue.allowURLChange = Vue.prototype.$allowURLChange = () => {
     preventRouter = false
-    window.removeEventListener("beforeunload", beforeunload)
+    window.removeEventListener('beforeunload', beforeunload)
   }
 }
 export function secondsFormat (seconds) {
@@ -310,14 +310,14 @@ export const numDayMapping = {
   4: 'Thursday',
   5: 'Friday',
   6: 'Saturday',
-  7: 'Sunday',
+  7: 'Sunday'
 }
 
-export function numToDay(num) {
+export function numToDay (num) {
   return numDayMapping[num.toString()]
 }
 
-export function dayToNum(day) {
+export function dayToNum (day) {
   for (const key in numDayMapping) {
     if (numDayMapping[key] === day) {
       return key
@@ -325,7 +325,7 @@ export function dayToNum(day) {
   }
 }
 
-export function cloneObjByKeys(obj, keys) {
+export function cloneObjByKeys (obj, keys) {
   const r = {}
   for (const key of keys) {
     r[key] = obj[key]
@@ -334,85 +334,85 @@ export function cloneObjByKeys(obj, keys) {
 }
 
 export const monthDetails = {
-  "Jan": {
-    "name": "January",
-    "short": "Jan",
-    "number": 1,
-    "days": 31
+  'Jan': {
+    'name': 'January',
+    'short': 'Jan',
+    'number': 1,
+    'days': 31
   },
-  "Feb": {
-    "name": "February",
-    "short": "Feb",
-    "number": 2,
-    "days": 28
+  'Feb': {
+    'name': 'February',
+    'short': 'Feb',
+    'number': 2,
+    'days': 28
   },
-  "Mar": {
-    "name": "March",
-    "short": "Mar",
-    "number": 3,
-    "days": 31
+  'Mar': {
+    'name': 'March',
+    'short': 'Mar',
+    'number': 3,
+    'days': 31
   },
-  "Apr": {
-    "name": "April",
-    "short": "Apr",
-    "number": 4,
-    "days": 30
+  'Apr': {
+    'name': 'April',
+    'short': 'Apr',
+    'number': 4,
+    'days': 30
   },
-  "May": {
-    "name": "May",
-    "short": "May",
-    "number": 5,
-    "days": 31
+  'May': {
+    'name': 'May',
+    'short': 'May',
+    'number': 5,
+    'days': 31
   },
-  "Jun": {
-    "name": "June",
-    "short": "Jun",
-    "number": 6,
-    "days": 30
+  'Jun': {
+    'name': 'June',
+    'short': 'Jun',
+    'number': 6,
+    'days': 30
   },
-  "Jul": {
-    "name": "July",
-    "short": "Jul",
-    "number": 7,
-    "days": 31
+  'Jul': {
+    'name': 'July',
+    'short': 'Jul',
+    'number': 7,
+    'days': 31
   },
-  "Aug": {
-    "name": "August",
-    "short": "Aug",
-    "number": 8,
-    "days": 31
+  'Aug': {
+    'name': 'August',
+    'short': 'Aug',
+    'number': 8,
+    'days': 31
   },
-  "Sep": {
-    "name": "September",
-    "short": "Sep",
-    "number": 9,
-    "days": 30
+  'Sep': {
+    'name': 'September',
+    'short': 'Sep',
+    'number': 9,
+    'days': 30
   },
-  "Oct": {
-    "name": "October",
-    "short": "Oct",
-    "number": 10,
-    "days": 31
+  'Oct': {
+    'name': 'October',
+    'short': 'Oct',
+    'number': 10,
+    'days': 31
   },
-  "Nov": {
-    "name": "November",
-    "short": "Nov",
-    "number": 11,
-    "days": 30
+  'Nov': {
+    'name': 'November',
+    'short': 'Nov',
+    'number': 11,
+    'days': 30
   },
-  "Dec": {
-    "name": "December",
-    "short": "Dec",
-    "number": 12,
-    "days": 31
+  'Dec': {
+    'name': 'December',
+    'short': 'Dec',
+    'number': 12,
+    'days': 31
   }
 }
 
-export function numToMon(num) {
+export function numToMon (num) {
   return Object.values(monthDetails)[num - 1].name
 }
 
-export function monToNum(name) {
+export function monToNum (name) {
   const reg = new RegExp(name, 'i')
   let i = 0
   for (const item of Object.values(monthDetails)) {
@@ -423,7 +423,7 @@ export function monToNum(name) {
   }
 }
 
-export function compareNumberArray(a1, a2) {
+export function compareNumberArray (a1, a2) {
   const len = a1.length > a2.length ? a1.length : a2.length
   for (let i = 0; i < len; i++) {
     const n1 = a1[i] || 0
@@ -436,14 +436,14 @@ export function compareNumberArray(a1, a2) {
 }
 
 // format: 2017-11-24 00:56
-export function resolveDate(date) {
+export function resolveDate (date) {
   date = date || ''
   const r = {
     year: date.substr(0, 4),
     month: date.substr(5, 2),
     date: date.substr(8, 2),
     hour: date.substr(11, 2),
-    minute: date.substr(14, 2),
+    minute: date.substr(14, 2)
   }
   for (const key in r) {
     r[key] = parseInt(r[key])

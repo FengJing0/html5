@@ -1,11 +1,23 @@
+// import Vue from 'vue'
+// import App from './App.vue'
+// import router from './router'
+// import store from './store'
+
+// Vue.config.productionTip = false
+
+// new Vue({
+//   router,
+//   store,
+//   render: h => h(App)
+// }).$mount('#app')
+
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 // packages
-import 'babel-polyfill'
 import Vue from 'vue'
 import Router from 'vue-router'
 import axios from 'axios'
-import Vuetify from 'vuetify'
+// import vuetify from '@/plugins/vuetify'
 // vue-data-validator
 import * as VueDataValidator from 'vue-data-validator'
 // files
@@ -16,6 +28,7 @@ import routes from './routes/index.js'
 import { initAxios, initVDV, initRouter, registerPreventURLChange } from '@/utils.js'
 import LoadingBlock from './components/LoadingBlock.vue'
 import DataSource from './DataSource'
+import vuetify from './plugins/vuetify'
 //
 Vue.config.productionTip = config.isDevelopment
 Vue.config.debug = config.isDevelopment
@@ -24,7 +37,7 @@ Vue.config.devtools = config.isDevelopment
 initAxios(axios, Vue, store, config)
 
 // Vuetify
-Vue.use(Vuetify)
+// Vue.use(Vuetify)
 
 // VDV
 initVDV(VueDataValidator, store, Vue)
@@ -41,7 +54,7 @@ Vue.component('LoadingBlock', LoadingBlock)
 // gloabl mixins
 Vue.mixin({
   methods: {
-    $newService(func) {
+    $newService (func) {
       console.log('new datathread connect, func is follow')
       console.log(func)
       const dt = new DataSource()
@@ -70,36 +83,37 @@ Vue.mixin({
         dt.connect()
       })
     }
-//    $newHistoricalData(func, callback) {
-//      console.log('new historicaldata connect, func is follow')
-//      console.log(func)
-//      const dt = new DataSource()
-//      if (!this.datasources) {
-//        this.datasources = []
-//      }
-//      this.datasources.push(dt)
-//      dt.type = 'historicaldata'
-//      dt.func = func
-//      dt.ongetdata = data => {
-//        console.log('data is follow')
-//        console.log(data)
-//        callback(data)
-//      }
-//      dt.connect()
-//      return dt
-//    }
+    //    $newHistoricalData(func, callback) {
+    //      console.log('new historicaldata connect, func is follow')
+    //      console.log(func)
+    //      const dt = new DataSource()
+    //      if (!this.datasources) {
+    //        this.datasources = []
+    //      }
+    //      this.datasources.push(dt)
+    //      dt.type = 'historicaldata'
+    //      dt.func = func
+    //      dt.ongetdata = data => {
+    //        console.log('data is follow')
+    //        console.log(data)
+    //        callback(data)
+    //      }
+    //      dt.connect()
+    //      return dt
+    //    }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     if (this.datasources) {
       this.datasources.forEach(dt => dt.close())
     }
-  },
+  }
 })
 
 // start
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  vuetify,
   store,
   router,
   template: '<App/>',

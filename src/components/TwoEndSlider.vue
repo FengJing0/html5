@@ -10,62 +10,73 @@
     </div>
     <div class="slider">
       <div class="slider__track__container">
-        <div class="slider__track" style="transform: scaleX(1) translateX(8px);" ref="greyTrack"></div>
-        <div class="slider__track-fill" :style="{left: startLeftDistancePercent*100+'%', transform: `scaleX(${valueLengthPercent}) translateX(0px)`}"></div>
+        <div class="slider__track"
+             style="transform: scaleX(1) translateX(8px);"
+             ref="greyTrack"></div>
+        <div class="slider__track-fill"
+             :style="{left: startLeftDistancePercent*100+'%', transform: `scaleX(${valueLengthPercent}) translateX(0px)`}"></div>
       </div>
-      <div class="slider__thumb-container" :style="{left: startLeftDistancePercent*100+'%'}" @mousedown="dragStart($event, 'left')" :title="value[0]">
-        <div class="slider__thumb" :class="{dragging: left.dragging}"></div>
+      <div class="slider__thumb-container"
+           :style="{left: startLeftDistancePercent*100+'%'}"
+           @mousedown="dragStart($event, 'left')"
+           :title="value[0]">
+        <div class="slider__thumb"
+             :class="{dragging: left.dragging}"></div>
       </div>
-      <div class="slider__thumb-container" :style="{left: endLeftDistancePercent*100+'%'}" @mousedown="dragStart($event, 'right')" :title="value[1]">
-        <div class="slider__thumb" :class="{dragging: right.dragging}"></div>
+      <div class="slider__thumb-container"
+           :style="{left: endLeftDistancePercent*100+'%'}"
+           @mousedown="dragStart($event, 'right')"
+           :title="value[1]">
+        <div class="slider__thumb"
+             :class="{dragging: right.dragging}"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {onDOM, offDOM, addClass, removeClass} from 'helper-js'
+import { onDOM, offDOM, addClass, removeClass } from 'helper-js'
 export default {
   // components:
   props: {
     min: {},
     max: {},
-    value: {},
+    value: {}
   },
-  data() {
+  data () {
     return {
       left: {
-        dragging: false,
+        dragging: false
       },
       right: {
-        dragging: false,
-      },
+        dragging: false
+      }
     }
   },
   computed: {
-    start() {return this.value[0]},
-    end() {return this.value[1]},
-    startLeftDistancePercent() {
+    start () { return this.value[0] },
+    end () { return this.value[1] },
+    startLeftDistancePercent () {
       return (this.value[0] - this.min) / (this.max - this.min)
     },
-    endLeftDistancePercent() {
+    endLeftDistancePercent () {
       return (this.value[1] - this.min) / (this.max - this.min)
     },
-    valueLengthPercent() {
+    valueLengthPercent () {
       return (this.value[1] - this.value[0]) / (this.max - this.min)
-    },
+    }
   },
   methods: {
-    dragStart(e, type) {
+    dragStart (e, type) {
       this[type].dragging = true
       this.whenDragStart = {
         mousePosition: {
           x: e.pageX,
-          y: e.pageY,
+          y: e.pageY
         },
         value: this.value.slice(0),
         startLeftDistancePercent: this.startLeftDistancePercent,
-        valueLengthPercent: this.valueLengthPercent,
+        valueLengthPercent: this.valueLengthPercent
       }
       this.movePointType = type
       this.trackWidth = this.$refs.greyTrack.offsetWidth
@@ -85,11 +96,11 @@ export default {
       onDOM(document, 'mousemove', this.mousemoveWrapped)
       onDOM(document, 'mouseup', this.mouseupWrapped)
     },
-    mousemove(e) {
-      const {mousePosition, value, startLeftDistancePercent, valueLengthPercent} = this.whenDragStart
+    mousemove (e) {
+      const { mousePosition, value, startLeftDistancePercent, valueLengthPercent } = this.whenDragStart
       const move = e.pageX - mousePosition.x
       let movePercent = move / this.trackWidth
-      const {rangeLength} = this
+      const { rangeLength } = this
       if (this.movePointType === 'left') {
         // left
         if (move < 0) {
@@ -116,41 +127,44 @@ export default {
         }
         this.$set(this.value, 1, value[1] + rangeLength * movePercent)
       }
-    },
-  },
+    }
+  }
 }
 </script>
 
 <style>
 /* global */
-.no-user-select{
+.no-user-select {
   user-select: none;
 }
 </style>
 
 <style lang="scss">
-.TwoEndSlider{
+.TwoEndSlider {
   user-select: none;
   flex-direction: column;
-  .values{
-    .value{
+  .values {
+    .value {
       color: #232323;
     }
-    .start-value{
+    .start-value {
       float: left;
     }
-    .end-value{float: right;}
+    .end-value {
+      float: right;
+    }
   }
-  .slider__track, .slider__track-fill{
+  .slider__track,
+  .slider__track-fill {
     transition: none;
   }
-  .slider__thumb-container{
+  .slider__thumb-container {
     transition: none;
   }
 
-  .slider__thumb{
+  .slider__thumb {
     cursor: pointer;
-    &.dragging{
+    &.dragging {
       transform: translateY(-50%) scale(1.2);
       transition: none;
     }
