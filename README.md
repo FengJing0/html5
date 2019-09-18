@@ -1,4 +1,4 @@
-# website
+# new-admin
 
 ## Project setup
 ```
