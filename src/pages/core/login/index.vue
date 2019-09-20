@@ -15,7 +15,7 @@
             <el-form-item prop="username">
               <el-input type="text"
                         v-model="formLogin.username"
-                        placeholder="用户名">
+                        placeholder="username">
                 <i slot="prepend"
                    class="fa fa-user-circle-o"></i>
               </el-input>
@@ -23,7 +23,7 @@
             <el-form-item prop="password">
               <el-input type="password"
                         v-model="formLogin.password"
-                        placeholder="密码">
+                        placeholder="password">
                 <i slot="prepend"
                    class="fa fa-keyboard-o"></i>
               </el-input>
@@ -53,8 +53,8 @@ export default {
         password: '0000'
       },
       rules: {
-        username: { required: true, message: '请输入用户名', trigger: 'blur' },
-        password: { required: true, message: '请输入密码', trigger: 'blur' }
+        username: { required: true, trigger: 'blur' },
+        password: { required: true, trigger: 'blur' }
       }
     }
   },
@@ -65,8 +65,8 @@ export default {
           this.$ws({
             name: this.username,
             pass: this.password
-          }).connect().then((name) => {
-            sessionStorage.setItem('user', JSON.stringify({ name }))
+          }).connect().then((name, pass) => {
+            sessionStorage.setItem('user', JSON.stringify({ name, pass }))
             this.$router.push({ name: 'index' })
           })
         } else {
@@ -77,6 +77,7 @@ export default {
     init () {
       window.particlesJS('login', config)
       sessionStorage.removeItem('user')
+      this.$ws().close()
     }
   },
   mounted () {

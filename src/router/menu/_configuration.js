@@ -1,20 +1,30 @@
-import createRouter from '../util'
-export default createRouter({ title: 'configration' })
-// export default {
-//   title: 'configration',
-//   path: '/',
-//   name: '',
-//   component: () => import('@/components/core/MainLayout/index.vue'),
-//   meta: { requiresAuth: true },
-//   redirect: {
-//     name: 'index'
-//   },
-//   children: [
-//     {
-//       path: 'configration',
-//       name: 'configration',
-//       meta: { requiresAuth: true },
-//       component: () => import('@/pages/core/index/configuration.vue')
-//     }
-//   ]
-// }
+const meta = {
+  requiresAuth: true
+}
+
+const moduleName = 'configration'
+
+const maker = (path) => {
+  return {
+    path,
+    name: `${moduleName}-${path}`,
+    meta,
+    component: () =>
+      import(`@/pages/menus/${moduleName}/${path}.vue`)
+  }
+}
+
+export default {
+  title: moduleName,
+  path: `/${moduleName}`,
+  name: moduleName,
+  component: () => import('@/components/core/MainLayout/index.vue'),
+  meta,
+  redirect: {
+    name: `${moduleName}-index`
+  },
+  children: [
+    maker('index'),
+    maker('edit')
+  ]
+}

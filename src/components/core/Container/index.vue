@@ -63,17 +63,17 @@ export default {
     right: {
       type: Number,
       required: false,
-      default: 0
+      default: 20
     },
     bottom: {
       type: Number,
       required: false,
-      default: 0
+      default: 50
     },
     left: {
       type: Number,
       required: false,
-      default: 0
+      default: 20
     },
     // 是否开启响应式尺寸变化
     responsive: {
@@ -131,7 +131,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/assets/style/public.scss';
+@import "@/assets/style/public.scss";
 .container-component {
   position: absolute;
   top: 0;

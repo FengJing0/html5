@@ -59,7 +59,6 @@ export default {
     MenuItem: () => import('../MenuItem')
   },
   mounted () {
-    console.log(this.sideMenu)
     this.scrollInit()
     this.updateAsideHeight()
     window.onresize = () => {

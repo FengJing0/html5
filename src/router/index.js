@@ -16,8 +16,8 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
-    next()
-    if (JSON.parse(sessionStorage.getItem('user')).name) {
+    let user = JSON.parse(sessionStorage.getItem('user'))
+    if (user && user.name) {
       next()
     } else {
       next({

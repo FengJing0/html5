@@ -1,22 +1,27 @@
 <template>
   <Container type="card-full"
              :scorll='false'>
-    <p class="dd-title">CONFIGURATION SETUP</p>
-    <el-button>new</el-button>
+    <span class="dd-title">CONFIGURATION SETUP</span>
+    <el-button @click="$router.push('edit')">new</el-button>
     <el-table :data="tableData"
               border
               style="width: 100%">
       <el-table-column prop="date"
-                       label="日期"
-                       width="180">
-      </el-table-column>
+                       label="No"
+                       width="180" />
       <el-table-column prop="name"
-                       label="姓名"
-                       width="180">
-      </el-table-column>
+                       label="Name"
+                       width="180" />
       <el-table-column prop="address"
-                       label="地址">
-      </el-table-column>
+                       label="Size" />
+      <el-table-column prop="address"
+                       label="Update time" />
+      <el-table-column prop="address"
+                       label="Logging time" />
+      <el-table-column prop="address"
+                       label="Display" />
+      <el-table-column prop="address"
+                       label="Logging" />
     </el-table>
   </Container>
 </template>

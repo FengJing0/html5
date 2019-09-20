@@ -62,7 +62,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/style/public.scss';
+@import "@/assets/style/public.scss";
 .dd-card-full {
   position: absolute;
   border: 1px solid #ebeef5;

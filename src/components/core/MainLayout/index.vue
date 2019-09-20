@@ -9,7 +9,7 @@
         <img v-else
              src="@/assets/image/logo/header.png">
       </div>
-      <el-tooltip placement="bottom"
+      <!-- <el-tooltip placement="bottom"
                   v-if="hasSideMenu">
         <div slot="content">{{content}}</div>
         <div class="toggle-sidemenu-btn"
@@ -17,20 +17,21 @@
           <Icon name="bars"
                 :style="rotate"></Icon>
         </div>
-      </el-tooltip>
-      <!-- <HeaderMenu></HeaderMenu> -->
+      </el-tooltip> -->
+      <HeaderMenu></HeaderMenu>
       <HeaderRight></HeaderRight>
     </div>
     <div class="dd-layout-container">
-      <div class="dd-layout-aside"
+      <!-- <div class="dd-layout-aside"
            :style="logoGroupStyle"
-           v-if="hasSideMenu">
-        <SideMenu :collapse="collapse"></SideMenu>
-      </div>
+           v-if="hasSideMenu"> -->
+      <!-- <SideMenu :collapse="collapse"></SideMenu> -->
+      <!-- </div> -->
       <div class="dd-layout-main">
         <transition name="fade-transverse">
           <router-view></router-view>
         </transition>
+        <StatuBar />
       </div>
     </div>
   </div>
@@ -38,7 +39,6 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-import { menu, router } from '@/router/menu'
 export default {
   data () {
     return {
@@ -55,23 +55,24 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setSideMenu'
+      'setSideMenu',
+      'setStatus'
     ]),
     toggleAside () {
       this.collapse = !this.collapse
       this.content = this.collapse ? '展开菜单' : '收起菜单'
-    },
-    // 更新侧边栏
-    refreshSideMenu (menu) {
-      let sideMenu = menu.map(i => i.children[0])
-
-      this.setSideMenu({
-        sideMenu
-      })
     }
+    // // 更新侧边栏
+    // refreshSideMenu (menu) {
+    //   let sideMenu = menu.map(i => i.children[0])
+
+    //   this.setSideMenu({
+    //     sideMenu
+    //   })
+    // }
   },
   mounted () {
-    this.refreshSideMenu(menu)
+    // this.refreshSideMenu(menu)
   },
   computed: {
     logoGroupStyle () {
@@ -87,7 +88,8 @@ export default {
   components: {
     HeaderMenu: () => import('./components/HeaderMenu'),
     HeaderRight: () => import('./components/HeaderRight'),
-    SideMenu: () => import('./components/SideMenu')
+    StatuBar: () => import('./components/StatuBar')
+    // SideMenu: () => import('./components/SideMenu')
   }
 }
 </script>

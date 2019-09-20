@@ -25,7 +25,10 @@
 .#{$prefix}-text-center {
   text-align: center;
 }
-
+.#{$prefix}-title {
+  font-size: $font-size-main;
+  font-weight: bold;
+}
 // 浮动相关
 .#{$prefix}-fl {
   float: left;
