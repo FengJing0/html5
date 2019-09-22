@@ -2,25 +2,23 @@
 // 深拷贝
 
 const clone = (obj) => {
-  var o
+  let res
   if (typeof obj === 'object') {
-    if (obj === null) {
-      o = null
-    } else {
-      if (obj instanceof Array) {
-        o = []
-        for (var i = 0, len = obj.length; i < len; i++) {
-          o.push(clone(obj[i]))
-        }
-      } else {
-        o = {}
-        for (var j in obj) {
-          o[j] = clone(obj[j])
+    res = Array.isArray(obj) ? [] : {}
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const element = obj[key]
+        if (typeof element === 'object' && element !== null) {
+          res[key] = clone(element)
+        } else {
+          res[key] = element
         }
       }
     }
-  } else { o = obj }
-  return o
+  } else {
+    res = obj
+  }
+  return res
 }
 
 export default clone

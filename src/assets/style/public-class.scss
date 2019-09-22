@@ -28,6 +28,7 @@
 .#{$prefix}-title {
   font-size: $font-size-main;
   font-weight: bold;
+  margin-right: $margin;
 }
 // 浮动相关
 .#{$prefix}-fl {

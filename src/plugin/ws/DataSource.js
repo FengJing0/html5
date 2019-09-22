@@ -14,7 +14,7 @@ class DataSource {
     this.name = name || storage.name
     this.pass = pass || storage.pass
     this.onsuccess = []
-    this.onsuccess.push(success)
+    success && this.onsuccess.push(success)
     this.onclose = () => {
       Message.warning('socket closed')
       console.log('socket closed')
@@ -50,7 +50,6 @@ class DataSource {
     }
   }
   set (config = {}) {
-    // debugger
     const { success } = config
     const successFunc = this.onsuccess
     if (success) {

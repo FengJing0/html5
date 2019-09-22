@@ -1,56 +1,93 @@
 <template>
   <Container type="card-full"
              :scorll='false'>
-    <span class="dd-title">CONFIGURATION SETUP</span>
-    <el-button @click="$router.push('edit')">new</el-button>
-    <el-table :data="tableData"
-              border
-              style="width: 100%">
-      <el-table-column prop="date"
-                       label="No"
-                       width="180" />
-      <el-table-column prop="name"
-                       label="Name"
-                       width="180" />
-      <el-table-column prop="address"
-                       label="Size" />
-      <el-table-column prop="address"
-                       label="Update time" />
-      <el-table-column prop="address"
-                       label="Logging time" />
-      <el-table-column prop="address"
-                       label="Display" />
-      <el-table-column prop="address"
-                       label="Logging" />
-    </el-table>
+    <div class="row">
+      <span class="dd-title">Configration</span>
+      <!-- <el-button @click='$router.go(-1)'>Back</el-button> -->
+      <el-button @click='submit'>submit</el-button>
+    </div>
+    <div>
+      <DriverSetup v-model="driverData" />
+      <ObjectSetup v-model="objectData" />
+    </div>
   </Container>
 </template>
 
 <script>
+import indexMixin from '../mixins'
+import DriverSetup from './components/driverSetup'
+import ObjectSetup from './components/objectSetup'
 export default {
+  name: 'configration_index',
+  mixins: [indexMixin],
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      isNew: true,
+      driverData: {},
+      objectData: []
     }
+  },
+  methods: {
+    submit () {
+      console.log(JSON.stringify(this.res))
+    },
+    init () {
+      let configration = sessionStorage.getItem('configration')
+      if (configration) {
+        configration = JSON.parse(configration)
+        this.objectData = configration.objd
+        this.driverData = {
+          chdv: configration.chdv,
+          chnl: configration.chnl
+        }
+      }
+      let { name, data } = this.$route.params
+      if (data) {
+        data = JSON.parse(data)
+        for (let i = 0, len = this.objectData.length; i < len; i++) {
+          const item = this.objectData[i]
+          if (item.objn === name) {
+            item.oatt = data
+            break
+          }
+        }
+      }
+    }
+  },
+  computed: {
+    res () {
+      return {
+        ...this.driverData,
+        objd: this.objectData
+      }
+    }
+  },
+  watch: {
+    res: {
+      handler (val) {
+        sessionStorage.setItem('configration', JSON.stringify(val))
+      },
+      deep: true
+    }
+  },
+  mounted () {
+    this.init()
+  },
+  components: {
+    DriverSetup,
+    ObjectSetup
   }
 }
 </script>
 
-<style>
+<style scoped lang='scss'>
+/deep/.row {
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+.EthernetFormItem {
+  display: flex;
+}
 </style>

@@ -29,7 +29,7 @@
       <!-- </div> -->
       <div class="dd-layout-main">
         <transition name="fade-transverse">
-          <router-view></router-view>
+            <router-view></router-view>
         </transition>
         <StatuBar />
       </div>
