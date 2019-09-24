@@ -25,6 +25,7 @@ export default {
   },
   children: [
     maker('index'),
-    maker('edit')
+    maker('edit'),
+    maker('event')
   ]
 }

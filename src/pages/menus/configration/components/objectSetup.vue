@@ -21,6 +21,9 @@
         <el-table-column prop="logt"
                          min-width="120"
                          label="Logging time" />
+        <el-table-column prop="tstd"
+                         min-width="100"
+                         label="Timestamp display" />
         <el-table-column prop="disp"
                          min-width="100"
                          label="Display" />
@@ -35,49 +38,75 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="Object Setup"
-               @closed='close'
+    <el-dialog @closed='close'
                :visible.sync="dialogTableVisible">
       <div class="row"
            v-if="isDetail">
         <h3 class="dd-title">Object setup</h3>
         <el-form ref='objectSetupFrom'
+                 :rules="objectSetupFromRules"
                  :model="objectSetupFrom"
-                 label-width="100px">
-          <el-form-item label="Object name">
+                 label-width="120px">
+          <el-form-item label="Object name"
+                        prop="objn">
             <el-input v-model="objectSetupFrom.objn"></el-input>
           </el-form-item>
-          <el-form-item label="Object size">
-            <el-input v-model="objectSetupFrom.obsz"></el-input>
+          <el-form-item label="Object size"
+                        prop="obsz">
+            <el-input-number v-model="objectSetupFrom.obsz"
+                             :controls='false'
+                             :precision='0'
+                             :min="1"
+                             :max="9" />
           </el-form-item>
-          <el-form-item label="Update time">
-            <el-input v-model="objectSetupFrom.updt"></el-input>
+          <el-form-item label="Update time"
+                        prop="updt">
+            <el-input-number v-model="objectSetupFrom.updt"
+                             :controls='false'
+                             :precision='0'
+                             :min="0" />
           </el-form-item>
-          <el-form-item label="Logging time">
-            <el-input v-model="objectSetupFrom.logt"></el-input>
+          <el-form-item label="Logging time"
+                        prop="logt">
+            <el-input-number v-model="objectSetupFrom.logt"
+                             :controls='false'
+                             :precision='0'
+                             :min="0" />
           </el-form-item>
-          <el-form-item label="Display">
+          <el-form-item label="Timestamp display"
+                        prop="logt">
+            <el-radio-group v-model="objectSetupFrom.tstd">
+              <el-radio :label="1">Yes</el-radio>
+              <el-radio :label="0">No</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="Display"
+                        prop="disp">
             <el-radio-group v-model="objectSetupFrom.disp">
               <el-radio :label="1">Yes</el-radio>
               <el-radio :label="0">No</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="Logging">
+          <el-form-item label="Logging"
+                        prop="logs">
             <el-radio-group v-model="objectSetupFrom.logs">
               <el-radio :label="1">Yes</el-radio>
               <el-radio :label="0">No</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
-        <el-button @click='isDetail=false'>submit</el-button>
+        <el-button @click='submitObjectSetupFrom'>submit</el-button>
       </div>
       <div class="row"
            v-if="objectIndexSetupList.length &&!isDetail">
         <h3>Object index setup</h3>
         <el-table :data='objectIndexSetupList'
+                  class="dd-mb"
                   border>
-          <el-table-column prop="obix"
-                           label="Index">
+          <el-table-column label="Index">
+            <template slot-scope="scope">
+              {{scope.row.obix+1}}
+            </template>
           </el-table-column>
           <el-table-column label="Prefix">
             <template slot-scope="scope">
@@ -117,6 +146,27 @@ export default {
       isDetail: true,
       objd: [],
       objectSetupFrom: {},
+      objectSetupFromRules: {
+        objn: [
+          { required: true, message: '请输入name', trigger: 'blur' },
+          { max: 30, message: 'max 30', trigger: 'blur' }
+        ],
+        obsz: [
+          { required: true, message: '请输入size', trigger: 'blur' }
+        ],
+        updt: [
+          { required: true, message: '请输入update time', trigger: 'blur' }
+        ],
+        logt: [
+          { required: true, message: '请输入logging time', trigger: 'blur' }
+        ],
+        disp: [
+          { required: true, message: '请select display', trigger: 'blur' }
+        ],
+        logs: [
+          { required: true, message: '请select logging', trigger: 'blur' }
+        ]
+      },
       objectIndexSetupList: []
     }
   },
@@ -125,7 +175,7 @@ export default {
       let res = []
       for (let i = 0; i < val; i++) {
         res.push({
-          obix: i + 1,
+          obix: i,
           pref: '',
           suff: ''
         })
@@ -140,11 +190,29 @@ export default {
     }
   },
   methods: {
+    submitObjectSetupFrom () {
+      this.$refs.objectSetupFrom.validate((valid) => {
+        if (valid) {
+          this.isDetail = false
+          // alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
     submitObjectDetail () {
-      this.objectSetupFrom.preAndSuff = this.objectIndexSetupList
-      this.objd.push(this.objectSetupFrom)
-      this.$emit('input', this.objd)
-      this.dialogTableVisible = false
+      let list = this.objectIndexSetupList.map(i => i.pref + i.suff)
+      let length = list.length
+      let newLength = [...new Set(list)].length
+      if (length && length === newLength) {
+        this.objectSetupFrom.preAndSuff = this.objectIndexSetupList
+        this.objd.push(this.objectSetupFrom)
+        this.$emit('input', this.objd)
+        this.dialogTableVisible = false
+      } else {
+        this.$message.error('不要重复')
+      }
     },
     handleCancel () {
       this.isDetail = true
@@ -156,15 +224,14 @@ export default {
     },
     go (row) {
       this.$router.push({ name: 'configration-edit', params: { data: JSON.stringify(row) } })
-      // console.log(row)
     },
     close () {
       this.isDetail = true
-      // this.objd = []
       this.objectSetupFrom = {
         oatt: []
       }
       this.objectIndexSetupList = []
+      this.$refs.objectSetupFrom.clearValidate()
     }
   }
 }

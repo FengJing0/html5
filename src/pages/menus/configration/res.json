@@ -1,0 +1,56 @@
+{
+  "chdv": "mele71",
+  "chnl": [
+    {
+      "tcph": "hostname",
+      "tcpp": "portno"
+    }
+  ],
+  "objd": [
+    {
+      "oatt": [
+        {
+          "attn": "attr",
+          "attt": "dword",
+          "deci": 0,
+          "adis": 1,
+          "achg": 1,
+          "attr": "R",
+          "rtim": 23,
+          "aadd": [
+            {
+              "obix": 1,
+              "pref": "pre1",
+              "suff": "suff1",
+              "attr": "12"
+            },
+            {
+              "obix": 2,
+              "pref": "pre2",
+              "suff": "suff2",
+              "attr": "32"
+            }
+          ]
+        }
+      ],
+      "obsz": 2,
+      "updt": 23,
+      "logt": 32,
+      "objn": "test",
+      "disp": 1,
+      "logs": 1,
+      "preAndSuff": [
+        {
+          "obix": 1,
+          "pref": "pre1",
+          "suff": "suff1"
+        },
+        {
+          "obix": 2,
+          "pref": "pre2",
+          "suff": "suff2"
+        }
+      ]
+    }
+  ]
+}

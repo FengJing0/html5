@@ -43,40 +43,59 @@
                @closed='close'>
       <el-form ref='AttributeSetupFrom'
                :model="AttributeSetupFrom"
-               label-width="100px">
-        <el-form-item label="Attribute name">
+               :rules="AttributeSetupFromRules"
+               label-width="120px">
+        <el-form-item label="Attribute name"
+                      prop="attn">
           <el-input v-model="AttributeSetupFrom.attn"></el-input>
         </el-form-item>
-        <el-form-item label="Attribute type">
-          <el-input v-model="AttributeSetupFrom.attt"></el-input>
+        <el-form-item label="Attribute type"
+                      prop="attn">
+          <el-select v-model="AttributeSetupFrom.attt">
+            <el-option v-for="item in AttributeTypeList"
+                       :key="item.val"
+                       :label="item.val"
+                       :value="item.val">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="Decimal">
-          <el-input v-model="AttributeSetupFrom.deci"></el-input>
+        <el-form-item label="Decimal"
+                      v-if="showDecimal"
+                      prop="deci">
+          <el-input-number v-model="AttributeSetupFrom.deci"
+                           :controls='false'
+                           :precision='0'
+                           :min="0" />
         </el-form-item>
-        <el-form-item label="Display">
+        <el-form-item label="Display"
+                      prop="adis">
           <el-radio-group v-model="AttributeSetupFrom.adis">
             <el-radio :label="1">Yes</el-radio>
             <el-radio :label="0">No</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Change">
+        <el-form-item label="Change"
+                      prop="achg">
           <el-radio-group v-model="AttributeSetupFrom.achg">
             <el-radio :label="1">Yes</el-radio>
             <el-radio :label="0">No</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Direction">
+        <el-form-item label="Direction"
+                      prop="attr">
           <el-radio-group v-model="AttributeSetupFrom.attr">
             <el-radio label="R">R</el-radio>
             <el-radio label="W">W</el-radio>
             <el-radio label="R/W">R/W</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="Read time">
-          <el-radio-group v-model="AttributeSetupFrom.rtim">
-            <el-radio :label="1">Yes</el-radio>
-            <el-radio :label="0">No</el-radio>
-          </el-radio-group>
+        <el-form-item label="Read time"
+                      prop="rtim"
+                      v-if="showReadTime">
+          <el-input-number v-model="AttributeSetupFrom.rtim"
+                           :controls='false'
+                           :precision='0'
+                           :min="0" />
         </el-form-item>
       </el-form>
       <el-button @click='submitAttributeSetupFrom'>submit</el-button>
@@ -85,8 +104,10 @@
                :visible.sync="addressVisible">
       <el-table :data='preAndSuff'
                 border>
-        <el-table-column prop="obix"
-                         label="Index">
+        <el-table-column label="Index">
+          <template slot-scope="scope">
+            {{scope.row.obix+1}}
+          </template>
         </el-table-column>
         <el-table-column prop="pref"
                          label="Prefix" />
@@ -94,7 +115,7 @@
                          prop="suff" />
         <el-table-column label="Address">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.attr"></el-input>
+            <el-input v-model="scope.row.addr"></el-input>
           </template>
         </el-table-column>
       </el-table>
@@ -105,15 +126,40 @@
 
 <script>
 import clone from '@/utils/clone'
+import { AttributeTypeList } from '@/config/index'
 export default {
   data () {
     return {
-
       objn: '',
       preAndSuff: [],
       dialogTableVisible: false,
       attributeList: [],
       AttributeSetupFrom: {},
+      AttributeSetupFromRules: {
+        attn: [
+          { required: true, message: 'pleace input Name', trigger: 'blur' },
+          { max: 30, message: 'max 30', trigger: 'blur' }
+        ],
+        attt: [
+          { required: true, message: 'pleace select Type', trigger: 'blur' }
+        ],
+        deci: [
+          { required: true, message: 'pleace input Decimal', trigger: 'blur' }
+        ],
+        adis: [
+          { required: true, message: 'pleace select Display', trigger: 'blur' }
+        ],
+        achg: [
+          { required: true, message: 'pleace select Change', trigger: 'blur' }
+        ],
+        attr: [
+          { required: true, message: 'pleace select Direction', trigger: 'blur' }
+        ],
+        rtim: [
+          { required: true, message: 'pleact input Time', trigger: 'blur' }
+        ]
+      },
+      AttributeTypeList: AttributeTypeList,
       addressVisible: false,
       activeAttributeRow: {}
     }
@@ -123,12 +169,21 @@ export default {
 
     },
     submitAttributeSetupFrom () {
-      this.attributeList.push(clone(this.AttributeSetupFrom))
-      this.dialogTableVisible = false
-      this.AttributeSetupFrom = {}
+      this.$refs.AttributeSetupFrom.validate((valid) => {
+        if (valid) {
+          this.attributeList.push(clone(this.AttributeSetupFrom))
+          this.dialogTableVisible = false
+          this.AttributeSetupFrom = {}
+          this.saveAttributeList()
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     handleSubmit () {
-      this.$router.push({ name: 'configration-index',
+      this.$router.push({
+        name: 'configration-index',
         params: { data: JSON.stringify(this.attributeList), name: this.objn }
       })
     },
@@ -140,6 +195,7 @@ export default {
       this.addressVisible = false
       this.activeAttributeRow.aadd = clone(this.preAndSuff)
       this.resetPreAndSuff()
+      this.saveAttributeList()
       console.log(this.attributeList)
     },
     resetPreAndSuff () {
@@ -147,6 +203,9 @@ export default {
         i.addr = ''
         return i
       })
+    },
+    saveAttributeList () {
+      sessionStorage.setItem('attribute', JSON.stringify(this.attributeList))
     },
     init () {
       let data = this.$route.params.data
@@ -162,33 +221,38 @@ export default {
     }
   },
   computed: {
-
+    showDecimal () {
+      // const list = []
+      return this.AttributeSetupFrom.attt && this.AttributeSetupFrom.attt.indexOf('word') !== -1
+    },
+    showReadTime () {
+      return this.AttributeSetupFrom.attr && this.AttributeSetupFrom.attr !== 'W'
+    }
   },
   watch: {
-    attributeList: {
-      handler (val) {
-        sessionStorage.setItem('attribute', JSON.stringify(val))
-      },
-      deep: true
-    }
+
   },
   mounted () {
     this.init()
   },
   components: {
 
+  },
+  beforeRouteEnter (to, from, next) {
+    if (to.params.data) {
+      next()
+    } else {
+      next({ name: 'index' })
+    }
   }
 }
 </script>
 
 <style scoped lang='scss'>
-/deep/.row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
+/deep/.el-input-number {
+  width: 100%;
+  &.is-without-controls .el-input__inner {
+    text-align: left;
   }
-}
-.EthernetFormItem {
-  display: flex;
 }
 </style>

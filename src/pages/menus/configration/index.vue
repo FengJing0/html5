@@ -5,6 +5,7 @@
       <span class="dd-title">Configration</span>
       <!-- <el-button @click='$router.go(-1)'>Back</el-button> -->
       <el-button @click='submit'>submit</el-button>
+      <el-button @click="goEventSetup">Event Setup</el-button>
     </div>
     <div>
       <DriverSetup v-model="driverData" />
@@ -30,6 +31,9 @@ export default {
   methods: {
     submit () {
       console.log(JSON.stringify(this.res))
+    },
+    goEventSetup () {
+      this.$router.push({ name: 'configration-event', params: { data: JSON.stringify(this.res) } })
     },
     init () {
       let configration = sessionStorage.getItem('configration')
@@ -81,13 +85,10 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-/deep/.row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
+/deep/.el-input-number {
+  width: 100%;
+  &.is-without-controls .el-input__inner {
+    text-align: left;
   }
-}
-.EthernetFormItem {
-  display: flex;
 }
 </style>

@@ -30,6 +30,13 @@
   font-weight: bold;
   margin-right: $margin;
 }
+
+.row {
+  margin-bottom: $margin;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
 // 浮动相关
 .#{$prefix}-fl {
   float: left;

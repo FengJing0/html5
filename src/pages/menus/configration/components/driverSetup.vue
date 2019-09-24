@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { Ethernet, Serial } from '@/config/driverList'
+import { Ethernet, Serial } from '@/config/index'
 export default {
   props: {
     value: {

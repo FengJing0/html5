@@ -25,3 +25,29 @@ export const Serial = [
   { val: 'unite', label: 'Schneider Telemecanique UNI - TE' },
   { val: 'comli', label: 'ABB SattControl Comli' }
 ]
+
+export const AttributeTypeList = [
+  { val: 'word' },
+  { val: 'uword' },
+  { val: 'dword' },
+  { val: 'udword' },
+  { val: 'float' },
+  { val: 'double' },
+  { val: 'bit' }
+]
+
+export const Operator = [
+  { val: '>' },
+  { val: '>=' },
+  { val: '==' },
+  { val: '<' },
+  { val: '<=' },
+  { val: '!=' },
+  { val: '&' },
+  { val: '^' },
+  { val: '|' }
+]
+
+export const EventCategory = [
+  { val: 'alarm' }
+]
