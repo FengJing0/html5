@@ -1,1 +1,4 @@
 // element 样式补丁
+.el-menu--horizontal>.el-submenu.is-active .el-submenu__title:hover {
+  background-color: transparent;
+}

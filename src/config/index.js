@@ -49,5 +49,9 @@ export const Operator = [
 ]
 
 export const EventCategory = [
-  { val: 'alarm' }
+  { val: 'critical' },
+  { val: 'alarm' },
+  { val: 'warning' },
+  { val: 'event' },
+  { val: 'view' }
 ]

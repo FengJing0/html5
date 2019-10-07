@@ -3,31 +3,32 @@
              :scorll='false'>
     <div class="row">
       <span class="dd-title">Event Setup</span>
-      <el-button @click='handleSubmit'>submit</el-button>
+      <el-button @click='handleSubmit'
+                 :disabled="!msgd.length">submit</el-button>
       <el-button @click='addEvent'>New Event</el-button>
     </div>
     <el-table :data='msgd'
               border
               style="width: 100%">
-      <el-table-column type='Object1'
-                       prop="objn"
-                       label="No" />
-      <el-table-column prop="objn"
+      <el-table-column min-width="120"
+                       prop="sobj"
+                       label="Object1" />
+      <el-table-column prop="satt"
                        label="Attribute1"
                        min-width="150" />
-      <el-table-column prop="teds"
+      <el-table-column prop="msgt"
                        min-width="100"
                        label="Type" />
-      <el-table-column prop="updt"
+      <el-table-column prop="cobj"
                        min-width="120"
                        label="Object2" />
-      <el-table-column prop="logt"
+      <el-table-column prop="catt"
                        min-width="120"
                        label="Attribute2" />
-      <el-table-column prop="disp"
+      <el-table-column prop="acat"
                        min-width="100"
                        label="Category" />
-      <el-table-column prop="logs"
+      <el-table-column prop="subr"
                        min-width="100"
                        label="Sub" />
     </el-table>
@@ -89,7 +90,7 @@
         </el-form-item>
         <el-form-item label='Category'
                       prop="catt">
-          <el-select v-model="eventForm.catt">
+          <el-select v-model="eventForm.acat">
             <el-option v-for="item in EventCategory"
                        :key="item.val"
                        :label="item.val"
@@ -114,12 +115,11 @@
 <script>
 import { Operator, EventCategory } from '@/config/index'
 import clone from '@/utils/clone'
+import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
     return {
-      resultData: {},
       dialogTableVisible: false,
-      msgd: [],
       eventForm: {},
       eventFormRules: {},
       objectList: [],
@@ -127,23 +127,25 @@ export default {
       EventCategory
     }
   },
-  mounted () {
+  beforeMount () {
+    if (!this.resultData.length) {
+      this.$message.error('please setup object!')
+      this.$router.push({ name: 'configration-object' })
+    }
     this.init()
   },
   computed: {
+    ...mapState({
+      resultData: state => state.SetUpData.objectData,
+      msgd: state => state.SetUpData.eventData
+    })
   },
   methods: {
     init () {
-      this.resultData = Object.freeze(JSON.parse(this.$route.params.data))
       this.buildObjectList()
-      let eventList = sessionStorage.getItem('event')
-      if (eventList) {
-        this.msgd = JSON.parse(eventList)
-      }
     },
     handleSubmit () {
-      console.log(this.resultData)
-      console.log(this.objectNameList)
+      this.$router.push({ name: 'configration-overview' })
     },
     addEvent () {
       this.dialogTableVisible = true
@@ -151,9 +153,8 @@ export default {
     submitNewEvent () {
       this.$refs.eventForm.validate((valid) => {
         if (valid) {
-          this.msgd.push(clone(this.eventForm))
+          this.addEventData(clone(this.eventForm))
           this.dialogTableVisible = false
-          this.saveEventList()
         } else {
           console.log('error submit!!')
           return false
@@ -162,44 +163,46 @@ export default {
     },
     close () {
       this.eventForm = {}
-      this.$refs.eventForm.clearValidate()
-    },
-    saveEventList () {
-      sessionStorage.setItem('event', JSON.stringify(this.msgd))
+      this.$refs.eventForm && this.$refs.eventForm.clearValidate()
     },
     buildObjectList () {
       let list = []
-      for (let i = 0, objd = this.resultData.objd, len = objd.length; i < len; i++) {
-        const { objn, preAndSuff, oatt } = objd[i]
-        const attr = oatt.map(i => i.attn)
-        for (let j = 0, psLen = preAndSuff.length; j < psLen; j++) {
-          list.push({
-            name: `${preAndSuff[j]['pref']}_${objn}_${preAndSuff[j]['suff']}`,
-            attr
-          })
+      for (let j = 0; j < this.resultData.length; j++) {
+        const data = this.resultData[j]
+        for (let i = 0, objd = data.objd, len = objd.length; i < len; i++) {
+          const { objn, preAndSuff, oatt } = objd[i]
+          const attr = oatt.map(i => i.attn)
+          for (let j = 0, psLen = preAndSuff.length; j < psLen; j++) {
+            list.push({
+              name: `${preAndSuff[j]['pref']}_${objn}_${preAndSuff[j]['suff']}`,
+              attr
+            })
+          }
         }
       }
+
       this.objectList = Object.freeze(list)
     },
     filterAttrList (val) {
       if (!val) return []
-      let res = this.objectList.filter(i => i.name === val)
-      if (res) {
-        return res[0]['attr']
-      } else {
-        return []
+      for (let i = 0, len = this.objectList.length; i < len; i++) {
+        const item = this.objectList[i]
+        if (item.name === val) {
+          return item['attr']
+        }
       }
-    }
-  },
-  beforeRouteEnter (to, from, next) {
-    if (to.params.data) {
-      next()
-    } else {
-      next({ name: 'index' })
-    }
+      return []
+    },
+    ...mapMutations(['addEventData'])
   }
 }
 </script>
 
 <style scoped lang="scss">
+/deep/.el-input-number {
+  width: 100%;
+  &.is-without-controls .el-input__inner {
+    text-align: left;
+  }
+}
 </style>

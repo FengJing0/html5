@@ -1,10 +1,30 @@
 <template>
   <el-menu mode="horizontal"
            :default-active="index">
-    <el-menu-item v-for="item in menu"
-                  :key="item.title"
-                  :index="item.name"
-                  @click.native="active(item)">{{item.title}}</el-menu-item>
+    <template v-for="item in menu">
+      <template v-if="item.children.length>1">
+        <el-submenu :key="item.name"
+                    :index="item.name"
+                    @click.native="active(item)">
+          <template slot="title">{{item.title}}</template>
+          <template v-for="subMenu in item.children">
+            <el-menu-item :index="subMenu.name"
+                          @click.native="active(subMenu)"
+                          v-if="!subMenu.meta.hide"
+                          :key='subMenu.name'>
+              {{subMenu.title}}
+            </el-menu-item>
+          </template>
+        </el-submenu>
+      </template>
+      <template v-else>
+        <el-menu-item :key="item.name"
+                      :index="item.name"
+                      @click.native="active(item)">
+          {{item.title}}
+        </el-menu-item>
+      </template>
+    </template>
   </el-menu>
 </template>
 
@@ -19,14 +39,13 @@ export default {
   },
   mounted () {
     // this.refreshSideMenu()
-    // console.log(this.menu)
   },
   computed: {
     routeName () {
       return this.$route.name
     },
     index () {
-      return this.routeName.split('-')[0]
+      return this.routeName
     }
     // 不管当前路由是不是顶级菜单 都返回这个路由所属的顶级菜单对象的name
     // 如果返回 null 代表这个路由不是在菜单里显示的路由
@@ -50,8 +69,9 @@ export default {
     ]),
     // 跳转
     active (item) {
+      console.log(item, this.index)
       let name = item.name
-      if (this.index === name) {
+      if (this.index === name || (item.redirect && item.redirect.name === this.index)) {
         return
       }
       if (name === '') {
@@ -68,13 +88,13 @@ export default {
     // }
   },
   watch: {
-    // routeName () {
-    //   // this.show()
-    //   this.refreshSideMenu()
-    // }
+    routeName (val) {
+      // this.show()
+      console.log(this.index, val)
+    }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 </style>

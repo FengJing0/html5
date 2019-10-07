@@ -4,11 +4,15 @@ const meta = {
 
 const moduleName = 'configration'
 
-const maker = (path) => {
+const maker = (path, hide) => {
   return {
     path,
     name: `${moduleName}-${path}`,
-    meta,
+    meta: {
+      ...meta,
+      hide
+    },
+    title: path,
     component: () =>
       import(`@/pages/menus/${moduleName}/${path}.vue`)
   }
@@ -21,11 +25,12 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-index`
+    name: `${moduleName}-object`
   },
   children: [
-    maker('index'),
-    maker('edit'),
-    maker('event')
+    maker('object'),
+    maker('edit', true),
+    maker('event'),
+    maker('overview')
   ]
 }

@@ -6,7 +6,7 @@ let dataSource
 class DataSource {
   constructor (config = {}) {
     const { name, pass, success } = config
-    const storage = JSON.parse(localStorage.getItem('user'))
+    const storage = JSON.parse(sessionStorage.getItem('user'))
     this.wsUri = BaseConfig.serverBaseUrl
     this.websocket = null
     this.type = 'datathread' // datathread
@@ -27,7 +27,7 @@ class DataSource {
   }
   connect () {
     this.close()
-    // debugger
+
     return new Promise((resolve, reject) => {
       this.websocket = new WebSocket(this.wsUri, this.type)
       this.websocket.addEventListener('open', () => {
@@ -46,17 +46,15 @@ class DataSource {
       this.websocket.close()
       this.websocket = null
       dataSource = null
-      // Vue.$router.replace({ name: 'login' })
     }
   }
   set (config = {}) {
     const { success } = config
     const successFunc = this.onsuccess
-    if (success) {
-      successFunc.push(success)
-    }
 
-    if (this.websocket) {
+    success && successFunc.push(success)
+
+    if (this.websocket && success) {
       this.websocket.onmessage = (e) => {
         const data = e.data && JSON.parse(e.data)
         successFunc.forEach(i => i(data))
@@ -72,6 +70,7 @@ class DataSource {
     }
   }
   send (msg) {
+    msg.wtrm = this.wtrm
     msg = JSON.stringify(msg)
     return this.websocket && this.websocket.send(msg)
   }

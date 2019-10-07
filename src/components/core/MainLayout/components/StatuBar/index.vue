@@ -26,7 +26,7 @@ export default {
     }
   },
   mounted () {
-    this.$ws({ success: this.receiveStatus }).test()
+    this.$ws().set({ success: this.receiveStatus })
     // this.refreshSideMenu()
     // console.log(this.menu)
   },

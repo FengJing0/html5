@@ -4,7 +4,8 @@
     <div class="row">
       <span class="dd-title">edit</span>
       <el-button @click='$router.go(-1)'>Back</el-button>
-      <el-button @click='handleSubmit'>submit</el-button>
+      <el-button @click='handleSubmit'
+                 :disabled="!canSubmit">submit</el-button>
       <el-button @click='dialogTableVisible=true'>New Attribute</el-button>
     </div>
     <div>
@@ -17,9 +18,19 @@
                          label="Type" />
         <el-table-column prop="deci"
                          label="Decimal" />
-        <el-table-column label="Address">
+        <el-table-column label="Address"
+                         min-width="200">
           <template slot-scope="scope">
-            {{scope.row.aadd?'*':'-'}}
+            <div>
+              <div v-for="item in scope.row.aadd"
+                   class="addrs"
+                   :key='getFullName(item.pref,item.suff)'>
+                {{getFullName(item.pref,item.suff)}}:
+                &nbsp;
+                {{item.addr}}
+              </div>
+              <span v-if="!scope.row.aadd.length">-</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="adis"
@@ -30,10 +41,10 @@
                          label="Direction" />
         <el-table-column prop="rtim"
                          label="Time" />
-        <el-table-column label="Add Address">
+        <el-table-column label="Address">
           <template slot-scope="scope">
             <el-button type='text'
-                       @click="addAddress(scope.row)">add address</el-button>
+                       @click="addAddress(scope.row)">Address</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -127,6 +138,7 @@
 <script>
 import clone from '@/utils/clone'
 import { AttributeTypeList } from '@/config/index'
+import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -134,7 +146,9 @@ export default {
       preAndSuff: [],
       dialogTableVisible: false,
       attributeList: [],
-      AttributeSetupFrom: {},
+      AttributeSetupFrom: {
+        aadd: []
+      },
       AttributeSetupFromRules: {
         attn: [
           { required: true, message: 'pleace input Name', trigger: 'blur' },
@@ -168,13 +182,15 @@ export default {
     close () {
 
     },
+    getFullName (pref, suff) {
+      return `${pref}_${this.objn}_${suff}`
+    },
     submitAttributeSetupFrom () {
       this.$refs.AttributeSetupFrom.validate((valid) => {
         if (valid) {
           this.attributeList.push(clone(this.AttributeSetupFrom))
           this.dialogTableVisible = false
           this.AttributeSetupFrom = {}
-          this.saveAttributeList()
         } else {
           console.log('error submit!!')
           return false
@@ -182,21 +198,22 @@ export default {
       })
     },
     handleSubmit () {
+      this.setObjectAttribute({ name: this.objn, attributeList: this.attributeList })
       this.$router.push({
-        name: 'configration-index',
-        params: { data: JSON.stringify(this.attributeList), name: this.objn }
+        name: 'configration-object'
       })
     },
     addAddress (row) {
       this.activeAttributeRow = row
+      if (row.aadd.length) {
+        this.preAndSuff = row.aadd
+      }
       this.addressVisible = true
     },
     addressSubmit () {
       this.addressVisible = false
-      this.activeAttributeRow.aadd = clone(this.preAndSuff)
+      this.$set(this.activeAttributeRow, 'aadd', clone(this.preAndSuff))
       this.resetPreAndSuff()
-      this.saveAttributeList()
-      console.log(this.attributeList)
     },
     resetPreAndSuff () {
       this.preAndSuff = this.preAndSuff.map(i => {
@@ -204,39 +221,44 @@ export default {
         return i
       })
     },
-    saveAttributeList () {
-      sessionStorage.setItem('attribute', JSON.stringify(this.attributeList))
-    },
     init () {
-      let data = this.$route.params.data
-      if (data) {
-        data = JSON.parse(data)
-        this.objn = data.objn
-        this.preAndSuff = [...data.preAndSuff]
+      let name = this.$route.params.data
+      if (name) {
+        this.objn = name
+        this.objectData.some(i => {
+          if (i.objn === name) {
+            this.preAndSuff = [...i.preAndSuff]
+            if (i.oatt) {
+              this.attributeList = i.oatt
+            }
+            return false
+          }
+        })
       }
-      let attribute = sessionStorage.getItem('attribute')
-      if (attribute) {
-        this.attributeList = JSON.parse(attribute)
-      }
-    }
+    },
+    ...mapMutations(['setObjectAttribute'])
   },
   computed: {
     showDecimal () {
-      // const list = []
       return this.AttributeSetupFrom.attt && this.AttributeSetupFrom.attt.indexOf('word') !== -1
     },
     showReadTime () {
       return this.AttributeSetupFrom.attr && this.AttributeSetupFrom.attr !== 'W'
-    }
+    },
+    canSubmit () {
+      return this.attributeList.length && this.attributeList.every(i => i.aadd.length)
+    },
+    ...mapState({
+      objectData: state => state.SetUpData.objectData
+    })
   },
-  watch: {
-
-  },
-  mounted () {
+  // watch: {
+  //   'AttributeSetupFrom.attt' (val) {
+  //     this.AttributeSetupFrom.deci = 0
+  //   }
+  // },
+  beforeMount () {
     this.init()
-  },
-  components: {
-
   },
   beforeRouteEnter (to, from, next) {
     if (to.params.data) {
@@ -253,6 +275,13 @@ export default {
   width: 100%;
   &.is-without-controls .el-input__inner {
     text-align: left;
+  }
+}
+.addrs {
+  border-bottom: 1px solid #ebeef5;
+  padding: 5px;
+  &:last-child {
+    border: none;
   }
 }
 </style>

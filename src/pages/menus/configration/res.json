@@ -1,56 +1,53 @@
 {
-  "chdv": "mele71",
+  "chdv": "mbstcp",
   "chnl": [
     {
-      "tcph": "hostname",
-      "tcpp": "portno"
+      "tcph": "192.168.1.1",
+      "tcpp": 503,
+      "ttyc": "",
+      "ttyb": 0,
+      "ttyd": 0,
+      "ttys": "",
+      "ttyp": ""
     }
   ],
   "objd": [
     {
+      "obsz": 2,
+      "updt": 1,
+      "logt": 1,
+      "objn": "ST1021",
+      "tstd": 1,
+      "disp": 1,
+      "logs": 1,
       "oatt": [
         {
-          "attn": "attr",
-          "attt": "dword",
+          "attn": "temp",
+          "attt": "float",
           "deci": 0,
           "adis": 1,
           "achg": 1,
           "attr": "R",
-          "rtim": 23,
+          "rtim": 1,
           "aadd": [
             {
-              "obix": 1,
-              "pref": "pre1",
-              "suff": "suff1",
-              "attr": "12"
+              "obix": 0,
+              "pref": "1",
+              "suff": "1",
+              "addr": "1!1!D100"
             },
             {
-              "obix": 2,
-              "pref": "pre2",
-              "suff": "suff2",
-              "attr": "32"
+              "obix": 1,
+              "pref": "2",
+              "suff": "2",
+              "addr": "1!1!D200"
             }
           ]
         }
-      ],
-      "obsz": 2,
-      "updt": 23,
-      "logt": 32,
-      "objn": "test",
-      "disp": 1,
-      "logs": 1,
-      "preAndSuff": [
-        {
-          "obix": 1,
-          "pref": "pre1",
-          "suff": "suff1"
-        },
-        {
-          "obix": 2,
-          "pref": "pre2",
-          "suff": "suff2"
-        }
       ]
     }
-  ]
+  ],
+  "msgd": [],
+  "func": 21,
+  "wtrm": "DEMO-Neuron-1001_1532419775357_240"
 }

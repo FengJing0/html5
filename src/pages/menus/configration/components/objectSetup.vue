@@ -31,9 +31,10 @@
                          min-width="100"
                          label="Logging" />
         <el-table-column label="Attribute">
-          <template slot-scope="scope">
+          <template slot-scope="scope"
+                    min-width="100">
             <el-button type="text"
-                       @click="go(scope.row)">set attribute</el-button>
+                       @click="go(scope.row)">Attribute</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -46,7 +47,7 @@
         <el-form ref='objectSetupFrom'
                  :rules="objectSetupFromRules"
                  :model="objectSetupFrom"
-                 label-width="120px">
+                 label-width="160px">
           <el-form-item label="Object name"
                         prop="objn">
             <el-input v-model="objectSetupFrom.objn"></el-input>
@@ -130,13 +131,8 @@
 </template>
 
 <script>
+import { mapMutations, mapState } from 'vuex'
 export default {
-  props: {
-    value: {
-      type: Array,
-      default: () => ([])
-    }
-  },
   mounted () {
 
   },
@@ -144,7 +140,6 @@ export default {
     return {
       dialogTableVisible: false,
       isDetail: true,
-      objd: [],
       objectSetupFrom: {},
       objectSetupFromRules: {
         objn: [
@@ -181,12 +176,6 @@ export default {
         })
       }
       this.objectIndexSetupList = res
-    },
-    value: {
-      handler () {
-        this.objd = this.value
-      },
-      immediate: true
     }
   },
   methods: {
@@ -207,11 +196,10 @@ export default {
       let newLength = [...new Set(list)].length
       if (length && length === newLength) {
         this.objectSetupFrom.preAndSuff = this.objectIndexSetupList
-        this.objd.push(this.objectSetupFrom)
-        this.$emit('input', this.objd)
+        this.addObjectData(this.objectSetupFrom)
         this.dialogTableVisible = false
       } else {
-        this.$message.error('不要重复')
+        this.$message.error("Don't repeat")
       }
     },
     handleCancel () {
@@ -223,7 +211,8 @@ export default {
       })
     },
     go (row) {
-      this.$router.push({ name: 'configration-edit', params: { data: JSON.stringify(row) } })
+      // console.log(row)
+      this.$router.push({ name: 'configration-edit', params: { data: row.objn } })
     },
     close () {
       this.isDetail = true
@@ -231,8 +220,14 @@ export default {
         oatt: []
       }
       this.objectIndexSetupList = []
-      this.$refs.objectSetupFrom.clearValidate()
-    }
+      this.$refs.objectSetupFrom && this.$refs.objectSetupFrom.clearValidate()
+    },
+    ...mapMutations(['addObjectData'])
+  },
+  computed: {
+    ...mapState({
+      objd: state => state.SetUpData.objectData
+    })
   }
 }
 </script>

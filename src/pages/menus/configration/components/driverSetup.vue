@@ -5,23 +5,18 @@
                @closed='close'
                :visible.sync="dialogTableVisible">
       <div class="row">
-        <el-radio-group v-model="driverType">
-          <el-radio label="Ethernet">Ethernet drivers</el-radio>
-          <el-radio label="Serial">Serial drivers</el-radio>
-        </el-radio-group>
-      </div>
-      <div class="row">
-        <el-select v-model="chdv"
-                   :disabled="!driverList.length">
+        <el-select v-model="chdv">
           <el-option v-for="item in driverList"
                      :key="item.val"
                      :label="item.label"
                      :value="item.val">
           </el-option>
         </el-select>
+        &nbsp;&nbsp;
+        {{driverType}}
       </div>
       <div class="row">
-        <template v-if="driverType==='Ethernet'">
+        <template v-if="driverType==='Ethernet drivers'">
           <h3>Ethernet driver setup</h3>
           <el-button @click="addEthernetFormItem">add</el-button>
           <el-form ref="driverSetupForm"
@@ -34,12 +29,15 @@
               </el-form-item>
               &nbsp;&nbsp;&nbsp;&nbsp;
               <el-form-item :label="`Port no ${index+1}`">
-                <el-input v-model="chnl[index].tcpp"></el-input>
+                <el-input-number v-model="chnl[index].tcpp"
+                                 :controls='false'
+                                 :precision='0'
+                                 :min="0" />
               </el-form-item>
             </div>
           </el-form>
         </template>
-        <template v-else-if="driverType==='Serial'">
+        <template v-else-if="driverType==='Serial drivers'">
           <h3>Serial driver setup</h3>
           <el-form ref="driverSetupForm"
                    label-width="100px"
@@ -69,65 +67,82 @@
 
 <script>
 import { Ethernet, Serial } from '@/config/index'
+import { mapMutations } from 'vuex'
 export default {
-  props: {
-    value: {
-      type: Object,
-      default: () => ({})
-    }
-  },
   data () {
     return {
       dialogTableVisible: false,
-      driverType: sessionStorage.getItem('driverType') || '',
       chdv: '', // Channel driver name
       chnl: [{}] // Channel Details
     }
   },
   methods: {
+    ...mapMutations({
+      setDriverData: 'setDriverData'
+    }),
     addEthernetFormItem () {
       if (this.chnl.length && this.chnl.length < 9) {
         this.chnl.push({
           tcph: '',
-          tcpp: ''
+          tcpp: '',
+          'ttyc': '',
+          'ttyb': 0,
+          'ttyd': 0,
+          'ttys': '',
+          'ttyp': ''
         })
       }
     },
     submit () {
-      sessionStorage.setItem('driverType', this.driverType)
       this.dialogTableVisible = false
-      this.$emit('input', { chdv: this.chdv, chnl: this.chnl })
+      this.setDriverData({ chdv: this.chdv, chnl: this.chnl })
     },
     close () {
       this.$nextTick(this.init)
     },
     init () {
-      this.driverType = sessionStorage.getItem('driverType') || ''
-      this.chdv = this.value.chdv || ''
-      this.chnl = this.value.chnl || [{}]
+      this.chdv = ''
+      this.chnl = [{
+        tcph: '',
+        tcpp: '',
+        'ttyc': '',
+        'ttyb': 0,
+        'ttyd': 0,
+        'ttys': '',
+        'ttyp': ''
+      }]
     }
   },
   mounted () {
     this.$nextTick(this.init)
   },
   watch: {
-    driverType () {
+    chdv () {
       if (this.dialogTableVisible) {
-        this.chnl = [{}]
-        this.chdv = ''
+        this.chnl = [{
+          tcph: '',
+          tcpp: '',
+          'ttyc': '',
+          'ttyb': 0,
+          'ttyd': 0,
+          'ttys': '',
+          'ttyp': ''
+        }]
       }
     }
   },
   computed: {
     driverList () {
-      switch (this.driverType) {
-        case 'Ethernet':
-          return Ethernet
-        case 'Serial':
-          return Serial
-        default:
-          return []
-      }
+      return [...Ethernet, ...Serial]
+    },
+    driverType () {
+      const chdv = this.chdv
+      let tmp
+      tmp = Ethernet.filter(i => i.val === chdv)[0]
+      if (tmp) return 'Ethernet drivers'
+      tmp = Serial.filter(i => i.val === chdv)[0]
+      if (tmp) return 'Serial drivers'
+      return ''
     }
   }
 }

@@ -63,8 +63,8 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.$ws({
-            name: this.username,
-            pass: this.password
+            name: this.formLogin.username,
+            pass: this.formLogin.password
           }).connect().then((name, pass) => {
             sessionStorage.setItem('user', JSON.stringify({ name, pass }))
             this.$router.push({ name: 'index' })
@@ -77,7 +77,7 @@ export default {
     init () {
       window.particlesJS('login', config)
       sessionStorage.removeItem('user')
-      this.$ws().close()
+      // this.$ws().close()
     }
   },
   mounted () {
