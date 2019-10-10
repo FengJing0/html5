@@ -1,7 +1,7 @@
 // 功能
 // 深拷贝
 
-const clone = (obj) => {
+export const clone = (obj) => {
   let res
   if (typeof obj === 'object') {
     res = Array.isArray(obj) ? [] : {}
@@ -20,5 +20,3 @@ const clone = (obj) => {
   }
   return res
 }
-
-export default clone

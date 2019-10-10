@@ -1,53 +1,38 @@
 {
-  "chdv": "mbstcp",
-  "chnl": [
-    {
-      "tcph": "192.168.1.1",
-      "tcpp": 503,
-      "ttyc": "",
-      "ttyb": 0,
-      "ttyd": 0,
-      "ttys": "",
-      "ttyp": ""
-    }
-  ],
   "objd": [
     {
-      "obsz": 2,
+      "objn": "ST1201",
+      "obsz": 4,
       "updt": 1,
-      "logt": 1,
-      "objn": "ST1021",
+      "logt": 5,
       "tstd": 1,
       "disp": 1,
       "logs": 1,
       "oatt": [
         {
-          "attn": "temp",
-          "attt": "float",
-          "deci": 0,
+          "attn": "Temperature",
           "adis": 1,
           "achg": 1,
-          "attr": "R",
-          "rtim": 1,
+          "attt": "float",
+          "deci": 0,
           "aadd": [
             {
-              "obix": 0,
-              "pref": "1",
+              "addr": "1!W1000",
+              "pref": "R1",
               "suff": "1",
-              "addr": "1!1!D100"
+              "obix": 0
             },
             {
-              "obix": 1,
-              "pref": "2",
+              "addr": "2!W1000",
+              "pref": "R1",
               "suff": "2",
-              "addr": "1!1!D200"
+              "obix": 1
             }
-          ]
+          ],
+          "attr": "R",
+          "rtim": 1
         }
       ]
     }
-  ],
-  "msgd": [],
-  "func": 21,
-  "wtrm": "DEMO-Neuron-1001_1532419775357_240"
+  ]
 }

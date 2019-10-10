@@ -69,7 +69,7 @@ export default {
     ]),
     // 跳转
     active (item) {
-      console.log(item, this.index)
+      // console.log(item, this.index)
       let name = item.name
       if (this.index === name || (item.redirect && item.redirect.name === this.index)) {
         return
@@ -86,13 +86,13 @@ export default {
     //     sideMenu: this.routeTopLevelMenu ? this.routeTopLevelMenu : []
     //   })
     // }
-  },
-  watch: {
-    routeName (val) {
-      // this.show()
-      console.log(this.index, val)
-    }
   }
+  // watch: {
+  //   routeName (val) {
+  //     // this.show()
+  //     console.log(this.index, val)
+  //   }
+  // }
 }
 </script>
 

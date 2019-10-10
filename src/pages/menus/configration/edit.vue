@@ -9,45 +9,10 @@
       <el-button @click='dialogTableVisible=true'>New Attribute</el-button>
     </div>
     <div>
-      <el-table :data='attributeList'
-                border
-                style='width:100%;'>
-        <el-table-column prop="attn"
-                         label="Name" />
-        <el-table-column prop="attt"
-                         label="Type" />
-        <el-table-column prop="deci"
-                         label="Decimal" />
-        <el-table-column label="Address"
-                         min-width="200">
-          <template slot-scope="scope">
-            <div>
-              <div v-for="item in scope.row.aadd"
-                   class="addrs"
-                   :key='getFullName(item.pref,item.suff)'>
-                {{getFullName(item.pref,item.suff)}}:
-                &nbsp;
-                {{item.addr}}
-              </div>
-              <span v-if="!scope.row.aadd.length">-</span>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="adis"
-                         label="Display" />
-        <el-table-column prop="achg"
-                         label="Change" />
-        <el-table-column prop="attr"
-                         label="Direction" />
-        <el-table-column prop="rtim"
-                         label="Time" />
-        <el-table-column label="Address">
-          <template slot-scope="scope">
-            <el-button type='text'
-                       @click="addAddress(scope.row)">Address</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <AttrbuteTable :attributeList='attributeList'
+                     :showBtn='true'
+                     :objectName='objn'
+                     @add='addAddress' />
     </div>
     <el-dialog title="Data Attribute Setup"
                :visible.sync="dialogTableVisible"
@@ -114,6 +79,7 @@
     <el-dialog title="Data Address Setup"
                :visible.sync="addressVisible">
       <el-table :data='preAndSuff'
+                class="dd-mb"
                 border>
         <el-table-column label="Index">
           <template slot-scope="scope">
@@ -136,8 +102,9 @@
 </template>
 
 <script>
-import clone from '@/utils/clone'
+import { clone } from '@/utils/index'
 import { AttributeTypeList } from '@/config/index'
+import AttrbuteTable from './components/attrbuteTable'
 import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
@@ -252,11 +219,11 @@ export default {
       objectData: state => state.SetUpData.objectData
     })
   },
-  // watch: {
-  //   'AttributeSetupFrom.attt' (val) {
-  //     this.AttributeSetupFrom.deci = 0
-  //   }
-  // },
+  watch: {
+    'AttributeSetupFrom.attt' (val) {
+      this.AttributeSetupFrom.deci = 0
+    }
+  },
   beforeMount () {
     this.init()
   },
@@ -266,6 +233,9 @@ export default {
     } else {
       next({ name: 'index' })
     }
+  },
+  components: {
+    AttrbuteTable
   }
 }
 </script>

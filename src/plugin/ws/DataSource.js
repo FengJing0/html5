@@ -10,11 +10,12 @@ class DataSource {
     this.wsUri = BaseConfig.serverBaseUrl
     this.websocket = null
     this.type = 'datathread' // datathread
+    this.wtrm = 'DEMO-Neuron-1001_1532419775357_240'
     this.func = 10 // for datathread
-    this.name = name || storage.name
-    this.pass = pass || storage.pass
-    this.onsuccess = []
-    success && this.onsuccess.push(success)
+    this.name = name || storage.name || 'root'
+    this.pass = pass || storage.pass || '0000'
+    this.onsuccess = new Set()
+    success && this.onsuccess.add(success)
     this.onclose = () => {
       Message.warning('socket closed')
       console.log('socket closed')
@@ -50,24 +51,20 @@ class DataSource {
   }
   set (config = {}) {
     const { success } = config
-    const successFunc = this.onsuccess
 
-    success && successFunc.push(success)
+    success && this.onsuccess.add(success)
 
     if (this.websocket && success) {
       this.websocket.onmessage = (e) => {
         const data = e.data && JSON.parse(e.data)
-        successFunc.forEach(i => i(data))
+        this.onsuccess.forEach(i => i(data))
       }
     }
 
     return this
   }
   remove (func) {
-    let index = this.onsuccess.indexOf(func)
-    if (index !== -1) {
-      this.onsuccess.splice(index, 1)
-    }
+    this.onsuccess.delete(func)
   }
   send (msg) {
     msg.wtrm = this.wtrm
@@ -86,7 +83,7 @@ Vue.prototype.$ws = function getDataSource (config) {
   if (!dataSource) {
     dataSource = new DataSource(config)
   } else {
-    dataSource.set(config)
+    if (config) dataSource.set(config)
   }
   return dataSource
 }

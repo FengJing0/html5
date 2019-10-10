@@ -3,11 +3,11 @@
              :scorll='false'>
     <div class="row">
       <span class="dd-title">Configration</span>
-      <el-button @click='submit'>submit</el-button>
-      <el-button @click="goEventSetup">Event Setup</el-button>
+      <!-- <el-button @click='submit'>submit</el-button> -->
+      <!-- <el-button @click="goEventSetup">Event Setup</el-button> -->
+      <DriverSetup />
     </div>
     <div>
-      <DriverSetup />
       <ObjectSetup />
     </div>
   </Container>
@@ -17,7 +17,7 @@
 import indexMixin from '../mixins'
 import DriverSetup from './components/driverSetup'
 import ObjectSetup from './components/objectSetup'
-import clone from '@/utils/clone'
+import { clone } from '@/utils/index'
 import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'configration_index',
@@ -28,7 +28,18 @@ export default {
       func: 21
     }
   },
+  beforeMount () {
+    this.$ws().set({ success: this.setData }).send({
+      func: 22
+    })
+  },
   methods: {
+    setData (res) {
+      if (+res.func === 22) {
+        this.$ws().remove(this.setData)
+        this.setAllData(res)
+      }
+    },
     submit () {
       let res = clone(this.res)
       res.objd.map(i => {
@@ -47,7 +58,7 @@ export default {
     goEventSetup () {
       this.$router.push({ name: 'configration-event', params: { data: JSON.stringify(this.res) } })
     },
-    ...mapMutations(['setDriverData'])
+    ...mapMutations(['setDriverData', 'setAllData'])
   },
   computed: {
     ...mapState({

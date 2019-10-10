@@ -41,92 +41,10 @@
               "pref": "R1",
               "suff": "2",
               "obix": 1
-            },
-            {
-              "addr": "3!W1000",
-              "pref": "R2",
-              "suff": "1",
-              "obix": 2
-            },
-            {
-              "addr": "4!W1000",
-              "pref": "R2",
-              "suff": "2",
-              "obix": 3
             }
           ],
           "attr": "R",
           "rtim": 1
-        },
-        {
-          "attn": "Humdity",
-          "adis": 1,
-          "achg": 1,
-          "attt": "word",
-          "deci": 2,
-          "aadd": [
-            {
-              "addr": "1!W1002",
-              "pref": "R1",
-              "suff": "1",
-              "obix": 0
-            },
-            {
-              "addr": "2!W1002",
-              "pref": "R1",
-              "suff": "2",
-              "obix": 1
-            },
-            {
-              "addr": "3!W1002",
-              "pref": "R2",
-              "suff": "1",
-              "obix": 2
-            },
-            {
-              "addr": "4!W1002",
-              "pref": "R2",
-              "suff": "2",
-              "obix": 3
-            }
-          ],
-          "attr": "R",
-          "rtim": 1
-        },
-        {
-          "attn": "Heater",
-          "adis": 1,
-          "achg": 1,
-          "attt": "uword",
-          "deci": 0,
-          "aadd": [
-            {
-              "addr": "1!W1010",
-              "pref": "R1",
-              "suff": "1",
-              "obix": 0
-            },
-            {
-              "addr": "2!W1010",
-              "pref": "R1",
-              "suff": "2",
-              "obix": 1
-            },
-            {
-              "addr": "3!W1010",
-              "pref": "R2",
-              "suff": "1",
-              "obix": 2
-            },
-            {
-              "addr": "4!W1010",
-              "pref": "R2",
-              "suff": "2",
-              "obix": 3
-            }
-          ],
-          "attr": "W",
-          "rtim": 0
         }
       ]
     }

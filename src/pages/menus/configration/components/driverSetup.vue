@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <el-button @click="dialogTableVisible=true">New Driver</el-button>
+  <div style="display:inline-block;">
+    <span>driverName: &nbsp; {{driverName}}</span>
+    <el-button @click="dialogTableVisible=true">{{driverData.chdv===''?'New':'Edit'}} Driver</el-button>
     <el-dialog title="Driver Setup"
                @closed='close'
                :visible.sync="dialogTableVisible">
@@ -67,7 +68,7 @@
 
 <script>
 import { Ethernet, Serial } from '@/config/index'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -101,20 +102,23 @@ export default {
       this.$nextTick(this.init)
     },
     init () {
-      this.chdv = ''
-      this.chnl = [{
-        tcph: '',
-        tcpp: '',
-        'ttyc': '',
-        'ttyb': 0,
-        'ttyd': 0,
-        'ttys': '',
-        'ttyp': ''
-      }]
+      const { chdv, chnl } = this.driverData
+      this.chdv = chdv
+      this.chnl = chnl
+      // this.chdv = ''
+      // this.chnl = [{
+      //   tcph: '',
+      //   tcpp: '',
+      //   'ttyc': '',
+      //   'ttyb': 0,
+      //   'ttyd': 0,
+      //   'ttys': '',
+      //   'ttyp': ''
+      // }]
     }
   },
   mounted () {
-    this.$nextTick(this.init)
+    this.init()
   },
   watch: {
     chdv () {
@@ -143,6 +147,13 @@ export default {
       tmp = Serial.filter(i => i.val === chdv)[0]
       if (tmp) return 'Serial drivers'
       return ''
+    },
+    ...mapState({
+      driverData: state => state.SetUpData.driverData
+    }),
+    driverName () {
+      let res = this.driverList.filter(i => i.val === this.driverData.chdv)
+      return res.length ? res[0].label : ''
     }
   }
 }

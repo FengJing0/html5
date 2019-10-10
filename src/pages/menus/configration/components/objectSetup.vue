@@ -4,49 +4,19 @@
       <el-button @click='dialogTableVisible=true'>New Object</el-button>
     </div>
     <div class="row">
-      <el-table :data='objd'
-                border
-                style="width: 100%">
-        <el-table-column type='index'
-                         label="No" />
-        <el-table-column prop="objn"
-                         label="Name"
-                         min-width="150" />
-        <el-table-column prop="obsz"
-                         min-width="100"
-                         label="Size" />
-        <el-table-column prop="updt"
-                         min-width="120"
-                         label="Update time" />
-        <el-table-column prop="logt"
-                         min-width="120"
-                         label="Logging time" />
-        <el-table-column prop="tstd"
-                         min-width="100"
-                         label="Timestamp display" />
-        <el-table-column prop="disp"
-                         min-width="100"
-                         label="Display" />
-        <el-table-column prop="logs"
-                         min-width="100"
-                         label="Logging" />
-        <el-table-column label="Attribute">
-          <template slot-scope="scope"
-                    min-width="100">
-            <el-button type="text"
-                       @click="go(scope.row)">Attribute</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <ObjectTable :objectList='objd'
+                   :showBtn='true'
+                   @go='go' />
     </div>
     <el-dialog @closed='close'
+               :title='isDetail?"Object setup":"Object index setup"'
                :visible.sync="dialogTableVisible">
       <div class="row"
            v-if="isDetail">
-        <h3 class="dd-title">Object setup</h3>
         <el-form ref='objectSetupFrom'
                  :rules="objectSetupFromRules"
                  :model="objectSetupFrom"
+                 class="dd-mb"
                  label-width="160px">
           <el-form-item label="Object name"
                         prop="objn">
@@ -100,7 +70,6 @@
       </div>
       <div class="row"
            v-if="objectIndexSetupList.length &&!isDetail">
-        <h3>Object index setup</h3>
         <el-table :data='objectIndexSetupList'
                   class="dd-mb"
                   border>
@@ -131,6 +100,7 @@
 </template>
 
 <script>
+import ObjectTable from './objectTable'
 import { mapMutations, mapState } from 'vuex'
 export default {
   mounted () {
@@ -228,6 +198,9 @@ export default {
     ...mapState({
       objd: state => state.SetUpData.objectData
     })
+  },
+  components: {
+    ObjectTable
   }
 }
 </script>

@@ -1,4 +1,4 @@
-export default async (time = 0) => {
+export const sleep = async (time = 0) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       return resolve()

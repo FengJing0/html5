@@ -7,31 +7,7 @@
                  :disabled="!msgd.length">submit</el-button>
       <el-button @click='addEvent'>New Event</el-button>
     </div>
-    <el-table :data='msgd'
-              border
-              style="width: 100%">
-      <el-table-column min-width="120"
-                       prop="sobj"
-                       label="Object1" />
-      <el-table-column prop="satt"
-                       label="Attribute1"
-                       min-width="150" />
-      <el-table-column prop="msgt"
-                       min-width="100"
-                       label="Type" />
-      <el-table-column prop="cobj"
-                       min-width="120"
-                       label="Object2" />
-      <el-table-column prop="catt"
-                       min-width="120"
-                       label="Attribute2" />
-      <el-table-column prop="acat"
-                       min-width="100"
-                       label="Category" />
-      <el-table-column prop="subr"
-                       min-width="100"
-                       label="Sub" />
-    </el-table>
+    <EventTable :eventList='msgd' />
     <el-dialog title="Event Setup"
                @closed='close'
                :visible.sync="dialogTableVisible">
@@ -114,8 +90,9 @@
 
 <script>
 import { Operator, EventCategory } from '@/config/index'
-import clone from '@/utils/clone'
+import { clone } from '@/utils/index'
 import { mapState, mapMutations } from 'vuex'
+import EventTable from './components/eventTable'
 export default {
   data () {
     return {
@@ -194,6 +171,9 @@ export default {
       return []
     },
     ...mapMutations(['addEventData'])
+  },
+  components: {
+    EventTable
   }
 }
 </script>

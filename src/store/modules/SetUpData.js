@@ -28,6 +28,12 @@ export default {
     }
   },
   mutations: {
+    setAllData (state, { chnl, msgd, objd, chdv }) {
+      state.driverData.chdv = chdv || ''
+      state.driverData.chnl = chnl
+      state.objectData = objd
+      state.eventData = msgd
+    },
     setDriverData (state, { chdv, chnl }) {
       state.driverData.chdv = chdv
       state.driverData.chnl = chnl

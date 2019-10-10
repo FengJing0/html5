@@ -25,8 +25,8 @@ export default {
       mode: ''
     }
   },
-  mounted () {
-    this.$ws().set({ success: this.receiveStatus })
+  beforeMount () {
+    this.$ws().test().set({ success: this.receiveStatus })
     // this.refreshSideMenu()
     // console.log(this.menu)
   },

@@ -29,7 +29,9 @@
       <!-- </div> -->
       <div class="dd-layout-main">
         <transition name="fade-transverse">
+          <keep-alive :include="keepAliveList">
             <router-view></router-view>
+          </keep-alive>
         </transition>
         <StatuBar />
       </div>
@@ -45,7 +47,8 @@ export default {
       theme: 'default',
       collapse: false,
       content: '展开菜单',
-      hasSideMenu: false
+      hasSideMenu: false,
+      keepAliveList: ['configration_index']
     }
   },
   watch: {
