@@ -45,7 +45,14 @@ export default {
       return this.$route.name
     },
     index () {
-      return this.routeName
+      let index = ''
+      let tmp = this.routeName.split('-')
+      if (tmp[1] && tmp[1] === 'index') {
+        index = tmp[0]
+      } else {
+        index = this.routeName
+      }
+      return index
     }
     // 不管当前路由是不是顶级菜单 都返回这个路由所属的顶级菜单对象的name
     // 如果返回 null 代表这个路由不是在菜单里显示的路由
@@ -69,9 +76,8 @@ export default {
     ]),
     // 跳转
     active (item) {
-      // console.log(item, this.index)
       let name = item.name
-      if (this.index === name || (item.redirect && item.redirect.name === this.index)) {
+      if (this.routeName === name || (item.redirect && item.redirect.name === this.routeName)) {
         return
       }
       if (name === '') {

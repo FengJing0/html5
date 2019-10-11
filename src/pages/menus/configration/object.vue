@@ -2,7 +2,7 @@
   <Container type="card-full"
              :scorll='false'>
     <div class="row">
-      <span class="dd-title">Configration</span>
+      <div class="dd-title">Configration</div>
       <!-- <el-button @click='submit'>submit</el-button> -->
       <!-- <el-button @click="goEventSetup">Event Setup</el-button> -->
       <DriverSetup />
@@ -74,6 +74,7 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+@import "@/assets/style/public";
 /deep/.el-input-number {
   width: 100%;
   &.is-without-controls .el-input__inner {

@@ -55,3 +55,8 @@ export const EventCategory = [
   { val: 'event' },
   { val: 'view' }
 ]
+
+export const ScriptList = [
+  { val: 'COMMENT' },
+  { val: 'DO' }
+]

@@ -89,11 +89,13 @@
 </template>
 
 <script>
+import indexMixin from '../mixins'
 import { Operator, EventCategory } from '@/config/index'
 import { clone } from '@/utils/index'
 import { mapState, mapMutations } from 'vuex'
 import EventTable from './components/eventTable'
 export default {
+  mixins: [indexMixin],
   data () {
     return {
       dialogTableVisible: false,

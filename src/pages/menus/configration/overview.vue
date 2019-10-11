@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import indexMixin from '../mixins'
 import { mapGetters } from 'vuex'
 import { clone } from '@/utils'
 import exampleJson from './example.json'
@@ -37,6 +38,7 @@ import AttributeTable from './components/attrbuteTable'
 import EventTable from './components/eventTable'
 import ObjectTable from './components/objectTable'
 export default {
+  mixins: [indexMixin],
   data () {
     return {
       testRes: {

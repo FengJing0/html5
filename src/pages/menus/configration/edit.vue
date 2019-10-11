@@ -2,7 +2,7 @@
   <Container type="card-full"
              :scorll='false'>
     <div class="row">
-      <span class="dd-title">edit</span>
+      <div class="dd-title">edit</div>
       <el-button @click='$router.go(-1)'>Back</el-button>
       <el-button @click='handleSubmit'
                  :disabled="!canSubmit">submit</el-button>
