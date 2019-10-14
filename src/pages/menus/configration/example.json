@@ -16,7 +16,7 @@
   "objd": [
     {
       "objn": "ST1201",
-      "obsz": 4,
+      "obsz": 2,
       "updt": 1,
       "logt": 5,
       "tstd": 1,
@@ -31,13 +31,13 @@
           "deci": 0,
           "aadd": [
             {
-              "addr": "1!W1000",
+              "addr": "1!1!Q1000",
               "pref": "R1",
               "suff": "1",
               "obix": 0
             },
             {
-              "addr": "2!W1000",
+              "addr": "1!2!Q1000",
               "pref": "R1",
               "suff": "2",
               "obix": 1
@@ -60,11 +60,11 @@
       "subr": 100
     },
     {
-      "sobj": "R2_ST1201_1",
+      "sobj": "R1_ST1201_1",
       "satt": "Temperature",
-      "cobj": "R2_ST1201_2",
+      "cobj": "R1_ST1201_2",
       "catt": "Temperature",
-      "msgt": ">",
+      "msgt": "<",
       "acat": "alarm",
       "subr": 101
     }

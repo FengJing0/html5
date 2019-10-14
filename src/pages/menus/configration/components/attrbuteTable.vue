@@ -28,10 +28,18 @@
     </el-table-column>
     <el-table-column prop="adis"
                      :min-width="minWidth"
-                     label="Display" />
+                     label="Display">
+      <template slot-scope='scope'>
+        {{scope.row.adis?'YES':'NO'}}
+      </template>
+    </el-table-column>
     <el-table-column prop="achg"
                      :min-width="minWidth"
-                     label="Change" />
+                     label="Change">
+      <template slot-scope='scope'>
+        {{scope.row.achg?'YES':'NO'}}
+      </template>
+    </el-table-column>
     <el-table-column prop="attr"
                      :min-width="minWidth"
                      label="Direction" />

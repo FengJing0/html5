@@ -1,47 +1,27 @@
 <template>
   <div class="statuBar">
     <div>
-      comm:{{comm}}
+      comm:{{status.comm||''}}
     </div>
     <div>
-      dalm:{{dalm}}
+      dalm:{{status.dalm||''}}
     </div>
     <div>
-      galm:{{galm}}
+      galm:{{status.galm||''}}
     </div>
     <div>
-      mode:{{mode}}
+      mode:{{status.mode||''}}
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      comm: '',
-      dalm: '',
-      galm: '',
-      mode: ''
+  props: {
+    status: {
+      type: Object,
+      required: true
     }
-  },
-  beforeMount () {
-    this.$ws().test().set({ success: this.receiveStatus })
-    // this.refreshSideMenu()
-    // console.log(this.menu)
-  },
-  methods: {
-    receiveStatus (data) {
-      if (!data.func) {
-        this.comm = data.comm
-        this.dalm = data.dalm
-        this.galm = data.galm
-        this.mode = data.mode
-      }
-    }
-  },
-  beforeDestroy () {
-    this.$ws().remove(this.receiveStatus)
   }
 }
 </script>

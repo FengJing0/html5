@@ -1,3 +1,5 @@
+import { formatName } from '@/utils'
+
 const meta = {
   requiresAuth: true
 }
@@ -12,7 +14,7 @@ const maker = (path, hide) => {
       ...meta,
       hide
     },
-    title: path,
+    title: formatName(path),
     component: () =>
       import(`@/pages/menus/${moduleName}/${path}.vue`)
   }
@@ -25,12 +27,12 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-object`
+    name: `${moduleName}-objectSetup`
   },
   children: [
-    maker('object'),
+    maker('objectSetup'),
     maker('edit', true),
-    maker('event'),
+    maker('eventSetup'),
     maker('overview')
   ]
 }

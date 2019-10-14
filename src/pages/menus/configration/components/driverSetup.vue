@@ -1,6 +1,7 @@
 <template>
   <div style="display:inline-block;">
-    <span>driverName: &nbsp; {{driverName}}</span>
+    <span>driverName: &nbsp; {{driverName}} &nbsp;&nbsp;&nbsp; driverType</span>
+    &nbsp;&nbsp;&nbsp;
     <el-button @click="dialogTableVisible=true">{{driverData.chdv===''?'New':'Edit'}} Driver</el-button>
     <el-dialog title="Driver Setup"
                @closed='close'

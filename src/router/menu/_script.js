@@ -1,3 +1,5 @@
+import { formatName } from '@/utils'
+
 const meta = {
   requiresAuth: true
 }
@@ -12,7 +14,7 @@ const maker = (path, hide) => {
       ...meta,
       hide
     },
-    title: path,
+    title: formatName(path),
     component: () =>
       import(`@/pages/menus/${moduleName}/${path}.vue`)
   }
@@ -25,9 +27,10 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-index`
+    name: `${moduleName}-setup`
   },
   children: [
-    maker('index', true)
+    maker('setup'),
+    maker('globalValiables')
   ]
 }

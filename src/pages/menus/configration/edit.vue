@@ -190,11 +190,12 @@ export default {
     },
     init () {
       let name = this.$route.params.data
+      debugger
       if (name) {
         this.objn = name
         this.objectData.some(i => {
           if (i.objn === name) {
-            this.preAndSuff = [...i.preAndSuff]
+            this.preAndSuff = i.preAndSuff ? [...i.preAndSuff] : []
             if (i.oatt) {
               this.attributeList = i.oatt
             }

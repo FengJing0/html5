@@ -2,8 +2,7 @@
   <div class="layout-main"
        :class="theme">
     <div class="dd-layout-header">
-      <div class="logo-group"
-           :style="logoGroupStyle">
+      <div class="logo-group">
         <img v-if="collapse"
              src="@/assets/image/logo/header-icon-only.png">
         <img v-else
@@ -29,11 +28,11 @@
       <!-- </div> -->
       <div class="dd-layout-main">
         <transition name="fade-transverse">
-          <keep-alive :include="keepAliveList">
-            <router-view></router-view>
-          </keep-alive>
+          <!-- <keep-alive :include="keepAliveList"> -->
+          <router-view></router-view>
+          <!-- </keep-alive> -->
         </transition>
-        <StatuBar />
+        <StatuBar :status='status' />
       </div>
     </div>
   </div>
@@ -46,53 +45,56 @@ export default {
     return {
       theme: 'default',
       collapse: false,
-      content: '展开菜单',
-      hasSideMenu: false,
-      keepAliveList: ['configration_index']
-    }
-  },
-  watch: {
-    sideMenu () {
-      this.hasSideMenu = !(this.sideMenu.length === 0)
+      // content: '展开菜单',
+      // hasSideMenu: false,
+      // keepAliveList: ['configration_index'],
+      func: 22,
+      status: {
+        comm: '',
+        dalm: '',
+        galm: '',
+        mode: ''
+      }
     }
   },
   methods: {
+    initData () {
+      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.setData })
+      this.$ws().send({
+        func: this.func
+      })
+    },
     ...mapMutations([
       'setSideMenu',
-      'setStatus'
+      'setStatus',
+      'setAllData'
     ]),
-    toggleAside () {
-      this.collapse = !this.collapse
-      this.content = this.collapse ? '展开菜单' : '收起菜单'
+    setData (res) {
+      if (+res.func === this.func) {
+        this.$ws().remove(this.setData)
+        this.setAllData(res)
+      }
+    },
+    receiveStatus (data) {
+      if (!data.func) {
+        this.status.comm = data.comm
+        this.status.dalm = data.dalm
+        this.status.galm = data.galm
+        this.status.mode = data.mode
+      }
     }
-    // // 更新侧边栏
-    // refreshSideMenu (menu) {
-    //   let sideMenu = menu.map(i => i.children[0])
-
-    //   this.setSideMenu({
-    //     sideMenu
-    //   })
-    // }
   },
-  mounted () {
-    // this.refreshSideMenu(menu)
+  beforeMount () {
+    this.initData()
   },
-  computed: {
-    logoGroupStyle () {
-      return `width:${this.collapse ? 40 : 140}px;`
-    },
-    rotate () {
-      return `transform:rotate(${this.collapse ? 90 : 0}deg);`
-    },
-    ...mapState({
-      sideMenu: state => state.menu.sideMenu
-    })
+  beforeDestroy () {
+    this.$ws().remove(this.receiveStatus)
   },
   components: {
     HeaderMenu: () => import('./components/HeaderMenu'),
     HeaderRight: () => import('./components/HeaderRight'),
     StatuBar: () => import('./components/StatuBar')
-    // SideMenu: () => import('./components/SideMenu')
+
   }
 }
 </script>

@@ -3,21 +3,17 @@
              :scorll='false'>
     <div class="dd-title">Script</div>
     <div class='row'>
-      <el-radio-group v-model="csub"
-                      class="dd-mr">
-        <el-radio :label="0">备选项</el-radio>
-        <el-radio :label="1">备选项</el-radio>
-        <el-radio :label="2">备选项</el-radio>
-      </el-radio-group>
+      <ScriptTypeSelect v-model="type" />
       <el-button @click='handleSubmit'>submit</el-button>
     </div>
-    <el-table :data='scriptData'
+    <el-table class="scriptTable"
+              :data='scriptData'
               border>
       <el-table-column label="stmt"
                        min-width="120">
         <template slot-scope="scope">
           <el-select v-model="scope.row.stmt"
-                     @change='handleChange(scope.$index)'
+                     style='width:100%;'
                      placeholder="">
             <el-option v-for="item in scriptList"
                        :key="item.val"
@@ -30,9 +26,11 @@
       <el-table-column label="expr"
                        min-width="300">
         <template slot-scope="scope">
-          <el-input type="textarea"
-                    :rows="2"
-                    placeholder="please input"
+          <el-input placeholder=""
+                    :ref='"input-"+scope.$index'
+                    @keyup.enter.native='add(scope.$index)'
+                    @keyup.up.native='moveUp(scope.$index)'
+                    @keyup.down.native='moveDown(scope.$index)'
                     v-model="scope.row.expr">
           </el-input>
         </template>
@@ -44,35 +42,63 @@
 <script>
 import indexMixin from '../mixins'
 import { ScriptList } from '@/config/index'
+import ScriptTypeSelect from './components/scriptType'
 export default {
   mixins: [indexMixin],
   data () {
     return {
-      scriptData: [{
-        stmt: '',
-        expr: ''
-      }, {
-        stmt: '',
-        expr: ''
-      }],
+      scriptData: [],
       scriptList: ScriptList,
-      csub: 0
+      type: null
     }
   },
+  beforeMount () {
+    this.init()
+  },
   methods: {
-    handleChange (index) {
-      if (index + 1 === this.scriptData.length) {
-        this.scriptData.push({ stmt: '', expr: '' })
+    init () {
+      let i = 10
+      while (i--) {
+        this.scriptData.push({
+          stmt: '',
+          expr: ''
+        })
       }
     },
     handleSubmit () {
-      const list = this.scriptData.filter(i => i.stmt && i.expr)
+      const list = this.scriptData
       console.log(list)
+    },
+    add (index) {
+      if (index === this.scriptData.length - 1) {
+        this.scriptData.push({ stmt: '', expr: '' })
+      }
+    },
+    moveUp (index) {
+      if (index > 0) {
+        this.$refs['input-' + (index - 1)].focus()
+      }
+    },
+    moveDown (index) {
+      if (index < this.scriptData.length - 1) {
+        this.$refs['input-' + (index + 1)].focus()
+      }
     }
+  },
+  components: {
+    ScriptTypeSelect
   }
 }
 </script>
 
 <style scoped lang='scss'>
 @import "@/assets/style/public";
+.scriptTable {
+  /deep/input {
+    border-color: transparent;
+  }
+  /deep/td {
+    padding: 10px 0;
+  }
+}
 </style>

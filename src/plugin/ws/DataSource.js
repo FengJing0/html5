@@ -15,6 +15,7 @@ class DataSource {
     this.name = name || storage.name || 'root'
     this.pass = pass || storage.pass || '0000'
     this.onsuccess = new Set()
+    this.tmp = null
     success && this.onsuccess.add(success)
     this.onclose = () => {
       Message.warning('socket closed')
@@ -57,7 +58,11 @@ class DataSource {
     if (this.websocket && success) {
       this.websocket.onmessage = (e) => {
         const data = e.data && JSON.parse(e.data)
-        this.onsuccess.forEach(i => i(data))
+        this.onsuccess.forEach(i => {
+          if (!data.wtrm || (data.wtrm === this.wtrm)) {
+            i(data)
+          }
+        })
       }
     }
 
@@ -67,9 +72,21 @@ class DataSource {
     this.onsuccess.delete(func)
   }
   send (msg) {
-    msg.wtrm = this.wtrm
-    msg = JSON.stringify(msg)
-    return this.websocket && this.websocket.send(msg)
+    if (msg) {
+      msg.wtrm = this.wtrm
+      msg = JSON.stringify(msg)
+      this.tmp = () => this.websocket.send(msg)
+    }
+    if (this.websocket && this.websocket.readyState !== 1) {
+      if (this.tmp) {
+        setTimeout(() => {
+          this.send()
+        }, 200)
+      }
+    } else if (this.websocket) {
+      this.tmp && this.tmp()
+      this.tmp = null
+    }
   }
   test () {
     if (!this.websocket) {

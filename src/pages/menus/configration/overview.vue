@@ -6,22 +6,14 @@
     <div class="dd-mb"
          v-if="showObject">
       <p>Object</p>
-      <ObjectTable :objectList='testRes.objd'>
-        <el-table-column label="Attribute"
-                         slot='attributeTable'
-                         min-width="500">
-          <template slot-scope="scope">
-            <AttributeTable :attributeList='scope.row.oatt'
-                            :objectName='scope.row.objn' />
-          </template>
-        </el-table-column>
-      </ObjectTable>
+      <ObjectTable :objectList='res.objd'
+                   showAttr />
     </div>
 
     <div class="dd-mb"
          v-if="showEvent">
       <p>Event</p>
-      <EventTable :eventList='testRes.msgd' />
+      <EventTable :eventList='res.msgd' />
     </div>
 
     <el-button @click="submit">submit</el-button>
@@ -32,7 +24,6 @@
 import indexMixin from '../mixins'
 import { mapGetters } from 'vuex'
 import { clone } from '@/utils'
-import exampleJson from './example.json'
 import { Ethernet, Serial } from '@/config'
 import AttributeTable from './components/attrbuteTable'
 import EventTable from './components/eventTable'
@@ -41,8 +32,6 @@ export default {
   mixins: [indexMixin],
   data () {
     return {
-      testRes: {
-      },
       driverName: '',
       minWidth: '150'
     }
@@ -50,39 +39,37 @@ export default {
   computed: {
     ...mapGetters(['res']),
     driverType () {
-      const chdv = this.testRes.chdv
+      const chdv = this.res.chdv
       let tmp
       tmp = Ethernet.filter(i => i.val === chdv)[0]
       if (tmp) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.driverName = tmp.label
         return 'Ethernet drivers'
       }
       tmp = Serial.filter(i => i.val === chdv)[0]
       if (tmp) {
+        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.driverName = tmp.label
         return 'Serial drivers'
       }
       return ''
     },
     showObject () {
-      return this.testRes.objd && this.testRes.objd.length
+      return this.res.objd && this.res.objd.length
     },
     showEvent () {
-      return this.testRes.msgd && this.testRes.msgd.length
+      return this.res.msgd && this.res.msgd.length
     }
-  },
-  mounted () {
-    this.testRes = exampleJson
-    console.log(this.testRes)
   },
   methods: {
     submit () {
-      // let res = clone(this.res)
-      // res.objd.forEach(i => {
-      //   if (i.preAndSuff) delete i.preAndSuff
-      // })
-      // res.func = 21
-      this.$ws().send(this.testRes)
+      let res = clone(this.res)
+      res.objd.forEach(i => {
+        if (i.preAndSuff) delete i.preAndSuff
+      })
+      res.func = 21
+      this.$ws().send(this.res)
     }
   },
   components: {

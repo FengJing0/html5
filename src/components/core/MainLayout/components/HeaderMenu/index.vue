@@ -6,7 +6,7 @@
         <el-submenu :key="item.name"
                     :index="item.name"
                     @click.native="active(item)">
-          <template slot="title">{{item.title}}</template>
+          <template slot="title">{{formatName(item.title)}}</template>
           <template v-for="subMenu in item.children">
             <el-menu-item :index="subMenu.name"
                           @click.native="active(subMenu)"
@@ -21,7 +21,7 @@
         <el-menu-item :key="item.name"
                       :index="item.name"
                       @click.native="active(item)">
-          {{item.title}}
+          {{formatName(item.title)}}
         </el-menu-item>
       </template>
     </template>
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { formatName } from '@/utils'
 import { mapMutations } from 'vuex'
 import { menu } from '@/router/menu'
 export default {
@@ -85,6 +86,9 @@ export default {
       } else {
         this.$router.push({ name })
       }
+    },
+    formatName (title) {
+      return formatName(title)
     }
     // 更新侧边栏
     // refreshSideMenu () {
