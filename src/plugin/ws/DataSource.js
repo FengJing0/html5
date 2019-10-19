@@ -60,6 +60,7 @@ class DataSource {
         const data = e.data && JSON.parse(e.data)
         this.onsuccess.forEach(i => {
           if (!data.wtrm || (data.wtrm === this.wtrm)) {
+            if (data.errc) Message.error(data.emsg)
             i(data)
           }
         })

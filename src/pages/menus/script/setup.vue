@@ -4,7 +4,8 @@
     <div class="dd-title">Script</div>
     <div class='row'>
       <ScriptTypeSelect v-model="type" />
-      <el-button @click='handleSubmit'>submit</el-button>
+      <el-button class='dd-fr'
+                 @click='handleSubmit'>submit</el-button>
     </div>
     <el-table class="scriptTable"
               :data='scriptData'
@@ -49,11 +50,11 @@ export default {
     return {
       scriptData: [],
       scriptList: ScriptList,
-      type: null
+      type: {
+        name: '',
+        subr: ''
+      }
     }
-  },
-  beforeMount () {
-    this.init()
   },
   methods: {
     init () {
@@ -65,9 +66,40 @@ export default {
         })
       }
     },
+    readSubroutine (subr) {
+      this.$ws().set({ success: this.getData }).send({ func: 33, subr })
+    },
+    getData (data) {
+      if (data.func === 33) {
+        this.$ws().remove(this.getData)
+
+        if (data.rows) {
+          if (data.rows.length === 0) {
+            this.init()
+          } else {
+            this.scriptData = data.rows
+          }
+        } else {
+          this.init()
+        }
+      }
+    },
     handleSubmit () {
-      const list = this.scriptData
-      console.log(list)
+      if (!this.type.subr) {
+        this.$message.error('选择')
+        return
+      }
+      const rows = this.scriptData
+      const { name, subr } = this.type
+      this.$ws().set().send({
+        func: 34,
+        csub: 0,
+        name,
+        subr,
+        nrow: rows.length,
+        rows
+      })
+      // console.log(list)
     },
     add (index) {
       if (index === this.scriptData.length - 1) {
@@ -82,6 +114,13 @@ export default {
     moveDown (index) {
       if (index < this.scriptData.length - 1) {
         this.$refs['input-' + (index + 1)].focus()
+      }
+    }
+  },
+  watch: {
+    'type.subr' (val) {
+      if (val) {
+        this.readSubroutine(val)
       }
     }
   },
