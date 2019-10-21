@@ -2,7 +2,8 @@
   <Container type="card-full"
              :scorll='false'>
     <div class="dd-title">Global Valiables</div>
-    <el-button @click='handleSubmit'>submit</el-button>
+    <el-button @click='handleSubmit'
+               style="margin-bottom:20px;">submit</el-button>
     <el-table class="scriptTable"
               :data='varData'
               border>
@@ -10,6 +11,7 @@
                        min-width="120">
         <template slot-scope="scope">
           <el-input placeholder=""
+                    @keyup.enter.native='add(scope.$index)'
                     v-model="scope.row.glov">
           </el-input>
         </template>
@@ -18,6 +20,7 @@
                        min-width="100">
         <template slot-scope="scope">
           <el-input placeholder=""
+                    @keyup.enter.native='add(scope.$index)'
                     v-model="scope.row.leng" />
           <!-- <el-input-number placeholder=""
                            class="input-number"
@@ -32,6 +35,7 @@
                        min-width="300">
         <template slot-scope="scope">
           <el-input placeholder=""
+                    @keyup.enter.native='add(scope.$index)'
                     v-model="scope.row.comt">
           </el-input>
         </template>
@@ -58,9 +62,8 @@ export default {
     readGlobalVariable (data) {
       if (data.func === this.func) {
         this.$ws().remove(this.readGlobalVariable)
-        console.log(data)
         this.varData = data.rows
-        let i = 10
+        let i = 5
         while (i--) {
           this.varData.push({
             'glov': '',
@@ -71,12 +74,24 @@ export default {
       }
     },
     handleSubmit () {
-      const res = this.varData.filter(i => i.glov && i.leng)
+      const res = this.varData.filter(i => {
+        i.leng = +i.leng
+        return i.glov && i.leng
+      })
       this.$ws().set().send({
         func: 31,
         nrow: res.length,
         rows: res
       })
+    },
+    add (index) {
+      if (index === this.varData.length - 1) {
+        this.varData.push({
+          'glov': '',
+          'leng': '',
+          'comt': ''
+        })
+      }
     }
   }
 }

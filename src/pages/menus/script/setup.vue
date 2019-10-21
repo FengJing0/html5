@@ -95,7 +95,7 @@ export default {
         func: 34,
         csub: 0,
         name,
-        subr,
+        subr: +subr,
         nrow: rows.length,
         rows
       })
