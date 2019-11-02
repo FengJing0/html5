@@ -93,6 +93,7 @@ export default {
             subr: ''
           }
         }
+        this.$emit('delete')
       }
     },
     handleClose () {

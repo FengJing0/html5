@@ -2,21 +2,36 @@
   <div>
     <el-button type="primary"
                size="small"
-               @click="handleClick">重启</el-button>
+               @click="handleStart">重启</el-button>
     <el-button type="primary"
                size="small"
-               @click="handleClick">新重启</el-button>
+               @click="handleRestartNew">新重启</el-button>
     <el-button type="primary"
                size="small"
-               @click="handleClick">停止</el-button>
+               @click="handleStop">停止</el-button>
   </div>
 </template>
 
 <script>
 export default {
   methods: {
-    handleClick () {
-
+    handleStart () {
+      this.$ws().set().send({
+        func: 71,
+        'stat': 'active'
+      })
+    },
+    handleStop () {
+      this.$ws().set().send({
+        func: 71,
+        'stat': 'standby'
+      })
+    },
+    handleRestartNew () {
+      this.$ws().set().send({
+        func: 70,
+        'acts': 'restartnew'
+      })
     }
   }
 }

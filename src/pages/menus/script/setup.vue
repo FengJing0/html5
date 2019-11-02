@@ -3,7 +3,8 @@
              :scorll='false'>
     <div class="dd-title">Script</div>
     <div class='row'>
-      <ScriptTypeSelect v-model="type" />
+      <ScriptTypeSelect v-model="type"
+                        @delete='init' />
       <el-button class='dd-fr'
                  @click='handleSubmit'>submit</el-button>
     </div>
@@ -58,6 +59,7 @@ export default {
   },
   methods: {
     init () {
+      this.scriptData = []
       let i = 10
       while (i--) {
         this.scriptData.push({
@@ -67,7 +69,7 @@ export default {
       }
     },
     readSubroutine (subr) {
-      this.$ws().set({ success: this.getData }).send({ func: 33, subr })
+      this.$ws().set({ success: this.getData }).send({ func: 33, subr: +subr })
     },
     getData (data) {
       if (data.func === 33) {

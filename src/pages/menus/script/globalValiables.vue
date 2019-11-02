@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { clone } from '@/utils'
 export default {
   data () {
     return {
@@ -74,7 +75,7 @@ export default {
       }
     },
     handleSubmit () {
-      const res = this.varData.filter(i => {
+      const res = clone(this.varData).filter(i => {
         i.leng = +i.leng
         return i.glov && i.leng
       })
