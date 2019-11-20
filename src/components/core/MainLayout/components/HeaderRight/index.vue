@@ -2,18 +2,18 @@
   <div class="btn-group">
     <ControlGroup />
     &nbsp;&nbsp;
-    <FullScreen></FullScreen>
+    <!-- <FullScreen></FullScreen> -->
     &nbsp;&nbsp;
-    <UserDropdown></UserDropdown>
+    <!-- <UserDropdown></UserDropdown> -->
   </div>
 </template>
 
 <script>
 export default {
   components: {
-    FullScreen: () => import('./components/FullScreen'),
-    UserDropdown: () => import('./components/UserDropdown'),
-    ControlGroup: () => import('./components/ControlGroup'),
+    // FullScreen: () => import('./components/FullScreen'),
+    // UserDropdown: () => import('./components/UserDropdown'),
+    ControlGroup: () => import('./components/ControlGroup')
   }
 }
 </script>

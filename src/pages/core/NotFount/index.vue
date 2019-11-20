@@ -1,9 +1,11 @@
 <template>
   <!-- <Container type="card-full"> -->
   <div class="not">
-    <img src="@/assets/image/logo/cover@2x.png">
-    <el-button class="dd-mt"
-               @click='$router.push({name:"index"})'>返回首页</el-button>
+    <p>404</p>
+    <p>page not found</p>
+    <div class="dd-mt">
+      <el-button @click='$router.push({name:"index"})'>Index</el-button>
+    </div>
   </div>
   <!-- </Container> -->
 </template>
@@ -16,8 +18,10 @@
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
-  img {
-    width: 200px;
+  p {
+    font-size: 24px;
+    color: #fff;
+    margin: 20px;
   }
 }
 </style>

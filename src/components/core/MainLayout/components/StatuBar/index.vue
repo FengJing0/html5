@@ -1,10 +1,10 @@
 <template>
   <div class="statuBar">
     <div>
-      comm:{{status.comm||''}}
+      COMM:{{commState||''}}
     </div>
     <div>
-      dalm:{{status.dalm||''}}
+      {{status.mach||''}}
     </div>
     <div>
       galm:{{status.galm||''}}
@@ -16,11 +16,14 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  props: {
-    status: {
-      type: Object,
-      required: true
+  computed: {
+    ...mapState({
+      status: state => state.Status.status
+    }),
+    commState () {
+      return this.status.model === 'ACTIVE' ? 'OK' : this.status.model
     }
   }
 }

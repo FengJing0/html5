@@ -4,8 +4,8 @@
          class="layer bg"></div>
     <div class="flex-center">
       <div class="logo-group">
-        <img src="@/assets/image/logo/w500.png"
-             alt="">
+        <!-- <img src="@/assets/image/logo/w500.png"
+             alt=""> -->
       </div>
       <div class="form-group">
         <el-card>
@@ -16,16 +16,12 @@
               <el-input type="text"
                         v-model="formLogin.username"
                         placeholder="username">
-                <i slot="prepend"
-                   class="fa fa-user-circle-o"></i>
               </el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input type="password"
                         v-model="formLogin.password"
                         placeholder="password">
-                <i slot="prepend"
-                   class="fa fa-keyboard-o"></i>
               </el-input>
             </el-form-item>
             <el-button @click="submit"
@@ -65,8 +61,8 @@ export default {
           this.$ws({
             name: this.formLogin.username,
             pass: this.formLogin.password
-          }).connect().then((name, pass) => {
-            sessionStorage.setItem('user', JSON.stringify({ name, pass }))
+          }).connect().then(userInfo => {
+            sessionStorage.setItem('user', JSON.stringify(userInfo))
             this.$router.push({ name: 'index' })
           })
         } else {
@@ -77,7 +73,7 @@ export default {
     init () {
       window.particlesJS('login', config)
       sessionStorage.removeItem('user')
-      // this.$ws().close()
+      this.$dataSource && this.$dataSource.close()
     }
   },
   mounted () {

@@ -6,7 +6,7 @@ const meta = {
   requiresAuth: true
 }
 
-const moduleName = 'user'
+const moduleName = 'Status'
 
 const maker = (path, hide) => {
   return {
@@ -29,19 +29,11 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-userAdministration`
+    name: `${moduleName}-data`
   },
   children: [
-    maker('userAdministration'),
-    maker('newPassword'),
-    {
-      path: 'logout',
-      name: `${moduleName}-logout`,
-      meta,
-      title: 'Logout',
-      redirect: {
-        name: 'login'
-      }
-    }
+    maker('data'),
+    maker('alarmList'),
+    maker('globalValiables')
   ]
 }

@@ -1,12 +1,10 @@
-import {
-  formatName
-} from '@/utils'
+import { formatName } from '@/utils'
 
 const meta = {
   requiresAuth: true
 }
 
-const moduleName = 'user'
+const moduleName = 'Setup'
 
 const maker = (path, hide) => {
   return {
@@ -29,19 +27,13 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-userAdministration`
+    name: `${moduleName}-objectAndDriver`
   },
   children: [
-    maker('userAdministration'),
-    maker('newPassword'),
-    {
-      path: 'logout',
-      name: `${moduleName}-logout`,
-      meta,
-      title: 'Logout',
-      redirect: {
-        name: 'login'
-      }
-    }
+    maker('objectAndDriver'),
+    maker('edit', true),
+    maker('eventSetup'),
+    maker('overview'),
+    maker('setup')
   ]
 }

@@ -8,9 +8,6 @@ import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 
-// font-awesome
-import '@/assets/library/font-awesome-4.7.0/css/font-awesome.min.css'
-
 // vuex
 import store from '@/store/index.js'
 

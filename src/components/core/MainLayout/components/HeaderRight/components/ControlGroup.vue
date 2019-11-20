@@ -2,18 +2,24 @@
   <div>
     <el-button type="primary"
                size="small"
-               @click="handleStart">重启</el-button>
+               @click="handleStart">Start</el-button>
     <el-button type="primary"
                size="small"
-               @click="handleRestartNew">新重启</el-button>
+               @click="handleRestartNew">NewStart</el-button>
     <el-button type="primary"
                size="small"
-               @click="handleStop">停止</el-button>
+               @click="handleStop">Stop</el-button>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
+  computed: {
+    ...mapState({
+      status: state => state.Status.status
+    })
+  },
   methods: {
     handleStart () {
       this.$ws().set().send({

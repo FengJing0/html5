@@ -3,10 +3,11 @@
        :class="theme">
     <div class="dd-layout-header">
       <div class="logo-group">
-        <img v-if="collapse"
+        <p>Neuron</p>
+        <!-- <img v-if="collapse"
              src="@/assets/image/logo/header-icon-only.png">
         <img v-else
-             src="@/assets/image/logo/header.png">
+             src="@/assets/image/logo/header.png"> -->
       </div>
       <!-- <el-tooltip placement="bottom"
                   v-if="hasSideMenu">
@@ -32,14 +33,14 @@
           <router-view></router-view>
           <!-- </keep-alive> -->
         </transition>
-        <StatuBar :status='status' />
+        <StatuBar />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapMutations } from 'vuex'
 export default {
   data () {
     return {
@@ -48,26 +49,20 @@ export default {
       // content: '展开菜单',
       // hasSideMenu: false,
       // keepAliveList: ['configration_index'],
-      func: 22,
-      status: {
-        comm: '',
-        dalm: '',
-        galm: '',
-        mode: ''
-      }
+      func: 22
     }
   },
   methods: {
     initData () {
-      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.setData })
+      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.receiveAlarmList }).set({ success: this.setData })
       this.$ws().send({
         func: this.func
       })
     },
     ...mapMutations([
-      'setSideMenu',
-      'setStatus',
-      'setAllData'
+      'setAllData',
+      'setAlarmStatus',
+      'setAlarmList'
     ]),
     setData (res) {
       if (+res.func === this.func) {
@@ -76,11 +71,13 @@ export default {
       }
     },
     receiveStatus (data) {
-      if (!data.func) {
-        this.status.comm = data.comm
-        this.status.dalm = data.dalm
-        this.status.galm = data.galm
-        this.status.mode = data.mode
+      if (!data.func && data.tstp) {
+        this.setAlarmStatus(data)
+      }
+    },
+    receiveAlarmList (data) {
+      if (!data.func && data.tele) {
+        this.setAlarmList(data.tele)
       }
     }
   },

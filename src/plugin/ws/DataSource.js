@@ -1,19 +1,24 @@
 import Vue from 'vue'
 import BaseConfig from './config.js'
-import { Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 let dataSource
 
 class DataSource {
   constructor (config = {}) {
-    const { name, pass, success } = config
-    const storage = JSON.parse(sessionStorage.getItem('user'))
+    const {
+      name,
+      pass,
+      success
+    } = config
+    const storage = JSON.parse(sessionStorage.getItem('user') || '{}')
     this.wsUri = BaseConfig.serverBaseUrl
     this.websocket = null
     this.type = 'datathread' // datathread
     this.wtrm = 'DEMO-Neuron-1001_1532419775357_240'
-    this.func = 10 // for datathread
-    this.name = name || storage.name || 'root'
-    this.pass = pass || storage.pass || '0000'
+    this.name = name || storage.name
+    this.pass = pass || storage.pass
     this.onsuccess = new Set()
     this.tmp = null
     success && this.onsuccess.add(success)
@@ -33,10 +38,17 @@ class DataSource {
     return new Promise((resolve, reject) => {
       this.websocket = new WebSocket(this.wsUri, this.type)
       this.websocket.addEventListener('open', () => {
-        var j = { func: 10, name: this.name, pass: this.pass }
+        var j = {
+          func: 10,
+          name: this.name,
+          pass: this.pass
+        }
         var txt = JSON.stringify(j)
         this.websocket.send(txt)
-        resolve(this.name, this.pass)
+        resolve({
+          name: this.name,
+          pass: this.pass
+        })
       })
       this.websocket.onclose = this.onclose
       this.websocket.onerror = this.onerror
@@ -51,7 +63,9 @@ class DataSource {
     }
   }
   set (config = {}) {
-    const { success } = config
+    const {
+      success
+    } = config
 
     success && this.onsuccess.add(success)
 
@@ -75,7 +89,9 @@ class DataSource {
   send (msg) {
     if (msg) {
       msg.wtrm = this.wtrm
-      msg = JSON.stringify(msg)
+      if (typeof msg !== 'string') {
+        msg = JSON.stringify(msg)
+      }
       this.tmp = () => this.websocket.send(msg)
     }
     if (this.websocket && this.websocket.readyState !== 1) {
@@ -105,3 +121,5 @@ Vue.prototype.$ws = function getDataSource (config) {
   }
   return dataSource
 }
+
+Vue.prototype.$dataSource = dataSource
