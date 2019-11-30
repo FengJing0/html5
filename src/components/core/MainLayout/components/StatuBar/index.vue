@@ -1,16 +1,19 @@
 <template>
   <div class="statuBar">
     <div>
-      COMM:{{commState||''}}
+      COMM&nbsp;{{status.comm||''}}
     </div>
     <div>
       {{status.mach||''}}
     </div>
     <div>
-      galm:{{status.galm||''}}
+      {{status.mode||''}}
     </div>
     <div>
-      mode:{{status.mode||''}}
+      {{status.mqcn||'MQDISCONNECT'}}
+    </div>
+    <div>
+      {{galm}}
     </div>
   </div>
 </template>
@@ -24,6 +27,9 @@ export default {
     }),
     commState () {
       return this.status.model === 'ACTIVE' ? 'OK' : this.status.model
+    },
+    galm () {
+      return this.status.galm === 'NON-EXIST' ? 'NO ALARM' : 'ALARM'
     }
   }
 }

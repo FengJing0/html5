@@ -5,6 +5,7 @@
     <el-button @click='handleSubmit'
                style="margin-bottom:20px;">submit</el-button>
     <el-table class="scriptTable"
+              height='500'
               :data='varData'
               border>
       <el-table-column label="Variable G."

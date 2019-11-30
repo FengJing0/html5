@@ -10,8 +10,10 @@
       </el-option>
     </el-select>
     &nbsp;&nbsp;
-    <el-button @click='handleDelete'>delete</el-button>
-    <el-button @click='handleCreate'>create</el-button>
+    <el-button @click='handleDelete'
+               type='danger'>delete</el-button>
+    <el-button @click='handleCreate'
+               type="primary">create</el-button>
 
     <el-dialog title="提示"
                @closed='handleClose'
@@ -75,7 +77,6 @@ export default {
       if (data.func === 32) {
         this.$ws().remove(this.setSubroutineList)
         this.scriptTypeList.unshift(...data.rows)
-        console.log(data)
       }
     },
     handleCreate () {

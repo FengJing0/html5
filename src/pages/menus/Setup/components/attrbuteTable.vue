@@ -1,6 +1,7 @@
 <template>
   <el-table :data='attributeList'
             border
+            :height='showBtn?"500":""'
             @selection-change="handleSelectionChange"
             style='width:100%;'>
     <el-table-column type="selection"
@@ -16,7 +17,7 @@
     <el-table-column prop="deci"
                      :min-width="minWidth"
                      label="D" />
-    <el-table-column label="Address"
+    <el-table-column label="Key: Address"
                      min-width="250">
       <template slot-scope="scope">
         <div>

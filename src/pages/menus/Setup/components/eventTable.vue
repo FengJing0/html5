@@ -1,6 +1,7 @@
 <template>
   <el-table :data='eventList'
             border
+            :height='showBtn?"500":""'
             @selection-change="handleSelectionChange"
             style="width: 100%">
     <el-table-column type="selection"

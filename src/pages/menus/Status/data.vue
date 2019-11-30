@@ -10,18 +10,18 @@
                  :value="item">
       </el-option>
     </el-select>
-    <el-table :data="tableData"
+    <el-table :data="data"
               v-if='tableData.length'
               border
+              height='500'
               class="table">
-      <el-table-column v-for="key in tableKey"
-                       :key='key'
-                       :prop="key"
-                       :label="key"
+      <el-table-column prop="prop"
+                       label="attrbute"
                        min-width="180">
-        <template slot-scope="scope">
-          <span>{{key==='tstp'?format(scope.row[key]): scope.row[key] }}</span>
-        </template>
+      </el-table-column>
+      <el-table-column prop="val"
+                       label="value"
+                       min-width="180">
       </el-table-column>
     </el-table>
     <div v-else
@@ -48,10 +48,28 @@ export default {
       return this.dataList.map(i => i.objn)
     },
     tableData () {
-      return this.dataList.filter(i => i.objn === this.objName)
+      return this.dataList.filter(i => i.objn === this.objName).map(i => {
+        if (i.tstp) {
+          i.tstp = this.format(i.tstp)
+        }
+        return i
+      })
     },
     tableKey () {
       return Object.keys(this.dataList[0])
+    },
+    data () {
+      let data = []
+      // this.tableData.foreach(())
+      this.tableKey.forEach(i => {
+        if (i !== 'objn') {
+          data.push({
+            prop: i,
+            val: this.tableData[0][i]
+          })
+        }
+      })
+      return data
     }
   },
   watch: {
@@ -66,7 +84,7 @@ export default {
   },
   methods: {
     format (time) {
-      return moment(time).format('YYYY-MM-DD HH:mm:ss')
+      return moment(time * 1000).format('YYYY-MM-DD HH:mm:ss')
     }
   }
 }

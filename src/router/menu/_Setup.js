@@ -1,4 +1,6 @@
-import { formatName } from '@/utils'
+import {
+  formatName
+} from '@/utils'
 
 const meta = {
   requiresAuth: true
@@ -34,6 +36,7 @@ export default {
     maker('edit', true),
     maker('eventSetup'),
     maker('overview'),
-    maker('script')
+    maker('script'),
+    maker('globalValiables')
   ]
 }

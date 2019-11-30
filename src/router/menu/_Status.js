@@ -33,7 +33,6 @@ export default {
   },
   children: [
     maker('data'),
-    maker('alarmList'),
-    maker('globalValiables')
+    maker('alarm')
   ]
 }

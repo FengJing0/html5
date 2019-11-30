@@ -6,17 +6,19 @@
       <ScriptTypeSelect v-model="type"
                         @delete='init' />
       <el-button class='dd-fr'
+                 type="primary"
                  @click='handleSubmit'>submit</el-button>
     </div>
     <el-table class="scriptTable"
+              height='500'
               :data='scriptData'
               border>
       <el-table-column label="stmt"
                        min-width="120">
         <template slot-scope="scope">
           <el-select v-model="scope.row.stmt"
-                     style='width:100%;'
-                     placeholder="">
+                     clearable
+                     style='width:100%;'>
             <el-option v-for="item in scriptList"
                        :key="item.val"
                        :label="item.val"
