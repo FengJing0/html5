@@ -1,7 +1,12 @@
 <template>
   <el-table :data='attributeList'
             border
+            @selection-change="handleSelectionChange"
             style='width:100%;'>
+    <el-table-column type="selection"
+                     v-if='showBtn'
+                     width="55">
+    </el-table-column>
     <el-table-column prop="attn"
                      :min-width="minWidth"
                      label="Name" />
@@ -60,6 +65,9 @@
 <script>
 export default {
   props: {
+    value: {
+      type: Array
+    },
     showBtn: {
       type: Boolean,
       default: false
@@ -75,15 +83,25 @@ export default {
   },
   data () {
     return {
-      minWidth: '130'
+      minWidth: '40',
+      multipleSelection: []
     }
   },
   methods: {
     addAddress (row) {
       this.$emit('add', row)
     },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+      this.$emit('input', this.multipleSelection)
+    },
     getFullName (pref, suff) {
       return `${pref}_${this.objectName}_${suff}`
+    }
+  },
+  watch: {
+    value (val) {
+      this.multipleSelection = val
     }
   }
 }

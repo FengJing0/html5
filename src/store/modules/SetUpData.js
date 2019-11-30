@@ -2,17 +2,15 @@ export default {
   state: {
     driverData: {
       chdv: '',
-      chnl: [
-        {
-          'tcph': '',
-          'tcpp': 0,
-          'ttyc': '',
-          'ttyb': 0,
-          'ttyd': 0,
-          'ttys': '',
-          'ttyp': ''
-        }
-      ]
+      chnl: [{
+        'tcph': '',
+        'tcpp': 0,
+        'ttyc': '',
+        'ttyb': 0,
+        'ttyd': 0,
+        'ttys': '',
+        'ttyp': ''
+      }]
     },
     objectData: [],
     eventData: []
@@ -28,23 +26,42 @@ export default {
     }
   },
   mutations: {
-    setAllData (state, { chnl, msgd, objd, chdv }) {
+    setAllData (state, {
+      chnl,
+      msgd,
+      objd,
+      chdv
+    }) {
       state.driverData.chdv = chdv || ''
       state.driverData.chnl = chnl
       state.objectData = objd
       state.eventData = msgd
     },
-    setDriverData (state, { chdv, chnl }) {
+    setDriverData (state, {
+      chdv,
+      chnl
+    }) {
       state.driverData.chdv = chdv
       state.driverData.chnl = chnl
     },
     addObjectData (state, objectData) {
       state.objectData.push(objectData)
     },
+    deleteObjectData (state, objNameList) {
+      state.objectData = state.objectData.filter(i => !objNameList.includes(i.objn))
+
+      console.log(state.objectData, objNameList)
+    },
     addEventData (state, eventData) {
       state.eventData.push(eventData)
     },
-    setObjectAttribute (state, { name, attributeList }) {
+    deleteEventData (state, eventDataList) {
+      state.eventData = state.eventData.filter(i => !eventDataList.includes(i))
+    },
+    setObjectAttribute (state, {
+      name,
+      attributeList
+    }) {
       state.objectData = state.objectData.map(i => {
         if (i.objn === name) {
           i.oatt = attributeList

@@ -1,10 +1,14 @@
 <template>
   <div>
     <div class="dd-mb">
-      <el-button @click='dialogTableVisible=true'>New Object</el-button>
+      <el-button @click='dialogTableVisible=true'
+                 type="primary">Create</el-button>
+      <el-button @click='handleDelete'
+                 type="danger">Delete</el-button>
     </div>
     <div class="row">
-      <ObjectTable />
+      <ObjectTable :showBtn='true'
+                   v-model="multipleSelection" />
     </div>
     <el-dialog @closed='close'
                :title='isDetail?"Object setup":"Object index setup"'
@@ -127,7 +131,8 @@ export default {
           { required: true, message: 'logging is required', trigger: 'blur' }
         ]
       },
-      objectIndexSetupList: []
+      objectIndexSetupList: [],
+      multipleSelection: []
     }
   },
   watch: {
@@ -175,7 +180,16 @@ export default {
         return i
       })
     },
-
+    handleDelete () {
+      this.$confirm('Are you sure delete these object?', 'delete object', {
+        confirmButtonText: 'yes',
+        cancelButtonText: 'no',
+        type: 'warning'
+      }).then(() => {
+        this.deleteObjectData(this.multipleSelection.map(i => i.objn))
+      }).catch(() => {
+      })
+    },
     close () {
       this.isDetail = true
       this.objectSetupFrom = {
@@ -184,7 +198,7 @@ export default {
       this.objectIndexSetupList = []
       this.$refs.objectSetupFrom && this.$refs.objectSetupFrom.clearValidate()
     },
-    ...mapMutations(['addObjectData'])
+    ...mapMutations(['addObjectData', 'deleteObjectData'])
   },
   components: {
     ObjectTable

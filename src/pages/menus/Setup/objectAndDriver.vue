@@ -6,7 +6,6 @@
       <div class="driverName">{{driverName}}</div>
       <div class="btnGroup">
         <DriverSetup />
-
       </div>
     </div>
     <div>

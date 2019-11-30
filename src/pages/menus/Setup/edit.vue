@@ -2,14 +2,19 @@
   <Container type="card-full"
              :scorll='false'>
     <div class="row">
-      <div class="dd-title">edit</div>
+      <div class="dd-title">Attribute</div>
       <el-button @click='$router.go(-1)'>Back</el-button>
+      <el-button @click='dialogTableVisible=true'
+                 type="primary">Create</el-button>
+      <el-button @click='handleDelete'
+                 type="danger">Delete</el-button>
       <el-button @click='handleSubmit'
-                 :disabled="!canSubmit">submit</el-button>
-      <el-button @click='dialogTableVisible=true'>New Attribute</el-button>
+                 type="primary"
+                 :disabled="!canSubmit">Submit</el-button>
     </div>
     <div>
-      <AttrbuteTable :attributeList='attributeList'
+      <AttrbuteTable v-model="multipleSelection"
+                     :attributeList='attributeList'
                      :showBtn='true'
                      :objectName='objn'
                      @add='addAddress' />
@@ -81,14 +86,17 @@
       <el-table :data='preAndSuff'
                 class="dd-mb"
                 border>
-        <el-table-column label="Index">
+        <el-table-column label="Index"
+                         :width="minWidth">
           <template slot-scope="scope">
             {{scope.row.obix+1}}
           </template>
         </el-table-column>
         <el-table-column prop="pref"
+                         :width="minWidth"
                          label="Prefix" />
         <el-table-column label="Suffix"
+                         :width="minWidth"
                          prop="suff" />
         <el-table-column label="Address">
           <template slot-scope="scope">
@@ -96,7 +104,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button @click='addressSubmit'>submit</el-button>
+      <el-button @click='addressSubmit'
+                 type="primary">submit</el-button>
     </el-dialog>
   </Container>
 </template>
@@ -109,6 +118,7 @@ import { mapState, mapMutations } from 'vuex'
 export default {
   data () {
     return {
+      minWidth: 80,
       objn: '',
       preAndSuff: [],
       dialogTableVisible: false,
@@ -142,7 +152,8 @@ export default {
       },
       AttributeTypeList: AttributeTypeList,
       addressVisible: false,
-      activeAttributeRow: {}
+      activeAttributeRow: {},
+      multipleSelection: []
     }
   },
   methods: {
@@ -167,7 +178,7 @@ export default {
     handleSubmit () {
       this.setObjectAttribute({ name: this.objn, attributeList: this.attributeList })
       this.$router.push({
-        name: 'configration-object'
+        name: 'Setup-objectAndDriver'
       })
     },
     addAddress (row) {
@@ -186,6 +197,23 @@ export default {
       this.preAndSuff = this.preAndSuff.map(i => {
         i.addr = ''
         return i
+      })
+    },
+    handleDelete () {
+      if (!this.multipleSelection.length) return
+      this.$confirm('Are you sure delete these attribute?', 'delete attribute', {
+        confirmButtonText: 'yes',
+        cancelButtonText: 'no',
+        type: 'warning'
+      }).then(() => {
+        const deleteList = this.multipleSelection.map(i => i.attn)
+        this.attributeList = this.attributeList.filter(i => !deleteList.includes(i.attn))
+        this.setObjectAttribute({ name: this.objn, attributeList: this.attributeList })
+        // this.$message({
+        //   type: 'success',
+        //   message: 'delete success'
+        // })
+      }).catch(() => {
       })
     },
     init () {

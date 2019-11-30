@@ -1,13 +1,17 @@
 <template>
   <Container type="card-full"
              :scorll='false'>
-    <div class="row">
-      <span class="dd-title">Event Setup</span>
-      <el-button @click='handleSubmit'
-                 :disabled="!msgd.length">submit</el-button>
-      <el-button @click='addEvent'>New Event</el-button>
+    <span class="dd-title">Event Setup</span>
+    <div class="row dd-mt">
+      <el-button @click='handleSubmit'>submit</el-button>
+      <el-button @click='addEvent'
+                 type="primary">Created</el-button>
+      <el-button @click='handleDelete'
+                 type="danger">Delete</el-button>
     </div>
-    <EventTable :eventList='msgd' />
+    <EventTable v-model="multipleSelection"
+                :showBtn='true'
+                :eventList='msgd' />
     <el-dialog title="Event Setup"
                @closed='close'
                :visible.sync="dialogTableVisible">
@@ -103,13 +107,14 @@ export default {
       eventFormRules: {},
       objectList: [],
       Operator,
-      EventCategory
+      EventCategory,
+      multipleSelection: []
     }
   },
-  beforeMount () {
+  created () {
     if (!this.resultData.length) {
       this.$message.error('please setup object!')
-      this.$router.push({ name: 'configration-object' })
+      this.$router.push({ name: 'Setup-objectAndDriver' })
     }
     this.init()
   },
@@ -124,7 +129,7 @@ export default {
       this.buildObjectList()
     },
     handleSubmit () {
-      this.$router.push({ name: 'configration-overview' })
+      this.$router.push({ name: 'Setup-overview' })
     },
     addEvent () {
       this.dialogTableVisible = true
@@ -172,7 +177,18 @@ export default {
       }
       return []
     },
-    ...mapMutations(['addEventData'])
+    handleDelete () {
+      if (!this.multipleSelection.length) return
+      this.$confirm('Are you sure delete these event?', 'delete event', {
+        confirmButtonText: 'yes',
+        cancelButtonText: 'no',
+        type: 'warning'
+      }).then(() => {
+        this.deleteEventData(this.multipleSelection)
+      }).catch(() => {
+      })
+    },
+    ...mapMutations(['addEventData', 'deleteEventData'])
   },
   components: {
     EventTable

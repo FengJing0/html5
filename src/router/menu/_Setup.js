@@ -34,6 +34,6 @@ export default {
     maker('edit', true),
     maker('eventSetup'),
     maker('overview'),
-    maker('setup')
+    maker('script')
   ]
 }

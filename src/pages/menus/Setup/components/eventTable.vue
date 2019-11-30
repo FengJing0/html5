@@ -1,7 +1,11 @@
 <template>
   <el-table :data='eventList'
             border
+            @selection-change="handleSelectionChange"
             style="width: 100%">
+    <el-table-column type="selection"
+                     v-if='showBtn'
+                     width="55" />
     <el-table-column :min-width="minWidth"
                      prop="sobj"
                      label="Object1" />
@@ -29,6 +33,13 @@
 <script>
 export default {
   props: {
+    value: {
+      type: Array
+    },
+    showBtn: {
+      type: Boolean,
+      default: false
+    },
     eventList: {
       type: Array,
       required: true
@@ -36,7 +47,19 @@ export default {
   },
   data () {
     return {
-      minWidth: '120'
+      minWidth: '120',
+      multipleSelection: []
+    }
+  },
+  methods: {
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+      this.$emit('input', this.multipleSelection)
+    }
+  },
+  watch: {
+    value (val) {
+      this.multipleSelection = val
     }
   }
 }

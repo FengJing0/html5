@@ -1,7 +1,11 @@
 <template>
   <el-table :data='objectList'
             border
+            @selection-change="handleSelectionChange"
             style="width: 100%">
+    <el-table-column type="selection"
+                     v-if='showBtn'
+                     width="55" />
     <el-table-column type="expand"
                      v-if="showAttr">
       <template slot-scope="props">
@@ -63,6 +67,9 @@ import { mapState } from 'vuex'
 import AttrbuteTable from './attrbuteTable'
 export default {
   props: {
+    value: {
+      type: Array
+    },
     showBtn: {
       type: Boolean,
       default: false
@@ -79,12 +86,22 @@ export default {
   },
   data () {
     return {
-      minWidth: '80px'
+      minWidth: '80px',
+      multipleSelection: []
     }
   },
   methods: {
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+      this.$emit('input', this.multipleSelection)
+    },
     go (row) {
-      this.$router.push({ name: 'configration-edit', params: { data: row.objn } })
+      this.$router.push({ name: 'Setup-edit', params: { data: row.objn } })
+    }
+  },
+  watch: {
+    value (val) {
+      this.multipleSelection = val
     }
   },
   components: {

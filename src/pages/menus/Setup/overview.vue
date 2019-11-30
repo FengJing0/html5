@@ -6,15 +6,13 @@
       <el-button @click="submit">submit</el-button>
     </div>
     <p>Driver Name: {{driverName}} &nbsp;&nbsp;&nbsp;&nbsp; {{driverType}}</p>
-    <div class="dd-mb"
-         v-if="showObject">
-      <p>Object</p>
+    <div class="dd-mb">
+      <p>Object:</p>
       <ObjectTable showAttr />
     </div>
 
-    <div class="dd-mb"
-         v-if="showEvent">
-      <p>Event</p>
+    <div class="dd-mb">
+      <p>Event:</p>
       <EventTable :eventList='res.msgd' />
     </div>
   </Container>
@@ -54,12 +52,6 @@ export default {
         return 'Serial drivers'
       }
       return ''
-    },
-    showObject () {
-      return this.res.objd && this.res.objd.length
-    },
-    showEvent () {
-      return this.res.msgd && this.res.msgd.length
     }
   },
   methods: {
