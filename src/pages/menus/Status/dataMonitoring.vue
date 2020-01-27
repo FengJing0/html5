@@ -37,6 +37,7 @@
           <div class='btn'
                v-if="scope.row.prop!=='tstp'">
             <el-button type="text"
+                       v-if="scope.row.writable"
                        @click='handleWrite(scope.row)'>write</el-button>
             <el-button type="text"
                        @click='handleShow(scope.row,"History")'>history</el-button>
@@ -54,6 +55,8 @@
                         :objName='objName' />
     <HistoryChartDialog ref='HistoryChartDialog'
                         :objName='objName' />
+    <WriteDialog ref='WriteDialog'
+                 :objName='objName' />
   </Container>
 </template>
 
@@ -70,7 +73,8 @@ export default {
   },
   computed: {
     ...mapState({
-      dataList: state => state.Status.alarmList
+      dataList: state => state.Status.alarmList,
+      objectData: state => state.SetUpData.objectData
     }),
     objList () {
       return this.dataList.map(i => i.objn)
@@ -88,11 +92,18 @@ export default {
     },
     data () {
       let data = []
+      let obj = this.objectData.find(i => i.objn === this.objName.split('_')[1])
+
+      obj = obj ? obj.oatt : []
+
       this.tableKey.forEach(i => {
         if (i !== 'objn') {
+          let attr = obj.find(j => j.attn === i)
+          attr = attr ? attr.attr : ''
           data.push({
             prop: i,
-            val: this.tableData[0][i]
+            val: this.tableData[0][i],
+            writable: attr.indexOf('W') !== -1
           })
         }
       })
@@ -111,7 +122,7 @@ export default {
   },
   methods: {
     handleWrite (row) {
-
+      this.$refs.WriteDialog.handleShow(row.prop)
     },
     handleShow (row, type) {
       this.$refs[type + 'ChartDialog'].handleShow(row)
@@ -122,7 +133,8 @@ export default {
   },
   components: {
     CurrentChartDialog: () => import('./components/CurrentChartDialog'),
-    HistoryChartDialog: () => import('./components/HistoryChartDialog')
+    HistoryChartDialog: () => import('./components/HistoryChartDialog'),
+    WriteDialog: () => import('./components/WriteDialog')
   }
 }
 </script>
