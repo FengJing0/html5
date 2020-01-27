@@ -32,6 +32,11 @@
     margin-bottom: 0;
   }
 }
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
 // 浮动相关
 .#{$prefix}-fl {
   float: left;

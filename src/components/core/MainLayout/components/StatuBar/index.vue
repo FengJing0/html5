@@ -1,18 +1,18 @@
 <template>
   <div class="statuBar">
-    <div>
+    <div :class="status.comm==='UP'?'green':'red'">
       COMM&nbsp;{{status.comm||''}}
     </div>
     <div>
       {{status.mach||''}}
     </div>
-    <div>
+    <div :class="status.mode==='ACTIVE'?'green':status.mach==='STANDBY'?'yellow':'red'">
       {{status.mode||''}}
     </div>
-    <div>
+    <div :class="status.mqcn==='MQDISCONNECT'?'red':'green'">
       {{status.mqcn||'MQDISCONNECT'}}
     </div>
-    <div>
+    <div :class="galm==='ALARM'?'red':'green'">
       {{galm}}
     </div>
   </div>
@@ -50,6 +50,15 @@ export default {
     line-height: 50px;
     font-size: $font-size-sub;
     font-weight: normal;
+  }
+  .red {
+    color: $color-danger;
+  }
+  .green {
+    color: $color-success;
+  }
+  .yellow {
+    color: $color-warning;
   }
 }
 </style>

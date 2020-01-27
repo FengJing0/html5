@@ -1,7 +1,7 @@
 <template>
   <el-table :data='attributeList'
             border
-            :height='showBtn?"500":""'
+            :height='showBtn?tableHeight:null'
             @selection-change="handleSelectionChange"
             style='width:100%;'>
     <el-table-column type="selection"
@@ -28,8 +28,8 @@
             &nbsp;
             {{item.addr}}
           </div>
-          <span v-if="!scope.row.aadd.length">-</span>
         </div>
+        <!-- <span>{{scope.row.aadd}}</span> -->
       </template>
     </el-table-column>
     <el-table-column prop="adis"
@@ -64,7 +64,9 @@
 </template>
 
 <script>
+import Mixins from '@/mixins'
 export default {
+  mixins: [Mixins],
   props: {
     value: {
       type: Array

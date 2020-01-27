@@ -3,7 +3,7 @@
        :class="theme">
     <div class="dd-layout-header">
       <div class="logo-group">
-        <p>Neuron</p>
+        <p>NEURON</p>
         <!-- <img v-if="collapse"
              src="@/assets/image/logo/header-icon-only.png">
         <img v-else
@@ -45,19 +45,23 @@ export default {
   data () {
     return {
       theme: 'default',
-      collapse: false,
+      collapse: false
       // content: '展开菜单',
       // hasSideMenu: false,
       // keepAliveList: ['configration_index'],
-      func: 22
     }
   },
   methods: {
     initData () {
-      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.receiveAlarmList }).set({ success: this.setData })
+      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.receiveAlarmList }).set({ success: this.setDevice }).set({ success: this.setData })
       this.$ws().send({
-        func: this.func
+        func: 22
       })
+      setTimeout(() => {
+        this.$ws().send({
+          func: 23
+        })
+      }, 500)
     },
     ...mapMutations([
       'setAllData',
@@ -65,9 +69,15 @@ export default {
       'setAlarmList'
     ]),
     setData (res) {
-      if (+res.func === this.func) {
+      if (+res.func === 22) {
         this.$ws().remove(this.setData)
         this.setAllData(res)
+      }
+    },
+    setDevice (data) {
+      if (+data.func === 23) {
+        this.$ws().remove(this.setDevice)
+        this.$store.commit('setDeviceList', data.rows)
       }
     },
     receiveStatus (data) {
@@ -81,7 +91,7 @@ export default {
       }
     }
   },
-  beforeMount () {
+  mounted () {
     this.initData()
   },
   beforeDestroy () {

@@ -22,36 +22,32 @@
 import indexMixin from '../mixins'
 import { mapGetters } from 'vuex'
 import { clone } from '@/utils'
-import { Ethernet, Serial } from '@/config'
-// import AttributeTable from './components/attrbuteTable'
 import EventTable from './components/eventTable'
 import ObjectTable from './components/objectTable'
 export default {
   mixins: [indexMixin],
   data () {
     return {
+      minWidth: '150',
       driverName: '',
-      minWidth: '150'
+      driverType: ''
     }
   },
   computed: {
     ...mapGetters(['res']),
-    driverType () {
-      const chdv = this.res.chdv
-      let tmp
-      tmp = Ethernet.filter(i => i.val === chdv)[0]
-      if (tmp) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.driverName = tmp.label
-        return 'Ethernet drivers'
-      }
-      tmp = Serial.filter(i => i.val === chdv)[0]
-      if (tmp) {
-        // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-        this.driverName = tmp.label
-        return 'Serial drivers'
-      }
-      return ''
+    driverList () {
+      return this.$store.state.Device.deviceList
+    }
+  },
+  watch: {
+    'res.chdv': {
+      handler (val) {
+        if (!val) return
+        let res = this.driverList.filter(i => i.val === this.res.chdv)
+        this.driverName = res.length ? res[0].label : ''
+        this.driverType = res.length ? res[0].type : ''
+      },
+      immediate: true
     }
   },
   methods: {
@@ -65,7 +61,6 @@ export default {
     }
   },
   components: {
-    // AttributeTable,
     EventTable,
     ObjectTable
   }
@@ -77,8 +72,5 @@ export default {
 .flex {
   display: flex;
   justify-content: space-between;
-  .dd-title {
-    // line-height: 48px;
-  }
 }
 </style>

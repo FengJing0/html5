@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="dd-mb">
+    <div class="dd-mb dd-fr">
       <el-button @click='dialogTableVisible=true'
                  type="primary">Create</el-button>
       <el-button @click='handleDelete'
@@ -182,8 +182,6 @@ export default {
     },
     handleDelete () {
       this.$confirm('Are you sure delete these object?', 'delete object', {
-        confirmButtonText: 'yes',
-        cancelButtonText: 'no',
         type: 'warning'
       }).then(() => {
         this.deleteObjectData(this.multipleSelection.map(i => i.objn))

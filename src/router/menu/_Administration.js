@@ -6,7 +6,7 @@ const meta = {
   requiresAuth: true
 }
 
-const moduleName = 'user'
+const moduleName = 'Administration'
 
 const maker = (path, hide) => {
   return {

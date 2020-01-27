@@ -1,32 +1,35 @@
 <template>
   <div class="login-page">
-    <div id="login"
-         class="layer bg"></div>
+    <div class="layer bg"></div>
     <div class="flex-center">
-      <div class="logo-group">
-        <!-- <img src="@/assets/image/logo/w500.png"
-             alt=""> -->
-      </div>
       <div class="form-group">
         <el-card>
           <el-form :model="formLogin"
                    :rules="rules"
+                   label-width="100px"
                    ref="loginForm">
-            <el-form-item prop="username">
+            <div class="logo-group">
+              <img src="@/assets/logo.jpg"
+                   alt="">
+            </div>
+            <el-form-item prop="username"
+                          label="Username:">
               <el-input type="text"
                         v-model="formLogin.username"
                         placeholder="username">
               </el-input>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="password"
+                          label="Password:">
               <el-input type="password"
                         v-model="formLogin.password"
                         placeholder="password">
               </el-input>
             </el-form-item>
-            <el-button @click="submit"
-                       type="primary"
-                       class="button-login">登陆</el-button>
+            <div class="button-login">
+              <el-button @click="submit"
+                         type="primary">Login</el-button>
+            </div>
           </el-form>
         </el-card>
       </div>
@@ -35,18 +38,12 @@
 </template>
 
 <script>
-import config from './config/default'
-// import Cookies from 'js-cookie'
-// 配置地址
-// https://vincentgarreau.com/particles.js/#default
-require('particles.js')
-
 export default {
   data () {
     return {
       formLogin: {
-        username: 'root',
-        password: '0000'
+        username: '',
+        password: ''
       },
       rules: {
         username: { required: true, trigger: 'blur' },
@@ -71,13 +68,20 @@ export default {
       })
     },
     init () {
-      window.particlesJS('login', config)
       sessionStorage.removeItem('user')
       this.$dataSource && this.$dataSource.close()
     }
   },
   mounted () {
     this.init()
+  },
+  created () {
+    if (this.$env) {
+      this.formLogin = {
+        username: 'root',
+        password: '0000'
+      }
+    }
   }
 }
 </script>
@@ -85,7 +89,7 @@ export default {
 <style lang="scss">
 @import "@/assets/style/public.scss";
 .login-page {
-  background-color: $color-primary;
+  background-color: $color-info;
   height: 100%;
   position: relative;
   // 层
@@ -114,27 +118,24 @@ export default {
   }
   // logo
   .logo-group {
-    margin-top: -145px;
-    position: relative;
-    top: 75px;
-    img {
-      height: 140px;
-    }
+    text-align: center;
+    margin-bottom: $margin;
   }
   // 登陆表单
   .form-group {
-    width: 300px;
+    width: 600px;
     // 重新设置卡片阴影
     .el-card {
-      box-shadow: 0 0 8px 0 rgba(232, 237, 250, 0.6),
-        0 2px 4px 0 rgba(232, 237, 250, 0.5);
-      .el-card__body {
-        padding-top: 70px;
-      }
+      box-shadow: 0 0 8px 0 rgba(232, 237, 250, 0.6), 0 2px 4px 0 #e8edfa80;
+      padding: 2 * $margin 0;
     }
     // 登陆按钮
     .button-login {
-      width: 100%;
+      button {
+        width: 300px;
+      }
+      margin-top: $margin;
+      text-align: center;
     }
     // 输入框左边的图表区域缩窄
     .el-input-group__prepend {

@@ -25,7 +25,7 @@ switch (process.env.NODE_ENV) {
   case 'development':
     Object.assign(config, {
       isDevelopment: true,
-      serverBaseUrl: 'ws://192.168.234.183:7681/'
+      serverBaseUrl: 'ws://192.168.234.176:7681/'
     })
     break
 }

@@ -1,16 +1,19 @@
 <template>
   <Container type="card-full"
              :scorll='false'>
-    <div class="row">
+    <div class="row flex">
       <div class="dd-title">Attribute</div>
-      <el-button @click='$router.go(-1)'>Back</el-button>
-      <el-button @click='dialogTableVisible=true'
-                 type="primary">Create</el-button>
-      <el-button @click='handleDelete'
-                 type="danger">Delete</el-button>
-      <el-button @click='handleSubmit'
-                 type="primary"
-                 :disabled="!canSubmit">Submit</el-button>
+      <div>
+        <el-button @click='$router.go(-1)'>Back</el-button>
+        <el-button @click='dialogTableVisible=true'
+                   type="primary">Create</el-button>
+        <el-button @click='handleDelete'
+                   type="danger">Delete</el-button>
+        <el-button @click='handleDummy'>Dummy</el-button>
+        <el-button @click='handleSubmit'
+                   type="primary"
+                   :disabled="!canSubmit">Submit</el-button>
+      </div>
     </div>
     <div>
       <AttrbuteTable v-model="multipleSelection"
@@ -82,6 +85,7 @@
       <el-button @click='submitAttributeSetupFrom'>submit</el-button>
     </el-dialog>
     <el-dialog title="Data Address Setup"
+               @closed='addressClosed'
                :visible.sync="addressVisible">
       <el-table :data='preAndSuff'
                 class="dd-mb"
@@ -123,9 +127,7 @@ export default {
       preAndSuff: [],
       dialogTableVisible: false,
       attributeList: [],
-      AttributeSetupFrom: {
-        aadd: []
-      },
+      AttributeSetupFrom: {},
       AttributeSetupFromRules: {
         attn: [
           { required: true, message: 'pleace input Name', trigger: 'blur' },
@@ -160,13 +162,19 @@ export default {
     close () {
 
     },
+    addressClosed () {
+      this.preAndSuff.addr = ''
+    },
     getFullName (pref, suff) {
       return `${pref}_${this.objn}_${suff}`
     },
     submitAttributeSetupFrom () {
       this.$refs.AttributeSetupFrom.validate((valid) => {
         if (valid) {
-          this.attributeList.push(clone(this.AttributeSetupFrom))
+          this.attributeList.push({
+            ...this.AttributeSetupFrom,
+            aadd: this.preAndSuff
+          })
           this.dialogTableVisible = false
           this.AttributeSetupFrom = {}
         } else {
@@ -184,7 +192,7 @@ export default {
     addAddress (row) {
       this.activeAttributeRow = row
       if (row.aadd.length) {
-        this.preAndSuff = row.aadd
+        this.preAndSuff = clone(row.aadd)
       }
       this.addressVisible = true
     },
@@ -202,19 +210,25 @@ export default {
     handleDelete () {
       if (!this.multipleSelection.length) return
       this.$confirm('Are you sure delete these attribute?', 'delete attribute', {
-        confirmButtonText: 'yes',
-        cancelButtonText: 'no',
         type: 'warning'
       }).then(() => {
         const deleteList = this.multipleSelection.map(i => i.attn)
         this.attributeList = this.attributeList.filter(i => !deleteList.includes(i.attn))
         this.setObjectAttribute({ name: this.objn, attributeList: this.attributeList })
-        // this.$message({
-        //   type: 'success',
-        //   message: 'delete success'
-        // })
       }).catch(() => {
       })
+    },
+    handleDummy () {
+      if (!this.multipleSelection.length) return
+      this.multipleSelection.forEach(i => {
+        i.attr = '-'
+        i.rtim = 0
+        i.aadd.forEach(j => {
+          j.addr = '-'
+          return j
+        })
+      })
+      console.log(this.multipleSelection)
     },
     init () {
       let name = this.$route.params.data
@@ -222,7 +236,16 @@ export default {
         this.objn = name
         this.objectData.some(i => {
           if (i.objn === name) {
-            this.preAndSuff = i.preAndSuff ? [...i.preAndSuff] : []
+            if (i.preAndSuff) {
+              this.preAndSuff = [...i.preAndSuff]
+            } else {
+              this.preAndSuff = i.oatt[0].aadd.map(i => ({
+                pref: i.pref,
+                obix: i.obix,
+                suff: i.suff,
+                addr: ''
+              }))
+            }
             if (i.oatt) {
               this.attributeList = i.oatt
             }
@@ -241,7 +264,7 @@ export default {
       return this.AttributeSetupFrom.attr && this.AttributeSetupFrom.attr !== 'W'
     },
     canSubmit () {
-      return this.attributeList.length && this.attributeList.every(i => i.aadd.length)
+      return this.attributeList.length && this.attributeList.every(i => !i.aadd.some(j => j.addr === ''))
     },
     ...mapState({
       objectData: state => state.SetUpData.objectData
@@ -252,7 +275,7 @@ export default {
       this.AttributeSetupFrom.deci = 0
     }
   },
-  beforeMount () {
+  created () {
     this.init()
   },
   beforeRouteEnter (to, from, next) {

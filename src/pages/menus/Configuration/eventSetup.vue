@@ -1,13 +1,15 @@
 <template>
   <Container type="card-full"
              :scorll='false'>
-    <span class="dd-title">Event Setup</span>
-    <div class="row dd-mt">
-      <el-button @click='handleSubmit'>submit</el-button>
-      <el-button @click='addEvent'
-                 type="primary">Created</el-button>
-      <el-button @click='handleDelete'
-                 type="danger">Delete</el-button>
+    <div class='flex dd-mb'>
+      <div class="dd-title">Event Setup</div>
+      <div>
+        <el-button @click='handleSubmit'>submit</el-button>
+        <el-button @click='addEvent'
+                   type="primary">Created</el-button>
+        <el-button @click='handleDelete'
+                   type="danger">Delete</el-button>
+      </div>
     </div>
     <EventTable v-model="multipleSelection"
                 :showBtn='true'
@@ -114,7 +116,7 @@ export default {
   created () {
     if (!this.resultData.length) {
       this.$message.error('please setup object!')
-      this.$router.push({ name: 'Setup-objectAndDriver' })
+      this.$router.push({ name: 'Configuration-objectSetup' })
     }
     this.init()
   },
@@ -129,7 +131,7 @@ export default {
       this.buildObjectList()
     },
     handleSubmit () {
-      this.$router.push({ name: 'Setup-overview' })
+      this.$router.push({ name: 'Configuration-overview' })
     },
     addEvent () {
       this.dialogTableVisible = true
@@ -180,8 +182,6 @@ export default {
     handleDelete () {
       if (!this.multipleSelection.length) return
       this.$confirm('Are you sure delete these event?', 'delete event', {
-        confirmButtonText: 'yes',
-        cancelButtonText: 'no',
         type: 'warning'
       }).then(() => {
         this.deleteEventData(this.multipleSelection)

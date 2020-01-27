@@ -1,6 +1,6 @@
-import Setup from './_Setup'
+import Setup from './_Configuration'
 import Status from './_Status'
-import user from './_user'
+import user from './_Administration'
 
 // 菜单
 export const menu = [
@@ -15,7 +15,7 @@ export const router = [{
     requiresAuth: true
   },
   redirect: {
-    name: 'Status-data'
+    name: 'Status-dataMonitoring'
   }
 },
 Status, Setup, user

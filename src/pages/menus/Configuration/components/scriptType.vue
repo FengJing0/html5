@@ -1,5 +1,7 @@
 <template>
   <div style="display:inline-block;">
+    <span>subroutine:</span>
+    &nbsp;&nbsp;
     <el-select v-model="scriptType.subr"
                @change="handleSelect"
                placeholder="">
@@ -15,7 +17,7 @@
     <el-button @click='handleCreate'
                type="primary">create</el-button>
 
-    <el-dialog title="提示"
+    <el-dialog title="Create Subroutine"
                @closed='handleClose'
                :visible.sync="dialogVisible">
       <el-form :model="subroutineForm"
@@ -32,9 +34,9 @@
         </el-form-item>
       </el-form>
       <template slot="footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">cancel</el-button>
         <el-button type="primary"
-                   @click="handleSubmit">确 定</el-button>
+                   @click="handleSubmit">submit</el-button>
       </template>
     </el-dialog>
   </div>
@@ -76,26 +78,38 @@ export default {
     setSubroutineList (data) {
       if (data.func === 32) {
         this.$ws().remove(this.setSubroutineList)
-        this.scriptTypeList.unshift(...data.rows)
+        data.rows.forEach(i => {
+          if (!this.scriptTypeList.some(j => j.subr === i.subr)) {
+            this.scriptTypeList.unshift({
+              subr: i.subr,
+              name: `${i.subr}     ${i.name}`
+            })
+          }
+        })
       }
     },
     handleCreate () {
       this.dialogVisible = true
     },
     handleDelete () {
-      const list = [-10, -20, -30]
-      if (this.scriptType.subr && !list.includes(this.scriptType.subr)) {
-        this.$ws().send({ func: 35, subr: this.scriptType.subr })
-        const res = this.scriptTypeList.filter(i => list.includes(i.subr) || (i.subr !== this.scriptType.subr))
-        if (res.length !== this.scriptTypeList.length) {
-          this.scriptTypeList = res
-          this.scriptType = {
-            name: '',
-            subr: ''
+      this.$confirm('Are you sure delete this subroutine?', 'Delete', {
+        type: 'warning'
+      }).then(() => {
+        const list = [-10, -20, -30]
+        if (this.scriptType.subr && !list.includes(this.scriptType.subr)) {
+          this.$ws().send({ func: 35, subr: this.scriptType.subr })
+          const res = this.scriptTypeList.filter(i => list.includes(i.subr) || (i.subr !== this.scriptType.subr))
+          if (res.length !== this.scriptTypeList.length) {
+            this.scriptTypeList = res
+            this.scriptType = {
+              name: '',
+              subr: ''
+            }
           }
+          this.$emit('delete')
         }
-        this.$emit('delete')
-      }
+      }).catch(() => {
+      })
     },
     handleClose () {
       this.$refs.subroutineForm.resetFields()
@@ -109,10 +123,8 @@ export default {
         if (valid) {
           const { name, subr } = this.subroutineForm
           if (!this.scriptTypeList.some(i => i.subr === subr)) {
-            this.scriptTypeList.push({
-              name,
-              subr
-            })
+            this.$emit('submit', name, subr)
+            this.init()
             this.dialogVisible = false
           }
         } else {

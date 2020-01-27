@@ -22,9 +22,7 @@ export default {
       })
     },
     loginOut () {
-      this.$confirm('确定退出登录吗?', '退出登录', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$confirm('Are you sure logout', 'Logout', {
         type: 'warning'
       }).then(() => {
         this.$ws().close()

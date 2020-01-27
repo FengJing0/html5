@@ -1,7 +1,7 @@
 <template>
   <el-table :data='objectList'
             border
-            :height='showBtn?"500":""'
+            :height='showBtn?tableHeight:null'
             @selection-change="handleSelectionChange"
             style="width: 100%">
     <el-table-column type="selection"
@@ -64,9 +64,11 @@
 </template>
 
 <script>
+import Mixins from '@/mixins'
 import { mapState } from 'vuex'
 import AttrbuteTable from './attrbuteTable'
 export default {
+  mixins: [Mixins],
   props: {
     value: {
       type: Array
@@ -97,7 +99,7 @@ export default {
       this.$emit('input', this.multipleSelection)
     },
     go (row) {
-      this.$router.push({ name: 'Setup-edit', params: { data: row.objn } })
+      this.$router.push({ name: 'Configuration-edit', params: { data: row.objn } })
     }
   },
   watch: {

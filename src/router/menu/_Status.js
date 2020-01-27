@@ -32,7 +32,7 @@ export default {
     name: `${moduleName}-data`
   },
   children: [
-    maker('data'),
-    maker('alarm')
+    maker('dataMonitoring'),
+    maker('currentAlarmStatus')
   ]
 }

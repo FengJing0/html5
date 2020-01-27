@@ -6,7 +6,7 @@ const meta = {
   requiresAuth: true
 }
 
-const moduleName = 'Setup'
+const moduleName = 'Configuration'
 
 const maker = (path, hide) => {
   return {
@@ -29,14 +29,14 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-objectAndDriver`
+    name: `${moduleName}-objectSetup`
   },
   children: [
-    maker('objectAndDriver'),
+    maker('objectSetup'),
     maker('edit', true),
     maker('eventSetup'),
     maker('overview'),
-    maker('script'),
-    maker('globalValiables')
+    maker('globalValiables'),
+    maker('scriptProgramming')
   ]
 }

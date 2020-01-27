@@ -1,7 +1,7 @@
 <template>
   <el-table :data='eventList'
             border
-            :height='showBtn?"500":""'
+            :height='showBtn?tableHeight:null'
             @selection-change="handleSelectionChange"
             style="width: 100%">
     <el-table-column type="selection"
@@ -32,7 +32,9 @@
 </template>
 
 <script>
+import Mixins from '@/mixins'
 export default {
+  mixins: [Mixins],
   props: {
     value: {
       type: Array

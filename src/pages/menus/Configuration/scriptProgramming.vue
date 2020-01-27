@@ -1,16 +1,20 @@
 <template>
   <Container type="card-full"
              :scorll='false'>
-    <div class="dd-title">Script</div>
-    <div class='row'>
-      <ScriptTypeSelect v-model="type"
-                        @delete='init' />
-      <el-button class='dd-fr'
-                 type="primary"
-                 @click='handleSubmit'>submit</el-button>
+    <div class="flex">
+      <div class="dd-title">Script Programming</div>
+      <div class='row'>
+        <ScriptTypeSelect v-model="type"
+                          @delete='init'
+                          @submit="submit" />
+        &nbsp;&nbsp;
+        <el-button class='dd-fr'
+                   type="primary"
+                   @click='handleSubmit'>submit</el-button>
+      </div>
     </div>
     <el-table class="scriptTable"
-              height='500'
+              :height='tableHeight'
               :data='scriptData'
               border>
       <el-table-column label="stmt"
@@ -31,12 +35,19 @@
                        min-width="300">
         <template slot-scope="scope">
           <el-input placeholder=""
-                    :ref='"input-"+scope.$index'
-                    @keyup.enter.native='add(scope.$index)'
-                    @keyup.up.native='moveUp(scope.$index)'
-                    @keyup.down.native='moveDown(scope.$index)'
                     v-model="scope.row.expr">
           </el-input>
+        </template>
+      </el-table-column>
+      <el-table-column label="edit"
+                       min-width="60">
+        <template slot-scope="scope">
+          <div class='btn'>
+            <i class="el-icon-circle-plus plus"
+               @click='add(scope.$index)'></i>&nbsp;
+            <i class="el-icon-remove remove"
+               @click='remove(scope.$index)'></i>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -62,7 +73,7 @@ export default {
   methods: {
     init () {
       this.scriptData = []
-      let i = 10
+      let i = 6
       while (i--) {
         this.scriptData.push({
           stmt: '',
@@ -90,11 +101,22 @@ export default {
     },
     handleSubmit () {
       if (!this.type.subr) {
-        this.$message.error('选择')
+        this.$message.error('select a subroutine')
         return
       }
-      const rows = this.scriptData
-      const { name, subr } = this.type
+      this.$confirm('Are you sure submit these script programming', 'Submit', {
+        type: 'warning'
+      }).then(() => {
+        const rows = this.scriptData
+        const { name, subr } = this.type
+        this.submit(name, subr, rows)
+      }).catch(() => {
+      })
+    },
+    submit (name, subr, rows) {
+      if (!rows) {
+        rows = []
+      }
       this.$ws().set().send({
         func: 34,
         csub: 0,
@@ -103,22 +125,12 @@ export default {
         nrow: rows.length,
         rows
       })
-      // console.log(list)
     },
     add (index) {
-      if (index === this.scriptData.length - 1) {
-        this.scriptData.push({ stmt: '', expr: '' })
-      }
+      this.scriptData.splice(index + 1, 0, { stmt: '', expr: '' })
     },
-    moveUp (index) {
-      if (index > 0) {
-        this.$refs['input-' + (index - 1)].focus()
-      }
-    },
-    moveDown (index) {
-      if (index < this.scriptData.length - 1) {
-        this.$refs['input-' + (index + 1)].focus()
-      }
+    remove (index) {
+      this.scriptData.splice(index, 1)
     }
   },
   watch: {
@@ -126,6 +138,11 @@ export default {
       if (val) {
         this.readSubroutine(val)
       }
+    }
+  },
+  computed: {
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 50
     }
   },
   components: {
@@ -142,6 +159,17 @@ export default {
   }
   /deep/td {
     padding: 10px 0;
+  }
+}
+.btn {
+  font-size: 24px;
+  .plus {
+    color: $color-primary;
+    cursor: pointer;
+  }
+  .remove {
+    color: $color-danger;
+    cursor: pointer;
   }
 }
 </style>
