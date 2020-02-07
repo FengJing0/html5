@@ -87,7 +87,7 @@ export default {
         'frhr': start.getHours(),
         'frmi': start.getMinutes(),
         'toyr': end.getFullYear(),
-        'tomo': end.getFullYear(),
+        'tomo': end.getMonth() + 1,
         'toda': end.getDate(),
         'tohr': end.getHours(),
         'tomi': end.getMinutes()

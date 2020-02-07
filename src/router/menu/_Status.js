@@ -29,7 +29,7 @@ export default {
   component: () => import('@/components/core/MainLayout/index.vue'),
   meta,
   redirect: {
-    name: `${moduleName}-data`
+    name: `${moduleName}-dataMonitoring`
   },
   children: [
     maker('dataMonitoring'),

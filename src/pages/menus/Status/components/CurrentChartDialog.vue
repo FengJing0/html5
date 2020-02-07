@@ -63,10 +63,10 @@ export default {
         if (this.chartInstance && this.dialogVisible) {
           const dataList = this.option.series
           const timeList = this.option.xAxis.data
-          if (dataList[0].data.length > 50) {
-            dataList.forEach(i => i.data.shift())
-            timeList.shift()
-          }
+          // if (dataList[0].data.length > 50) {
+          //   dataList.forEach(i => i.data.shift())
+          //   timeList.shift()
+          // }
           dataList.forEach(i => {
             i.data.push(this.status[i.name])
           })

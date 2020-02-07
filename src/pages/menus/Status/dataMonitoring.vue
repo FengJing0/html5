@@ -116,8 +116,7 @@ export default {
         if (val.length && this.objName === '') {
           this.objName = val[0]
         }
-      },
-      deep: true
+      }
     }
   },
   methods: {
