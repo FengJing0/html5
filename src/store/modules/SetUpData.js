@@ -49,8 +49,6 @@ export default {
     },
     deleteObjectData (state, objNameList) {
       state.objectData = state.objectData.filter(i => !objNameList.includes(i.objn))
-
-      console.log(state.objectData, objNameList)
     },
     addEventData (state, eventData) {
       state.eventData.push(eventData)

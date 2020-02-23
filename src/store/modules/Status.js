@@ -1,7 +1,8 @@
 export default {
   state: {
     status: {},
-    alarmList: []
+    alarmList: [],
+    writableList: []
   },
   mutations: {
     setAlarmStatus (state, data) {
@@ -9,6 +10,9 @@ export default {
     },
     setAlarmList (state, data) {
       state.alarmList = data
+    },
+    setWritableList (state, writableList) {
+      state.writableList = writableList
     }
   }
 }

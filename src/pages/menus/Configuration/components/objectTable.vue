@@ -49,7 +49,7 @@
                      :width="minWidth"
                      label="L">
       <template slot-scope='scope'>
-        {{scope.row.disp?'YES':'NO'}}
+        {{scope.row.logs?'YES':'NO'}}
       </template>
     </el-table-column>
     <el-table-column label="Attribute"

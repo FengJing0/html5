@@ -53,9 +53,12 @@ export default {
   },
   methods: {
     initData () {
-      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.receiveAlarmList }).set({ success: this.setDevice }).set({ success: this.setData })
+      this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.receiveAlarmList }).set({ success: this.setDevice }).set({ success: this.setData }).set({ success: this.getWritableObj })
       this.$ws().send({
         func: 22
+      })
+      this.$ws().send({
+        func: 60
       })
       setTimeout(() => {
         this.$ws().send({
@@ -78,6 +81,12 @@ export default {
       if (+data.func === 23) {
         this.$ws().remove(this.setDevice)
         this.$store.commit('setDeviceList', data.rows)
+      }
+    },
+    getWritableObj (data) {
+      if (+data.func === 60) {
+        this.$ws().remove(this.getWritableObj)
+        this.$store.commit('setWritableList', data.tele)
       }
     },
     receiveStatus (data) {

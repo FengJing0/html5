@@ -33,6 +33,7 @@ export default {
   },
   children: [
     maker('dataMonitoring'),
-    maker('currentAlarmStatus')
+    maker('currentAlarmStatus'),
+    maker('historicalAlarms')
   ]
 }

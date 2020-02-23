@@ -74,7 +74,8 @@ export default {
   computed: {
     ...mapState({
       dataList: state => state.Status.alarmList,
-      objectData: state => state.SetUpData.objectData
+      objectData: state => state.SetUpData.objectData,
+      writableList: state => state.Status.writableList
     }),
     objList () {
       return this.dataList.map(i => i.objn)
@@ -88,22 +89,20 @@ export default {
       })
     },
     tableKey () {
-      return Object.keys(this.dataList[0])
+      return Object.keys(this.tableData[0])
+    },
+    currentWritableData () {
+      return this.writableList.find(j => j.objn === this.objName)
     },
     data () {
       let data = []
-      let obj = this.objectData.find(i => i.objn === this.objName.split('_')[1])
-
-      obj = obj ? obj.oatt : []
 
       this.tableKey.forEach(i => {
         if (i !== 'objn') {
-          let attr = obj.find(j => j.attn === i)
-          attr = attr ? attr.attr : ''
           data.push({
             prop: i,
             val: this.tableData[0][i],
-            writable: attr.indexOf('W') !== -1
+            writable: !!this.currentWritableData[i]
           })
         }
       })

@@ -3,8 +3,7 @@
              :visible.sync="dialogVisible"
              width="900px"
              @closed="handleClose">
-    <div v-if='step===1'
-         class="select">
+    <div class="select">
       <el-date-picker v-model="time"
                       range-separator="-"
                       start-placeholder="start"
@@ -12,15 +11,15 @@
                       type="datetimerange">
       </el-date-picker>
       &nbsp;&nbsp;&nbsp;&nbsp;
-      <el-button @click="handleSubmit">submit</el-button>
+      <el-button @click="handleSubmit(-1)">submit</el-button>
     </div>
     <div :style="chartStyle"
-         v-else
          ref="chartContainer"></div>
   </el-dialog>
 </template>
 
 <script>
+import moment from 'moment'
 import charts from 'echarts'
 export default {
   props: {
@@ -34,7 +33,6 @@ export default {
       dialogVisible: false,
       chartInstance: null,
       propName: null,
-      step: 1,
       params: {},
       time: [new Date(), new Date()],
       option: {
@@ -67,20 +65,20 @@ export default {
         width: '900px',
         height: '700px'
       }
+    },
+    status () {
+      return this.$store.state.Status.alarmList.find(i => i.objn === this.objName)
     }
   },
-  watch: {
-
-  },
   methods: {
-    handleSubmit () {
+    handleSubmit (tokn) {
       const [start, end] = this.time
       this.params = {
         'func': 82,
         'srcn': this.objName,
         'attn': this.propName || '',
         'fend': 0,
-        'tokn': -1,
+        'tokn': tokn,
         'fryr': start.getFullYear(),
         'frmo': start.getMonth() + 1,
         'frda': start.getDate(),
@@ -92,12 +90,24 @@ export default {
         'tohr': end.getHours(),
         'tomi': end.getMinutes()
       }
-      this.step = 2
       this.$ws().set({ success: this.setData }).send(this.params)
     },
     setData (data) {
       if (data.func === 82) {
-        console.log(data)
+        data.tele && data.tele.forEach(i => {
+          const dataList = this.option.series
+          const timeList = this.option.xAxis.data
+          dataList.forEach(j => j.data.push(i[j.name]))
+          timeList.push(moment(i.tstp * 1000).format('YYYY-MM-DD HH:mm:ss'))
+        })
+        if (data.tokn) {
+          if (data.tokn === -1) {
+            this.chartInstance.setOption(this.option)
+            this.$ws().remove(this.setData)
+          } else {
+            this.handleSubmit(data.tokn)
+          }
+        }
       }
     },
     initChart () {
@@ -127,14 +137,14 @@ export default {
       this.option.series = []
       this.option.xAxis.data = []
       this.propName = null
-      this.step = 1
       this.params = {}
-      // this.chartInstance.clear()
+      this.chartInstance.clear()
     },
     handleShow (row, type) {
+      this.time = [new Date(), new Date()]
       this.propName = row ? row.prop : null
       this.dialogVisible = true
-      // this.$nextTick(this.initChart)
+      this.$nextTick(this.initChart)
     }
   }
 }

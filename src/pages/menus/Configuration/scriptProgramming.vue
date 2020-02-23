@@ -34,7 +34,11 @@
       <el-table-column label="expr"
                        min-width="300">
         <template slot-scope="scope">
+          <el-input-number v-if='scope.row.stmt==="POS"'
+                           v-model="scope.row.expr"
+                           :controls='false'></el-input-number>
           <el-input placeholder=""
+                    v-else
                     v-model="scope.row.expr">
           </el-input>
         </template>
@@ -170,6 +174,13 @@ export default {
   .remove {
     color: $color-danger;
     cursor: pointer;
+  }
+}
+
+/deep/.el-input-number {
+  width: 100%;
+  .el-input__inner {
+    text-align: left;
   }
 }
 </style>

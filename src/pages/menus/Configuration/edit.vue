@@ -232,10 +232,12 @@ export default {
     },
     init () {
       let name = this.$route.params.data
+      console.log(name)
       if (name) {
         this.objn = name
         this.objectData.some(i => {
           if (i.objn === name) {
+            console.log(i)
             if (i.preAndSuff) {
               this.preAndSuff = [...i.preAndSuff]
             } else {
