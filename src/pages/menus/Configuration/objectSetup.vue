@@ -3,7 +3,7 @@
              :scorll='false'>
     <div class="row flex">
       <div class="dd-title">Object Setup</div>
-      <div class="driverName">{{driverName}}</div>
+      <div class="driverName">{{deviceObj.label}}</div>
       <div class="btnGroup">
         <DriverSetup />
       </div>
@@ -19,20 +19,15 @@ import indexMixin from '../mixins'
 import DriverSetup from './components/driverSetup'
 import ObjectSetup from './components/objectSetup'
 // import { Ethernet, Serial } from '@/config/index'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
   mixins: [indexMixin],
   computed: {
+    ...mapGetters(['deviceObj']),
     ...mapState({
-      driverData: state => state.SetUpData.driverData
-    }),
-    driverName () {
-      let res = this.driverList.filter(i => i.val === this.driverData.chdv)
-      return res.length ? res[0].label : ''
-    },
-    driverList () {
-      return this.$store.state.Device.deviceList
-    }
+      driverData: state => state.SetUpData.driverData,
+      driverList: state => state.Device.deviceList
+    })
   },
   components: {
     DriverSetup,

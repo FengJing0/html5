@@ -72,6 +72,11 @@ export default {
   beforeMount () {
     this.init()
   },
+  computed: {
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 50
+    }
+  },
   methods: {
     init () {
       this.$ws().set({ success: this.readGlobalVariable }).send({ func: this.func })

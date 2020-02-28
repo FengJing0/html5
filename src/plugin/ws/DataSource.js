@@ -45,16 +45,31 @@ class DataSource {
         }
         var txt = JSON.stringify(j)
         this.websocket.send(txt)
-        resolve({
-          name: this.name,
-          pass: this.pass
-        })
       })
       this.websocket.onclose = this.onclose
       this.websocket.onerror = this.onerror
-      this.set()
+      this.set({
+        success: (data) => {
+          if (data.func === 10) {
+            if (data.errc) {
+              dataSource = null
+            } else {
+              resolve({
+                name: this.name,
+                pass: this.pass
+              })
+            }
+          }
+        }
+      })
     })
   }
+  // login (data) {
+  //   if (data.func === 10) {
+  //     this.remove(this.login)
+  //     console.log(data)
+  //   }
+  // }
   close () {
     if (this.websocket) {
       this.websocket.close()

@@ -51,7 +51,7 @@
                            :precision='0'
                            :min="0" />
         </el-form-item>
-        <el-form-item label="Display"
+        <el-form-item label="Visible"
                       prop="adis">
           <el-radio-group v-model="AttributeSetupFrom.adis">
             <el-radio :label="1">Yes</el-radio>
@@ -70,7 +70,7 @@
           <el-radio-group v-model="AttributeSetupFrom.attr">
             <el-radio label="R">R</el-radio>
             <el-radio label="W">W</el-radio>
-            <el-radio label="R/W">R/W</el-radio>
+            <el-radio label="RW">RW</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="Read time"
@@ -166,14 +166,16 @@ export default {
       this.preAndSuff.addr = ''
     },
     getFullName (pref, suff) {
-      return `${pref}_${this.objn}_${suff}`
+      pref = pref ? pref + '_' : ''
+      suff = suff ? '_' + suff : ''
+      return pref + this.objn + suff
     },
     submitAttributeSetupFrom () {
       this.$refs.AttributeSetupFrom.validate((valid) => {
         if (valid) {
           this.attributeList.push({
             ...this.AttributeSetupFrom,
-            aadd: this.preAndSuff
+            aadd: clone(this.preAndSuff)
           })
           this.dialogTableVisible = false
           this.AttributeSetupFrom = {}
@@ -186,7 +188,7 @@ export default {
     handleSubmit () {
       this.setObjectAttribute({ name: this.objn, attributeList: this.attributeList })
       this.$router.push({
-        name: 'Setup-objectAndDriver'
+        name: 'Configuration-objectSetup'
       })
     },
     addAddress (row) {
@@ -228,7 +230,6 @@ export default {
           return j
         })
       })
-      console.log(this.multipleSelection)
     },
     init () {
       let name = this.$route.params.data
@@ -237,7 +238,6 @@ export default {
         this.objn = name
         this.objectData.some(i => {
           if (i.objn === name) {
-            console.log(i)
             if (i.preAndSuff) {
               this.preAndSuff = [...i.preAndSuff]
             } else {

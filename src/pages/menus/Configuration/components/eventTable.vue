@@ -27,7 +27,7 @@
                      label="Category" />
     <el-table-column prop="subr"
                      :min-width="minWidth"
-                     label="Sub" />
+                     label="Subroutine" />
   </el-table>
 </template>
 
@@ -63,6 +63,11 @@ export default {
   watch: {
     value (val) {
       this.multipleSelection = val
+    }
+  },
+  computed: {
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 50
     }
   }
 }

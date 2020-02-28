@@ -153,20 +153,21 @@ export default {
     },
     buildObjectList () {
       let list = []
+
       for (let j = 0, jlen = this.resultData ? this.resultData.length : 0; j < jlen; j++) {
         const data = this.resultData[j]
-        for (let i = 0, objd = data.objd || [], len = objd.length; i < len; i++) {
-          const { objn, preAndSuff, oatt } = objd[i]
-          const attr = oatt.map(i => i.attn)
-          for (let j = 0, psLen = preAndSuff.length; j < psLen; j++) {
-            list.push({
-              name: `${preAndSuff[j]['pref']}_${objn}_${preAndSuff[j]['suff']}`,
-              attr
-            })
-          }
+        const { objn, preAndSuff, oatt } = data
+        const attr = oatt.map(i => i.attn)
+        for (let i = 0, psLen = preAndSuff.length; i < psLen; i++) {
+          let { pref, suff } = preAndSuff[i]
+          pref = pref ? pref + '_' : ''
+          suff = suff ? '_' + suff : ''
+          list.push({
+            name: pref + objn + suff,
+            attr
+          })
         }
       }
-
       this.objectList = Object.freeze(list)
     },
     filterAttrList (val) {

@@ -23,31 +23,31 @@
                      label="Name"
                      min-width="200" />
     <el-table-column prop="obsz"
-                     :min-width="50"
+                     :width="60"
                      label="Size" />
     <el-table-column prop="updt"
-                     :width="100"
-                     label="Time" />
+                     :width="140"
+                     label="Update Time" />
     <el-table-column prop="logt"
-                     :width="100"
-                     label="Logs" />
+                     :width="120"
+                     label="Log Time" />
     <el-table-column prop="tstd"
-                     :width="minWidth"
-                     label="T">
+                     :width="120"
+                     label="Timestamp">
       <template slot-scope='scope'>
         {{scope.row.tstd?'YES':'NO'}}
       </template>
     </el-table-column>
     <el-table-column prop="disp"
                      :width="minWidth"
-                     label="D">
+                     label="Visible">
       <template slot-scope='scope'>
         {{scope.row.disp?'YES':'NO'}}
       </template>
     </el-table-column>
     <el-table-column prop="logs"
                      :width="minWidth"
-                     label="L">
+                     label="Logging">
       <template slot-scope='scope'>
         {{scope.row.logs?'YES':'NO'}}
       </template>
@@ -85,11 +85,14 @@ export default {
   computed: {
     ...mapState({
       objectList: state => state.SetUpData.objectData
-    })
+    }),
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 80
+    }
   },
   data () {
     return {
-      minWidth: '80px',
+      minWidth: '100px',
       multipleSelection: []
     }
   },

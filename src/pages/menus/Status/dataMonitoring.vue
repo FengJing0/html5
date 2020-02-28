@@ -23,6 +23,16 @@
               border
               :height='tableHeight'
               class="table">
+      <el-table-column width="55">
+        <template slot="header">
+          <el-checkbox @change='handleCheckAll'></el-checkbox>
+        </template>
+        <template slot-scope="scope">
+          <el-checkbox v-model="scope.row.checked"
+                       v-if='scope.row.prop!=="Time"'
+                       @change='handleCheck($event,scope.row)'></el-checkbox>
+        </template>
+      </el-table-column>
       <el-table-column prop="prop"
                        label="attrbute"
                        min-width="180">
@@ -35,7 +45,7 @@
                        width="170">
         <template slot-scope="scope">
           <div class='btn'
-               v-if="scope.row.prop!=='tstp'">
+               v-if="scope.row.prop!=='Time'">
             <el-button type="text"
                        v-if="scope.row.writable"
                        @click='handleWrite(scope.row)'>write</el-button>
@@ -52,8 +62,10 @@
       NO DATA
     </div>
     <CurrentChartDialog ref='CurrentChartDialog'
+                        :props='multipleSelection'
                         :objName='objName' />
     <HistoryChartDialog ref='HistoryChartDialog'
+                        :props='multipleSelection'
                         :objName='objName' />
     <WriteDialog ref='WriteDialog'
                  :objName='objName' />
@@ -68,7 +80,9 @@ export default {
   mixins: [Mixins],
   data () {
     return {
-      objName: ''
+      objName: '',
+      multipleSelection: [],
+      checkedAll: true
     }
   },
   computed: {
@@ -77,12 +91,15 @@ export default {
       objectData: state => state.SetUpData.objectData,
       writableList: state => state.Status.writableList
     }),
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 50
+    },
     objList () {
       return this.dataList.map(i => i.objn)
     },
     tableData () {
       return this.dataList.filter(i => i.objn === this.objName).map(i => {
-        if (i.tstp) {
+        if (i && i.tstp) {
           i.tstp = this.format(i.tstp)
         }
         return i
@@ -92,17 +109,19 @@ export default {
       return Object.keys(this.tableData[0])
     },
     currentWritableData () {
-      return this.writableList.find(j => j.objn === this.objName)
+      return this.writableList.find(j => j.objn === this.objName) || {}
     },
     data () {
       let data = []
 
       this.tableKey.forEach(i => {
         if (i !== 'objn') {
+          const checked = this.multipleSelection.find(j => j.prop === i)
           data.push({
-            prop: i,
+            prop: i === 'tstp' ? 'Time' : i,
             val: this.tableData[0][i],
-            writable: !!this.currentWritableData[i]
+            writable: !!this.currentWritableData[i],
+            checked: checked ? checked.check : false
           })
         }
       })
@@ -116,6 +135,14 @@ export default {
           this.objName = val[0]
         }
       }
+    },
+    objName: {
+      handler () {
+        this.multipleSelection = this.tableKey.map(i => ({
+          prop: i,
+          check: false
+        }))
+      }
     }
   },
   methods: {
@@ -124,6 +151,18 @@ export default {
     },
     handleShow (row, type) {
       this.$refs[type + 'ChartDialog'].handleShow(row)
+    },
+    handleCheck (e, row) {
+      this.multipleSelection.forEach(i => {
+        if (i.prop === row.prop) {
+          i.check = e
+        }
+      })
+    },
+    handleCheckAll (val) {
+      this.multipleSelection.forEach(i => {
+        i.check = val
+      })
     },
     format (time) {
       return moment(time * 1000).format('YYYY-MM-DD HH:mm:ss')

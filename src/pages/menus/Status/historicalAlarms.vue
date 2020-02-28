@@ -96,7 +96,7 @@ export default {
     return {
       data: [],
       params: {},
-      time: [new Date(), new Date()],
+      time: [moment().subtract(1, 'hours'), moment()],
       srch: '',
       srchList: ['FromFirst', 'FromLast', 'UseID', 'Blank'],
       sett: '',
@@ -109,8 +109,10 @@ export default {
   methods: {
     handleSubmit (tokn) {
       if (tokn === '') this.data = []
-      const [start, end] = this.time
+      let [start, end] = this.time
       const { srch, sett, cate, patn } = this
+      start = moment(start)
+      end = moment(end)
       this.params = {
         'func': 81,
         srch,
@@ -119,16 +121,16 @@ export default {
         'tokn': tokn,
         cate,
         patn,
-        'fryr': start.getFullYear(),
-        'frmo': start.getMonth() + 1,
-        'frda': start.getDate(),
-        'frhr': start.getHours(),
-        'frmi': start.getMinutes(),
-        'toyr': end.getFullYear(),
-        'tomo': end.getMonth() + 1,
-        'toda': end.getDate(),
-        'tohr': end.getHours(),
-        'tomi': end.getMinutes()
+        'fryr': start.year(),
+        'frmo': start.month() + 1,
+        'frda': start.date(),
+        'frhr': start.hour(),
+        'frmi': start.minute(),
+        'toyr': end.year(),
+        'tomo': end.month() + 1,
+        'toda': end.date(),
+        'tohr': end.hour(),
+        'tomi': end.minute()
       }
       this.$ws().set({ success: this.setData }).send(this.params)
     },
@@ -148,6 +150,11 @@ export default {
     },
     format (time) {
       return moment(time * 1000).format('YYYY-MM-DD HH:mm:ss')
+    }
+  },
+  computed: {
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 50 - 120
     }
   }
 }

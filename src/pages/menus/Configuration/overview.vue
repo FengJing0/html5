@@ -5,7 +5,7 @@
       <div class="dd-title">Overview</div>
       <el-button @click="submit">submit</el-button>
     </div>
-    <p>Driver Name: {{driverName}} &nbsp;&nbsp;&nbsp;&nbsp; {{driverType}}</p>
+    <p>Driver Name: {{deviceObj.label}} &nbsp;&nbsp;&nbsp;&nbsp; {{deviceObj.type}}</p>
     <div class="dd-mb">
       <p>Object:</p>
       <ObjectTable showAttr />
@@ -34,20 +34,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['res']),
+    ...mapGetters(['res', 'deviceObj']),
     driverList () {
       return this.$store.state.Device.deviceList
-    }
-  },
-  watch: {
-    'res.chdv': {
-      handler (val) {
-        if (!val) return
-        let res = this.driverList.filter(i => i.val === this.res.chdv)
-        this.driverName = res.length ? res[0].label : ''
-        this.driverType = res.length ? res[0].type : ''
-      },
-      immediate: true
     }
   },
   methods: {
@@ -57,7 +46,13 @@ export default {
         if (i.preAndSuff) delete i.preAndSuff
       })
       res.func = 21
-      this.$ws().send(this.res)
+      this.$ws().set({ success: this.handleSuccess }).send(res)
+    },
+    handleSuccess (data) {
+      if (data.func === 21) {
+        this.$ws().remove(this.handleSuccess)
+        this.$message.success('submit success!')
+      }
     }
   },
   components: {

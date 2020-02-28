@@ -16,7 +16,7 @@
                      label="Type" />
     <el-table-column prop="deci"
                      :min-width="minWidth"
-                     label="D" />
+                     label="Decimal" />
     <el-table-column label="Key: Address"
                      min-width="250">
       <template slot-scope="scope">
@@ -34,14 +34,14 @@
     </el-table-column>
     <el-table-column prop="adis"
                      :min-width="minWidth"
-                     label="T">
+                     label="Visible">
       <template slot-scope='scope'>
         {{scope.row.adis?'YES':'NO'}}
       </template>
     </el-table-column>
     <el-table-column prop="achg"
                      :min-width="minWidth"
-                     label="C">
+                     label="Change">
       <template slot-scope='scope'>
         {{scope.row.achg?'YES':'NO'}}
       </template>
@@ -99,12 +99,19 @@ export default {
       this.$emit('input', this.multipleSelection)
     },
     getFullName (pref, suff) {
-      return `${pref}_${this.objectName}_${suff}`
+      pref = pref ? pref + '_' : ''
+      suff = suff ? '_' + suff : ''
+      return pref + this.objectName + suff
     }
   },
   watch: {
     value (val) {
       this.multipleSelection = val
+    }
+  },
+  computed: {
+    tableHeight () {
+      return window.innerHeight - 60 - 50 - 40 - 50
     }
   }
 }

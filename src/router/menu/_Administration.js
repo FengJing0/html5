@@ -33,6 +33,7 @@ export default {
   },
   children: [
     maker('userAdministration'),
+    maker('agentGroup'),
     maker('newPassword'),
     {
       path: 'logout',

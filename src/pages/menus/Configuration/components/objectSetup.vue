@@ -46,14 +46,14 @@
                              :precision='0'
                              :min="0" />
           </el-form-item>
-          <el-form-item label="Timestamp display"
+          <el-form-item label="Timestamp Display"
                         prop="logt">
             <el-radio-group v-model="objectSetupFrom.tstd">
               <el-radio :label="1">Yes</el-radio>
               <el-radio :label="0">No</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="Display"
+          <el-form-item label="Visible"
                         prop="disp">
             <el-radio-group v-model="objectSetupFrom.disp">
               <el-radio :label="1">Yes</el-radio>
@@ -77,7 +77,7 @@
                   border>
           <el-table-column label="Index">
             <template slot-scope="scope">
-              {{scope.row.obix+1}}
+              {{scope.row.obix}}
             </template>
           </el-table-column>
           <el-table-column label="Prefix">

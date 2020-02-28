@@ -17,10 +17,11 @@
               :height='tableHeight'
               :data='scriptData'
               border>
-      <el-table-column label="stmt"
+      <el-table-column label="statement"
                        min-width="120">
         <template slot-scope="scope">
           <el-select v-model="scope.row.stmt"
+                     @change="handleChange($event,scope.$index)"
                      clearable
                      style='width:100%;'>
             <el-option v-for="item in scriptList"
@@ -31,19 +32,15 @@
           </el-select>
         </template>
       </el-table-column>
-      <el-table-column label="expr"
+      <el-table-column label="expression"
                        min-width="300">
         <template slot-scope="scope">
-          <el-input-number v-if='scope.row.stmt==="POS"'
-                           v-model="scope.row.expr"
-                           :controls='false'></el-input-number>
           <el-input placeholder=""
-                    v-else
                     v-model="scope.row.expr">
           </el-input>
         </template>
       </el-table-column>
-      <el-table-column label="edit"
+      <el-table-column label=" "
                        min-width="60">
         <template slot-scope="scope">
           <div class='btn'>
@@ -55,6 +52,21 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog :visible.sync="dialogVisible"
+               title='POS'
+               width="300px"
+               @closed='handleClosed'>
+      <el-input-number v-model="pos"
+                       :min="1"
+                       :max="999"
+                       :controls="false"></el-input-number>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="dialogVisible = false">cancel</el-button>
+        <el-button type="primary"
+                   @click="handlePosSubmit">submit</el-button>
+      </span>
+    </el-dialog>
   </Container>
 </template>
 
@@ -71,7 +83,10 @@ export default {
       type: {
         name: '',
         subr: ''
-      }
+      },
+      dialogVisible: false,
+      pos: 0,
+      currentIndex: 0
     }
   },
   methods: {
@@ -91,7 +106,6 @@ export default {
     getData (data) {
       if (data.func === 33) {
         this.$ws().remove(this.getData)
-
         if (data.rows) {
           if (data.rows.length === 0) {
             this.init()
@@ -101,6 +115,16 @@ export default {
         } else {
           this.init()
         }
+      }
+    },
+    handlePosSubmit () {
+      this.scriptData[this.currentIndex].stmt = `POS${this.pos}`
+      this.dialogVisible = false
+    },
+    handleChange (e, index) {
+      if (e === 'POS') {
+        this.currentIndex = index
+        this.dialogVisible = true
       }
     },
     handleSubmit () {
@@ -129,6 +153,9 @@ export default {
         nrow: rows.length,
         rows
       })
+    },
+    handleClosed () {
+      this.currentIndex = 0
     },
     add (index) {
       this.scriptData.splice(index + 1, 0, { stmt: '', expr: '' })

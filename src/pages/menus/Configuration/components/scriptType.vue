@@ -3,6 +3,7 @@
     <span>subroutine:</span>
     &nbsp;&nbsp;
     <el-select v-model="scriptType.subr"
+               style="width:300px;"
                @change="handleSelect"
                placeholder="">
       <el-option v-for="item in scriptTypeList"

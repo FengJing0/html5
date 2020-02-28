@@ -8,15 +8,24 @@ export const menu = [
 ]
 
 // 路由
-export const router = [{
-  path: '/',
-  name: 'index',
-  meta: {
-    requiresAuth: true
+export const router = [
+  {
+    path: '/',
+    name: 'index',
+    meta: {
+      requiresAuth: true
+    },
+    redirect: {
+      name: 'Status-dataMonitoring'
+    }
   },
-  redirect: {
-    name: 'Status-dataMonitoring'
+  Status,
+  Setup,
+  user,
+  {
+    path: '*',
+    redirect: {
+      name: 'index'
+    }
   }
-},
-Status, Setup, user
 ]

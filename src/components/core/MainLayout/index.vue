@@ -45,21 +45,13 @@ export default {
   data () {
     return {
       theme: 'default',
-      collapse: false
-      // content: '展开菜单',
-      // hasSideMenu: false,
-      // keepAliveList: ['configration_index'],
+      collapse: false,
+      loadData: false
     }
   },
   methods: {
     initData () {
       this.$ws().test().set({ success: this.receiveStatus }).set({ success: this.receiveAlarmList }).set({ success: this.setDevice }).set({ success: this.setData }).set({ success: this.getWritableObj })
-      this.$ws().send({
-        func: 22
-      })
-      this.$ws().send({
-        func: 60
-      })
       setTimeout(() => {
         this.$ws().send({
           func: 23
@@ -73,6 +65,9 @@ export default {
     ]),
     setData (res) {
       if (+res.func === 22) {
+        this.$ws().send({
+          func: 60
+        })
         this.$ws().remove(this.setData)
         this.setAllData(res)
       }
@@ -91,6 +86,12 @@ export default {
     },
     receiveStatus (data) {
       if (!data.func && data.tstp) {
+        if (data.mode !== 'INACTIVE' && !this.loadData) {
+          this.loadData = true
+          this.$ws().send({
+            func: 22
+          })
+        }
         this.setAlarmStatus(data)
       }
     },

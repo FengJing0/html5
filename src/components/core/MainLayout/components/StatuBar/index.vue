@@ -12,7 +12,7 @@
     <div :class="status.mqcn==='MQDISCONNECT'?'red':'green'">
       {{status.mqcn||'MQDISCONNECT'}}
     </div>
-    <div :class="galm==='ALARM'?'red':'green'">
+    <div :class="galm==='NO ALARM'?'green':'red'">
       {{galm}}
     </div>
   </div>
@@ -29,7 +29,19 @@ export default {
       return this.status.model === 'ACTIVE' ? 'OK' : this.status.model
     },
     galm () {
-      return this.status.galm === 'NON-EXIST' ? 'NO ALARM' : 'ALARM'
+      let res
+      switch (this.status.galm) {
+        case 'NON-EXIST':
+          res = 'NO ALARM'
+          break
+        case 'UNACKNOWLEDGE':
+          res = 'UNACK ALARM'
+          break
+        case 'EXIST':
+          res = 'ALARM'
+          break
+      }
+      return res
     }
   }
 }

@@ -7,13 +7,18 @@
                     :index="item.name"
                     @click.native="active(item)">
           <template slot="title">{{formatName(item.title)}}</template>
-          <template v-for="subMenu in item.children">
+          <template v-for="(subMenu,subIndex) in item.children">
             <el-menu-item :index="subMenu.name"
                           @click.native="active(subMenu)"
                           v-if="!subMenu.meta.hide"
                           :key='subMenu.name'>
               {{subMenu.title}}
             </el-menu-item>
+            <div v-if="item.name==='Administration' && subIndex===2" >
+              <el-menu-item @click='getData(90)'>Request License</el-menu-item>
+              <el-menu-item @click='getData(91)'>Extension License</el-menu-item>
+              <el-menu-item @click='getData(74)'>About</el-menu-item>
+            </div>
           </template>
         </el-submenu>
       </template>
@@ -25,6 +30,25 @@
         </el-menu-item>
       </template>
     </template>
+    <About ref='about' />
+    <el-dialog title='Request License'
+               :visible.sync="dialogVisible"
+               width="700px">
+      <p>{{key}}</p>
+    </el-dialog>
+    <el-dialog title='Extension License'
+               :visible.sync="dialogVisible1"
+               width="700px">
+      <el-input type="textarea"
+                :rows="8"
+                v-model="license">
+      </el-input>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button type="primary"
+                   @click="handleSubmit">submit</el-button>
+      </div>
+    </el-dialog>
   </el-menu>
 </template>
 
@@ -35,11 +59,13 @@ import { menu } from '@/router/menu'
 export default {
   data () {
     return {
-      menu
+      menu,
+      curFunc: 0,
+      dialogVisible: false,
+      dialogVisible1: false,
+      key: '',
+      license: ''
     }
-  },
-  mounted () {
-    // this.refreshSideMenu()
   },
   computed: {
     routeName () {
@@ -55,21 +81,6 @@ export default {
       }
       return index
     }
-    // 不管当前路由是不是顶级菜单 都返回这个路由所属的顶级菜单对象的name
-    // 如果返回 null 代表这个路由不是在菜单里显示的路由
-    // routeTopLevelName () {
-    //   if (this.router.find(e => e.name === this.routeName)) {
-    //     return this.routeName
-    //   } else {
-    //     const find = this.router.find(e => e.children.find(child => child.name === this.routeName))
-    //     return find ? find.name : null
-    //   }
-    // },
-    // 返回当前对象对应的顶级菜单下的所有子菜单 这些菜单可以在侧边栏菜单中直接使用
-    // 如果返回 null 代表这个路由没有对应的一级路由也就没有菜单
-    // routeTopLevelMenu () {
-    //   return this.routeTopLevelName ? this.menu.find(e => e.name === this.routeTopLevelName).children : null
-    // }
   },
   methods: {
     ...mapMutations([
@@ -89,20 +100,40 @@ export default {
     },
     formatName (title) {
       return formatName(title)
+    },
+    getData (func) {
+      this.curFunc = func
+      if (func !== 91) {
+        this.$ws().set({ success: this.setData }).send({ func })
+      } else {
+        this.dialogVisible1 = true
+      }
+    },
+    setData (data) {
+      if (data.func === this.curFunc) {
+        this.$ws().remove(this.setData)
+        switch (data.func) {
+          case 74:
+            this.$refs['about'].showDialog(data)
+            break
+          case 90:
+            this.key = data.keyv
+            this.dialogVisible = true
+            break
+          case 91:
+            break
+        }
+      }
+    },
+    handleSubmit () {
+      this.$ws().send({ func: 91, keyv: this.license })
+      // this.$ws().set({ success: this.setData }).send({ func: 91 })
+      this.dialogVisible1 = false
     }
-    // 更新侧边栏
-    // refreshSideMenu () {
-    //   this.setSideMenu({
-    //     sideMenu: this.routeTopLevelMenu ? this.routeTopLevelMenu : []
-    //   })
-    // }
+  },
+  components: {
+    About: () => import('./about')
   }
-  // watch: {
-  //   routeName (val) {
-  //     // this.show()
-  //     console.log(this.index, val)
-  //   }
-  // }
 }
 </script>
 

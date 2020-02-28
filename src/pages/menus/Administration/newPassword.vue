@@ -9,16 +9,19 @@
       <el-form-item prop='password'
                     label="password:">
         <el-input v-model="passwordForm.password"
+                  show-password
                   style="width:300px"></el-input>
       </el-form-item>
       <el-form-item prop='newPassword'
                     label="newPassword:">
         <el-input v-model="passwordForm.newPassword"
+                  show-password
                   style="width:300px"></el-input>
       </el-form-item>
       <el-form-item prop='reNewPassword'
                     label="reNewPassword:">
         <el-input v-model="passwordForm.reNewPassword"
+                  show-password
                   style="width:300px"></el-input>
       </el-form-item>
       <el-form-item>

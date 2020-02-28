@@ -26,6 +26,9 @@ export default {
     objName: {
       type: String,
       default: ''
+    },
+    props: {
+      type: Array
     }
   },
   data () {
@@ -72,23 +75,25 @@ export default {
   },
   methods: {
     handleSubmit (tokn) {
-      const [start, end] = this.time
+      let [start, end] = this.time
+      start = moment(start)
+      end = moment(end)
       this.params = {
         'func': 82,
         'srcn': this.objName,
         'attn': this.propName || '',
         'fend': 0,
         'tokn': tokn,
-        'fryr': start.getFullYear(),
-        'frmo': start.getMonth() + 1,
-        'frda': start.getDate(),
-        'frhr': start.getHours(),
-        'frmi': start.getMinutes(),
-        'toyr': end.getFullYear(),
-        'tomo': end.getMonth() + 1,
-        'toda': end.getDate(),
-        'tohr': end.getHours(),
-        'tomi': end.getMinutes()
+        'fryr': start.year(),
+        'frmo': start.month() + 1,
+        'frda': start.date(),
+        'frhr': start.hour(),
+        'frmi': start.minute(),
+        'toyr': end.year(),
+        'tomo': end.month() + 1,
+        'toda': end.date(),
+        'tohr': end.hour(),
+        'tomi': end.minute()
       }
       this.$ws().set({ success: this.setData }).send(this.params)
     },
@@ -121,7 +126,7 @@ export default {
           name: this.propName
         })
       } else {
-        Object.keys(this.status).forEach(i => {
+        this.props.filter(i => i.check).map(i => i.prop).forEach(i => {
           if (i !== 'tstp' && i !== 'objn') {
             this.option.series.push({
               data: [],
@@ -141,7 +146,7 @@ export default {
       this.chartInstance.clear()
     },
     handleShow (row, type) {
-      this.time = [new Date(), new Date()]
+      this.time = [moment().subtract(1, 'hours'), moment()]
       this.propName = row ? row.prop : null
       this.dialogVisible = true
       this.$nextTick(this.initChart)

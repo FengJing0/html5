@@ -15,6 +15,9 @@ export default {
     objName: {
       type: String,
       default: ''
+    },
+    props: {
+      type: Array
     }
   },
   data () {
@@ -90,7 +93,7 @@ export default {
           name: this.propName
         })
       } else {
-        Object.keys(this.status).forEach(i => {
+        this.props.filter(i => i.check).map(i => i.prop).forEach(i => {
           if (i !== 'tstp' && i !== 'objn') {
             this.option.series.push({
               data: [],
